@@ -6,7 +6,7 @@
 
 <body>
 
-<!--<nav th:replace="snippets.html :: name_site_navbar"></nav>-->
+<nav th:replace="snippets.html :: name_site_navbar"></nav>
 
 <div class="container">
 <div class="row">
@@ -23,7 +23,9 @@
 </div>
 </div>
 </div> <!--Container-->
-
+<div class="card-footer text-danger">
+<!--  [[${info.getMessage()}]]-->
+</div>
 <footer th:replace="snippets.html :: name_footer"></footer>
 
 </body>

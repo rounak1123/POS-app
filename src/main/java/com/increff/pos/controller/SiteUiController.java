@@ -12,17 +12,17 @@ public class SiteUiController extends AbstractUiController {
 	public ModelAndView index() {
 		return mav("index.html");
 	}
-//
-//	@RequestMapping(value = "/site/login")
-//	public ModelAndView login() {
-//		return mav("login.html");
-//	}
-//
-//	@RequestMapping(value = "/site/logout")
-//	public ModelAndView logout() {
-//		return mav("logout.html");
-//	}
-//
+
+	@RequestMapping(value = "/site/login")
+	public ModelAndView login() {
+		return mav("login.html");
+	}
+
+	@RequestMapping(value = "/site/logout")
+	public ModelAndView logout() {
+		return mav("logout.html");
+	}
+
 //	@RequestMapping(value = "/site/pricing")
 //	public ModelAndView pricing() {
 //		return mav("pricing.html");

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 public class DbConfig {
 
-	public static final String PACKAGE_POJO = "com.increff.employee.pojo";
+	public static final String PACKAGE_POJO = "com.increff.pos.pojo";
 	
 	@Value("${jdbc.driverClassName}")
 	private String jdbcDriver;

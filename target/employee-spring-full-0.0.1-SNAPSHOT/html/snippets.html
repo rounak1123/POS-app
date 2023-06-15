@@ -56,15 +56,14 @@
         <a class="nav-link" th:href="@{/ui/employee}">Employees</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" th:href="@{/ui/brand}">Brands</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" th:href="@{/ui/admin}">Admin</a>
       </li>
     </ul>
     
     <ul class="navbar-nav ml-auto">
-	    <li class="navbar-text">
-	    	[[${info.getEmail()}]]
-	    	&nbsp;&gt;&nbsp;
-	    </li>
 	    <li class="nav-item">
 	    	<a class="nav-link" th:href="@{/session/logout}">Logout</a>
 	    </li>

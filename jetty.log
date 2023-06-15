@@ -678,3 +678,35 @@ java.lang.IllegalStateException: LifecycleProcessor not initialized - call 'refr
 2023-06-15 11:12:36 INFO  SecurityConfig:33 - Configuration complete
 2023-06-15 11:15:40 INFO  SecurityConfig:33 - Configuration complete
 2023-06-15 11:17:17 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 13:35:15 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 13:40:38 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 13:51:37 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 13:57:04 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 14:07:23 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 14:11:11 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 14:15:34 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 14:24:37 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 14:27:44 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 14:28:37 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:28:37 ERROR SqlExceptionHelper:142 - Duplicate entry 'nikee-hot shoes' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:30:55 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:30:55 ERROR SqlExceptionHelper:142 - Duplicate entry 'nikee-hot shoes' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:31:09 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:31:09 ERROR SqlExceptionHelper:142 - Duplicate entry 'nikee-hot shoes' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:31:20 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:31:20 ERROR SqlExceptionHelper:142 - Duplicate entry 'nikee-hot shoes2' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:31:34 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:31:34 ERROR SqlExceptionHelper:142 - Duplicate entry 'nikee-hot shoes' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:31:59 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:31:59 ERROR SqlExceptionHelper:142 - Duplicate entry 'puma-t-shirts' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:33:01 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:33:01 ERROR SqlExceptionHelper:142 - Duplicate entry 'puma-t-shirts' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:33:15 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:33:15 ERROR SqlExceptionHelper:142 - Duplicate entry 'puma-t-shirts' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:33:17 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:33:17 ERROR SqlExceptionHelper:142 - Duplicate entry 'puma-t-shirts' for key 'brandpojo.brand_category_unique'
+2023-06-15 14:33:55 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 14:33:55 ERROR SqlExceptionHelper:142 - Duplicate entry 'puma-t-shirts' for key 'brandpojo.brand_category_unique'
+2023-06-15 15:38:16 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 15:39:21 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-15 15:39:21 ERROR SqlExceptionHelper:142 - Duplicate entry 'nike-sport shoes' for key 'brandpojo.brand_category_unique'

@@ -1,7 +1,10 @@
+com/increff/pos/model/BrandData.class
+com/increff/pos/service/BrandService.class
 com/increff/pos/pojo/OrderPojo.class
 com/increff/pos/controller/AppUiController.class
 com/increff/pos/spring/WebInitializer.class
 com/increff/pos/pojo/OrderItemPojo.class
+com/increff/pos/model/BrandForm.class
 com/increff/pos/model/InfoData.class
 com/increff/pos/pojo/InventoryPojo.class
 com/increff/pos/controller/LoginController.class
@@ -13,10 +16,13 @@ com/increff/pos/util/SecurityUtil.class
 com/increff/pos/spring/SpringConfig.class
 com/increff/pos/pojo/ProductPojo.class
 com/increff/pos/controller/InitApiController.class
+com/increff/pos/dao/BrandDao.class
 com/increff/pos/model/UserData.class
 com/increff/pos/model/LoginForm.class
+com/increff/pos/util/StringUtil.class
 com/increff/pos/dao/AbstractDao.class
 com/increff/pos/pojo/UserPojo.class
+com/increff/pos/controller/BrandApiController.class
 com/increff/pos/service/ApiException.class
 com/increff/pos/controller/AbstractUiController.class
 com/increff/pos/model/UserForm.class

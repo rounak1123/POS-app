@@ -710,3 +710,48 @@ java.lang.IllegalStateException: LifecycleProcessor not initialized - call 'refr
 2023-06-15 15:38:16 INFO  SecurityConfig:33 - Configuration complete
 2023-06-15 15:39:21 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
 2023-06-15 15:39:21 ERROR SqlExceptionHelper:142 - Duplicate entry 'nike-sport shoes' for key 'brandpojo.brand_category_unique'
+2023-06-15 16:41:37 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 16:49:07 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 16:50:07 WARN  DefaultHandlerExceptionResolver:384 - Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Cannot deserialize value of type `int` from String "nike-shoes": not a valid Integer value
+ at [Source: (PushbackInputStream); line: 1, column: 41] (through reference chain: com.increff.pos.model.ProductForm["brand_category_id"]); nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `int` from String "nike-shoes": not a valid Integer value
+ at [Source: (PushbackInputStream); line: 1, column: 41] (through reference chain: com.increff.pos.model.ProductForm["brand_category_id"])
+2023-06-15 16:50:20 WARN  DefaultHandlerExceptionResolver:384 - Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Cannot deserialize value of type `int` from String "nike-shoes": not a valid Integer value
+ at [Source: (PushbackInputStream); line: 1, column: 41] (through reference chain: com.increff.pos.model.ProductForm["brand_category_id"]); nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `int` from String "nike-shoes": not a valid Integer value
+ at [Source: (PushbackInputStream); line: 1, column: 41] (through reference chain: com.increff.pos.model.ProductForm["brand_category_id"])
+2023-06-15 16:58:17 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 17:03:50 INFO  SecurityConfig:33 - Configuration complete
+2023-06-15 17:05:02 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 08:47:19 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 08:52:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 09:20:03 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 09:35:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 09:43:30 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 09:57:37 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 10:02:16 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 10:07:54 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 10:21:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 10:32:55 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 10:48:19 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 10:59:49 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 11:38:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:22:18 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:24:00 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:25:46 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:27:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:28:52 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:31:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:34:04 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 13:34:36 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 13:36:59 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 13:57:05 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 13:59:11 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-16 13:59:11 ERROR SqlExceptionHelper:142 - Duplicate entry 'nike-shoes2' for key 'brandpojo.brand_category_unique'
+2023-06-16 13:59:32 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 13:59:41 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 14:01:11 WARN  PageNotFound:215 - Request method 'PUT' not supported
+2023-06-16 14:17:27 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 14:25:03 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 14:27:58 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 14:41:24 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 14:41:59 INFO  SecurityConfig:33 - Configuration complete
+2023-06-16 14:43:42 INFO  SecurityConfig:33 - Configuration complete

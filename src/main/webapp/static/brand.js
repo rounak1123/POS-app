@@ -1,8 +1,7 @@
 
 function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-//	return baseUrl + "/api/brand";
-return "http://localhost:8080/api/brand";
+	return baseUrl + "/api/brand";
 }
 
 //BUTTON ACTIONS
@@ -28,14 +27,14 @@ function addBrand(event){
 	return false;
 }
 
-function updateEmployee(event){
-	$('#edit-employee-modal').modal('toggle');
+function updateBrand(event){
+	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
-	var id = $("#employee-edit-form input[name=id]").val();	
+	var id = $("#brand-edit-form input[name=id]").val();
 	var url = getBrandUrl() + "/" + id;
 
 	//Set the values to update
-	var $form = $("#employee-edit-form");
+	var $form = $("#brand-edit-form");
 	var json = toJson($form);
 
 	$.ajax({
@@ -61,25 +60,13 @@ function getBrandList(){
 	   url: url,
 	   type: 'GET',
 	   success: function(data) {
-	        console.log('employee list', data);
-	   		displayEmployeeList(data);  
+	        console.log('brand list', data);
+	   		displayBrandList(data);
 	   },
 	   error: handleAjaxError
 	});
 }
 
-function deleteEmployee(id){
-	var url = getBrandUrl() + "/" + id;
-
-	$.ajax({
-	   url: url,
-	   type: 'DELETE',
-	   success: function(data) {
-	   		getBrandList();
-	   },
-	   error: handleAjaxError
-	});
-}
 
 // FILE UPLOAD METHODS
 var fileData = [];
@@ -88,12 +75,13 @@ var processCount = 0;
 
 
 function processData(){
-	var file = $('#employeeFile')[0].files[0];
+	var file = $('#brandFile')[0].files[0];
 	readFileData(file, readFileDataCallback);
 }
 
 function readFileDataCallback(results){
 	fileData = results.data;
+	console.log(fileData);
 	uploadRows();
 }
 
@@ -111,7 +99,7 @@ function uploadRows(){
 	
 	var json = JSON.stringify(row);
 	var url = getBrandUrl();
-
+console.log(json);
 	//Make ajax call
 	$.ajax({
 	   url: url,
@@ -138,13 +126,12 @@ function downloadErrors(){
 
 //UI DISPLAY METHODS
 
-function displayEmployeeList(data){
-	var $tbody = $('#employee-table').find('tbody');
+function displayBrandList(data){
+	var $tbody = $('#brand-table').find('tbody');
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button onclick="deleteEmployee(' + e.id + ')">delete</button>'
-		buttonHtml += ' <button onclick="displayEditEmployee(' + e.id + ')">edit</button>'
+		var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')">edit</button>'
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
 		+ '<td>' + e.brand + '</td>'
@@ -155,13 +142,13 @@ function displayEmployeeList(data){
 	}
 }
 
-function displayEditEmployee(id){
+function displayEditBrand(id){
 	var url = getBrandUrl() + "/" + id;
 	$.ajax({
 	   url: url,
 	   type: 'GET',
 	   success: function(data) {
-	   		displayEmployee(data);   
+	   		displayBrand(data);
 	   },
 	   error: handleAjaxError
 	});	
@@ -169,9 +156,9 @@ function displayEditEmployee(id){
 
 function resetUploadDialog(){
 	//Reset file name
-	var $file = $('#employeeFile');
+	var $file = $('#brandFile');
 	$file.val('');
-	$('#employeeFileName').html("Choose File");
+	$('#brandFileName').html("Choose File");
 	//Reset various counts
 	processCount = 0;
 	fileData = [];
@@ -187,33 +174,33 @@ function updateUploadDialog(){
 }
 
 function updateFileName(){
-	var $file = $('#employeeFile');
+	var $file = $('#brandFile');
 	var fileName = $file.val();
-	$('#employeeFileName').html(fileName);
+	$('#brandFileName').html(fileName);
 }
 
 function displayUploadData(){
  	resetUploadDialog(); 	
-	$('#upload-employee-modal').modal('toggle');
+	$('#upload-brand-modal').modal('toggle');
 }
 
-function displayEmployee(data){
-	$("#employee-edit-form input[name=name]").val(data.name);	
-	$("#employee-edit-form input[name=age]").val(data.age);	
-	$("#employee-edit-form input[name=id]").val(data.id);	
-	$('#edit-employee-modal').modal('toggle');
+function displayBrand(data){
+	$("#brand-edit-form input[name=id]").val(data.id);
+	$("#brand-edit-form input[name=brand]").val(data.brand);
+	$("#brand-edit-form input[name=category]").val(data.category);
+	$('#edit-brand-modal').modal('toggle');
 }
 
 
 //INITIALIZATION CODE
 function init(){
-	$('#add-employee').click(addBrand);
-	$('#update-employee').click(updateEmployee);
+	$('#add-brand').click(addBrand);
+	$('#update-brand').click(updateBrand);
 	$('#refresh-data').click(getBrandList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
-    $('#employeeFile').on('change', updateFileName)
+    $('#brandFile').on('change', updateFileName)
 }
 
 $(document).ready(init);

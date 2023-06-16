@@ -28,6 +28,7 @@
         <log4j.version>1.2.17</log4j.version>
         <h2.version>1.4.200</h2.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
+        <lombok.version>1.18.28</lombok.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
 
         <!-- Jetty configuration -->
@@ -184,6 +185,14 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
 
 

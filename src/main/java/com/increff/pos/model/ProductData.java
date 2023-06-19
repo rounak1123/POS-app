@@ -1,15 +1,11 @@
 package com.increff.pos.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class ProductData extends ProductForm {
 
 	private int id;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 }

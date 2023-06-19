@@ -133,7 +133,8 @@ function displayProductList(data){
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
 		+ '<td>' + e.barcode + '</td>'
-		+ '<td>'  + e.brand_category_id + '</td>'
+		+ '<td>'  + e.brand + '</td>'
+		+ '<td>'  + e.category + '</td>'
 		+ '<td>'  + e.name + '</td>'
 		+ '<td>'  + e.mrp + '</td>'
 		+ '<td>' + buttonHtml + '</td>'
@@ -187,7 +188,8 @@ function displayUploadData(){
 function displayProduct(data){
 	$("#product-edit-form input[name=name]").val(data.name);
 	$("#product-edit-form input[name=mrp]").val(data.mrp);
-	$("#product-edit-form input[name=brand_category_id]").val(data.brand_category_id);
+	$("#product-edit-form input[name=brand]").val(data.brand);
+	$("#product-edit-form input[name=category]").val(data.category);
 	$("#product-edit-form input[name=barcode]").val(data.barcode);
 	$("#product-edit-form input[name=id]").val(data.id);
 	$('#edit-product-modal').modal('toggle');

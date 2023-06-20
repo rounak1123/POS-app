@@ -4,7 +4,6 @@ import com.increff.pos.dto.BrandDto;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
 import com.increff.pos.service.ApiException;
-import com.increff.pos.service.BrandService;
 import com.increff.pos.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,8 +15,6 @@ import java.util.List;
 @RestController
 public class BrandApiController {
 
-	@Autowired
-	private BrandService service;
 
 	@Autowired
 	private BrandDto dto;
@@ -30,7 +27,7 @@ public class BrandApiController {
 	
 	@ApiOperation(value = "Deletes and brand")
 	@RequestMapping(path = "/api/brand/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable int id) {
+	public void delete(@PathVariable int id) throws ApiException {
 		dto.delete(id);
 	}
 
@@ -50,6 +47,12 @@ public class BrandApiController {
 	@RequestMapping(path = "/api/brand/{id}", method = RequestMethod.PUT)
 	public void update(@PathVariable int id, @RequestBody BrandForm f) throws ApiException {
 		dto.update(id,f);
+	}
+
+	@ApiOperation(value = "Checks if combination exists")
+	@RequestMapping(path = "/api/brand/validate", method = RequestMethod.POST)
+	public void validate(@RequestBody BrandForm f) throws ApiException {
+		dto.validate(f);
 	}
 
 }

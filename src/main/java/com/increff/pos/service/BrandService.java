@@ -17,15 +17,16 @@ public class BrandService {
 
 	@Transactional(rollbackOn = ApiException.class)
 	public void add(BrandPojo p) throws ApiException {
-		normalize(p);
-		if(StringUtil.isEmpty(p.getBrand())) {
-			throw new ApiException("brand cannot be empty");
-		}
+		BrandPojo brandP = dao.select(p.getBrand(), p.getCategory());
+		if(brandP != null)
+			throw new ApiException("Brand Category combination already exists.");
 		dao.insert(p);
 	}
 
 	@Transactional
-	public void delete(int id) {
+	public void delete(int id)  throws ApiException{
+		if(dao.select(id) != null)
+			throw  new ApiException("Brand doesn't exists");
 		dao.delete(id);
 	}
 
@@ -41,7 +42,6 @@ public class BrandService {
 
 	@Transactional(rollbackOn  = ApiException.class)
 	public void update(int id, BrandPojo p) throws ApiException {
-		normalize(p);
 		BrandPojo ex = getCheck(id);
 		ex.setCategory(p.getCategory());
 		ex.setBrand(p.getBrand());
@@ -57,7 +57,11 @@ public class BrandService {
 		return p;
 	}
 
-	protected static void normalize(BrandPojo p) {
-		p.setBrand(StringUtil.toLowerCase(p.getBrand()));
+	@Transactional
+	public void validate(BrandPojo p) throws ApiException{
+		BrandPojo brandP = dao.select(p.getBrand(),p.getCategory());
+		if(brandP != null)
+			throw new ApiException("Already Exists");
 	}
+
 }

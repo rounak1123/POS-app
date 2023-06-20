@@ -22,10 +22,11 @@ public class BrandDto {
 
 
     public void add(@RequestBody BrandForm form) throws ApiException {
+        emptyCheck(form);
         BrandPojo p = convert(form);
         service.add(p);
     }
-    public void delete(@PathVariable int id) {
+    public void delete(@PathVariable int id) throws ApiException {
         service.delete(id);
     }
 
@@ -44,8 +45,15 @@ public class BrandDto {
     }
 
     public void update(@PathVariable int id, @RequestBody BrandForm f) throws ApiException {
+        normalize(f);
         BrandPojo p = convert(f);
         service.update(id, p);
+    }
+
+    public void validate(@RequestBody BrandForm f) throws ApiException {
+        normalize(f);
+        BrandPojo p = convert(f);
+        service.validate(p);
     }
 
     private  BrandData convert(BrandPojo p) {
@@ -69,6 +77,10 @@ public class BrandDto {
         f.setCategory(StringUtil.toLowerCase(f.getCategory()));
     }
 
-
-
+    public static void emptyCheck(BrandForm f) throws ApiException{
+        if(StringUtil.isEmpty(f.getBrand()))
+            throw  new ApiException("Brand field cannot be empty.");
+        if(StringUtil.isEmpty(f.getCategory()))
+            throw  new ApiException("Category cannot be empty");
+    }
 }

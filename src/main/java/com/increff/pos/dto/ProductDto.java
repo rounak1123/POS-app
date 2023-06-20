@@ -23,6 +23,8 @@ public class ProductDto {
     private ProductFlowService flowService;
 
     public void add(@RequestBody ProductForm form) throws ApiException {
+        normalize(form);
+        emptyCheck(form);
         ProductPojo p = convert(form);
         service.add(p);
     }
@@ -48,6 +50,13 @@ public class ProductDto {
     public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
         ProductPojo p = convert(f);
         service.update(id, p);
+    }
+
+    public void validate(@RequestBody ProductForm f) throws ApiException {
+        normalize(f);
+        emptyCheck(f);
+        ProductPojo p = convert(f);
+        service.validate(p);
     }
 
     public ProductData convert(ProductPojo p) {
@@ -81,5 +90,11 @@ public class ProductDto {
         f.setName(StringUtil.toLowerCase(f.getName()));
         f.setBrand(StringUtil.toLowerCase(f.getBrand()));
         f.setCategory(StringUtil.toLowerCase(f.getCategory()));
+    }
+
+    public void emptyCheck(ProductForm f) throws ApiException{
+        if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
+           StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0)
+            throw new ApiException("Invalid or missing fields");
     }
 }

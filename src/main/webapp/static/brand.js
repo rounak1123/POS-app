@@ -32,7 +32,6 @@ function updateBrand(event){
 	//Get the ID
 	var id = $("#brand-edit-form input[name=id]").val();
 	var url = getBrandUrl() + "/" + id;
-
 	//Set the values to update
 	var $form = $("#brand-edit-form");
 	var json = toJson($form);
@@ -72,7 +71,8 @@ function getBrandList(){
 var fileData = [];
 var errorData = [];
 var processCount = 0;
-
+var errorFlag = false;
+var errorCount = 0;
 
 function processData(){
 	var file = $('#brandFile')[0].files[0];
@@ -82,14 +82,19 @@ function processData(){
 function readFileDataCallback(results){
 	fileData = results.data;
 	console.log(fileData);
-	uploadRows();
+    resetUploadDialog();
+
+	checkUpload();
 }
 
 function uploadRows(){
 	//Update progress
-	updateUploadDialog();
+//	updateUploadDialog();
 	//If everything processed then return
 	if(processCount==fileData.length){
+	    processCount=0;
+	    errorData=[];
+	    displayBrandList();
 		return;
 	}
 	
@@ -99,7 +104,7 @@ function uploadRows(){
 	
 	var json = JSON.stringify(row);
 	var url = getBrandUrl();
-console.log(json);
+
 	//Make ajax call
 	$.ajax({
 	   url: url,
@@ -112,9 +117,55 @@ console.log(json);
 	   		uploadRows();  
 	   },
 	   error: function(response){
-	   		row.error=response.responseText
-	   		errorData.push(row);
 	   		uploadRows();
+	   }
+	});
+
+}
+
+function checkUpload(){
+
+	//Update progress
+	updateUploadDialog();
+	//If everything processed then return
+	if(processCount==fileData.length){
+	  processCount = 0;
+      errorCount = 0;
+
+	   if(errorFlag == false){
+	     uploadRows();
+	     }
+
+		return;
+	}
+
+	//Process next row
+	var row = fileData[processCount];
+	processCount++;
+
+	var json = JSON.stringify(row);
+	var url = getBrandUrl();
+	url+='/validate';
+console.log(json);
+	//Make ajax call
+	$.ajax({
+	   url: url,
+	   type: 'POST',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(response) {
+	       row.error="";
+	       errorData.push(row);
+	   		checkUpload();
+	   },
+	   error: function(response){
+	        errorFlag = true;
+	        errorCount++;
+	   		row.error="Invalid data";
+	   		errorData.push(row);
+	   		checkUpload();
 	   }
 	});
 
@@ -163,6 +214,8 @@ function resetUploadDialog(){
 	processCount = 0;
 	fileData = [];
 	errorData = [];
+	errorCount = 0;
+	errorFlag = false;
 	//Update counts	
 	updateUploadDialog();
 }
@@ -170,7 +223,7 @@ function resetUploadDialog(){
 function updateUploadDialog(){
 	$('#rowCount').html("" + fileData.length);
 	$('#processCount').html("" + processCount);
-	$('#errorCount').html("" + errorData.length);
+	$('#errorCount').html("" + errorCount);
 }
 
 function updateFileName(){

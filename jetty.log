@@ -1051,3 +1051,36 @@ Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No q
 2023-06-19 13:51:40 WARN  DefaultHandlerExceptionResolver:384 - Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: Could not read document: Cannot deserialize value of type `java.lang.Double` from String "hjk": not a valid Double value
  at [Source: (PushbackInputStream); line: 1, column: 83] (through reference chain: com.increff.pos.model.ProductForm["mrp"]); nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `java.lang.Double` from String "hjk": not a valid Double value
  at [Source: (PushbackInputStream); line: 1, column: 83] (through reference chain: com.increff.pos.model.ProductForm["mrp"])
+2023-06-19 14:01:30 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 14:06:27 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 14:10:41 WARN  SqlExceptionHelper:137 - SQL Error: 1062, SQLState: 23000
+2023-06-19 14:10:41 ERROR SqlExceptionHelper:142 - Duplicate entry 'puma-shirt' for key 'brandpojo.brand_category_unique'
+2023-06-19 14:14:17 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 14:49:47 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 14:59:39 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:01:36 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:06:34 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:09:45 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:14:23 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:17:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:19:48 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:22:56 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:27:23 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:29:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:32:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 15:35:56 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 16:42:23 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 20:50:52 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 20:55:46 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 20:57:17 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:04:57 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:06:17 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:19:20 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:22:23 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:32:45 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:39:00 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 21:39:43 INFO  SecurityConfig:33 - Configuration complete
+2023-06-19 22:09:02 INFO  SecurityConfig:33 - Configuration complete
+2023-06-20 08:59:05 INFO  SecurityConfig:33 - Configuration complete
+2023-06-20 09:06:01 INFO  SecurityConfig:33 - Configuration complete
+2023-06-20 09:27:35 INFO  SecurityConfig:33 - Configuration complete

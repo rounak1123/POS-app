@@ -71,6 +71,8 @@ function getProductList(){
 var fileData = [];
 var errorData = [];
 var processCount = 0;
+var errorFlag = false;
+
 
 
 function processData(){
@@ -80,7 +82,8 @@ function processData(){
 
 function readFileDataCallback(results){
 	fileData = results.data;
-	uploadRows();
+	console.log(fileData);
+	checkUpload();
 }
 
 function uploadRows(){
@@ -88,6 +91,9 @@ function uploadRows(){
 	updateUploadDialog();
 	//If everything processed then return
 	if(processCount==fileData.length){
+	    processCount=0;
+	    errorData=[];
+	    displayProductList();
 		return;
 	}
 	
@@ -110,9 +116,52 @@ function uploadRows(){
 	   		uploadRows();  
 	   },
 	   error: function(response){
-	   		row.error=response.responseText
-	   		errorData.push(row);
 	   		uploadRows();
+	   }
+	});
+
+}
+
+function checkUpload(){
+
+	//Update progress
+	updateUploadDialog();
+	//If everything processed then return
+	if(processCount==fileData.length){
+	   if(errorFlag == false){
+	     processCount = 0;
+	     console.log('uploading all');
+	     uploadRows();
+	     }
+		return;
+	}
+
+	//Process next row
+	var row = fileData[processCount];
+	processCount++;
+
+	var json = JSON.stringify(row);
+	var url = getProductUrl();
+	url+='/validate';
+console.log(json);
+	//Make ajax call
+	$.ajax({
+	   url: url,
+	   type: 'POST',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(response) {
+	       row.error="";
+	       errorData.push(row);
+	   		checkUpload();
+	   },
+	   error: function(response){
+	        errorFlag = true;
+	   		row.error="Invalid data";
+	   		errorData.push(row);
+	   		checkUpload();
 	   }
 	});
 

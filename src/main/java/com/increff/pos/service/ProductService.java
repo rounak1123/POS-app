@@ -2,7 +2,6 @@ package com.increff.pos.service;
 
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +16,9 @@ public class ProductService {
 
 	@Transactional(rollbackOn = ApiException.class)
 	public void add(ProductPojo p) throws ApiException {
-		normalize(p);
-		if(StringUtil.isEmpty(p.getBarcode())) {
-			throw new ApiException("barcode cannot be empty");
-		}
+		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());
+		if(pojo!=null)
+			throw  new ApiException("The product already exists in the database.");
 		dao.insert(p);
 	}
 
@@ -41,7 +39,6 @@ public class ProductService {
 
 	@Transactional(rollbackOn  = ApiException.class)
 	public void update(int id, ProductPojo p) throws ApiException {
-		normalize(p);
 		ProductPojo ex = getCheck(id);
 		ex.setBarcode(p.getBarcode());
 		ex.setBrand_category_id(p.getBrand_category_id());
@@ -50,19 +47,20 @@ public class ProductService {
 		dao.update(ex);
 	}
 
+	public void validate(ProductPojo p) throws ApiException {
+		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());
+		if(pojo != null){
+			throw new ApiException("Already Exists with same barcode.");
+		}
+	}
+
 	@Transactional
 	public ProductPojo getCheck(int id) throws ApiException {
 		ProductPojo p = dao.select(id);
 		if (p == null) {
-			throw new ApiException("Brand with given ID does not exit, id: " + id);
+			throw new ApiException("Product with given ID does not exit, id: " + id);
 		}
 		return p;
 	}
 
-	protected static void normalize(ProductPojo p) {
-
-		p.setBarcode(StringUtil.toLowerCase(p.getBarcode()));
-		p.setName(StringUtil.toLowerCase(p.getName()));
-
-	}
 }

@@ -4,8 +4,6 @@ import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
 import com.increff.pos.service.ApiException;
-import com.increff.pos.service.ProductService;
-import com.increff.pos.service.flow.ProductFlowService;
 import com.increff.pos.spring.SecurityConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,13 +18,9 @@ public class ProductApiController {
 
 	private static Logger logger = Logger.getLogger(SecurityConfig.class);
 	@Autowired
-	private ProductService service;
-	@Autowired
-	private ProductFlowService flowService;
-	@Autowired
 	private ProductDto dto;
 
-	@ApiOperation(value = "Adds an product")
+	@ApiOperation(value = "Adds a product")
 	@RequestMapping(path = "/api/product", method = RequestMethod.POST)
 	public void add(@RequestBody ProductForm f) throws ApiException {
 		dto.add(f);
@@ -55,6 +49,12 @@ public class ProductApiController {
 	@RequestMapping(path = "/api/product/{id}", method = RequestMethod.PUT)
 	public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
 		dto.update(id,f);
+	}
+
+	@ApiOperation(value = "Validates a product")
+	@RequestMapping(path = "/api/product/validate", method = RequestMethod.POST)
+	public void validate(@RequestBody ProductForm f) throws ApiException {
+		dto.validate(f);
 	}
 
 

@@ -26,7 +26,8 @@ public class ProductDto {
         normalize(form);
         emptyCheck(form);
         ProductPojo p = convert(form);
-        service.add(p);
+        int id = service.add(p);
+        flowService.addInventory(id);
     }
 
     public void delete(@PathVariable int id) {

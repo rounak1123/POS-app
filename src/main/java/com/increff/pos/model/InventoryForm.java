@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class BrandData extends BrandForm {
-	private int id;
+public class InventoryForm {
+    private String barcode;
+    private int quantity;
 }

@@ -15,11 +15,13 @@ public class ProductService {
 	private ProductDao dao;
 
 	@Transactional(rollbackOn = ApiException.class)
-	public void add(ProductPojo p) throws ApiException {
+	public int add(ProductPojo p) throws ApiException {
 		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());
 		if(pojo!=null)
 			throw  new ApiException("The product already exists in the database.");
-		dao.insert(p);
+		int id =  dao.insert(p);
+		return id;
+
 	}
 
 	@Transactional

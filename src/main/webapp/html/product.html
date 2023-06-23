@@ -43,7 +43,7 @@
 				<div class="form-group">
 					<label for="inputMrp" class="col-sm-2 col-form-label">Price (INR) </label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" name="mrp" id="inputMrp" placeholder="0.0">
+						<input type="number" class="form-control" name="mrp" id="inputMrp" placeholder="0.0">
 					</div>
 				</div>
 
@@ -68,35 +68,16 @@
 	<table class="table table-striped" id="product-table">
 	  <thead>
 	    <tr>
-	      <th scope="col">ID</th>
+	      <th scope="col">Sl No.</th>
 	      <th scope="col">Barcode</th>
 			<th scope="col">Brand</th>
 	      <th scope="col">Category</th>
 		  <th scope="col">Name</th>
 		  <th scope="col">Price (INR) </th>
-
 	      <th scope="col">Actions</th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr>
-	      <td>1</td>
-	      <td>Romil Jain</td>
-	      <td>30</td>
-	      <td>Edit | Delete</td>
-	    </tr>
-	    <tr>
-	      <td>2</td>
-	      <td>Rajul Jain</td>
-	      <td>31</td>
-	      <td>Edit | Delete</td>
-	    </tr>
-	    <tr>
-	      <td>3</td>
-	      <td>Anaisha Jain</td>
-	      <td>7</td>
-	      <td>Edit | Delete</td>
-	    </tr>
 	  </tbody>
 	</table>
 
@@ -171,20 +152,24 @@
       
       <div class="modal-body">
       	<div class="product-file">
-		  <input type="file" class="custom-file-input" id="productFile">
+			<form id="import-product-form" action="" method="post" enctpye="multipart/form-data">
+				<input type="file" name="file_name" class="custom-file-input" id="productFile">
+			</form>
 		  <label class="custom-file-label" for="productFile" id="productFileName">Choose file</label>
 		</div>
-		<a th:href="@{/sample/product.tsv}" target="_blank">Download Sample</a>
+		<a th:href="@{/sample/productSample.tsv}" target="_blank">Download Sample</a>
 		<br>
-		Rows: <span id="rowCount">0</span>, 
-		Processed: <span id="processCount">0</span>, 
-		Errors: <span id="errorCount">0</span>
+<!--		Rows: <span id="rowCount">0</span>, -->
+<!--		Processed: <span id="processCount">0</span>, -->
+<!--		Errors: <span id="errorCount">0</span>-->
       </div>
       
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary" id="process-data">Upload</button>
-        <button type="button" class="btn btn-warning" id="download-errors">Download Errors</button>
+		  <a th:href="@{/error/errorFile.tsv}" target="_blank">
+			  <button type="button" class="btn btn-warning" id="download-errors" disabled>Download Errors</button>
+		  </a>
       </div>
     </div>
   </div>

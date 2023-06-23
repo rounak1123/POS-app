@@ -3,17 +3,27 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.BrandDto;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
+import com.increff.pos.model.ErrorBrandData;
+import com.increff.pos.model.MessageData;
 import com.increff.pos.service.ApiException;
+import com.increff.pos.spring.SecurityConfig;
 import com.increff.pos.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
 import java.util.List;
 
 @Api
 @RestController
 public class BrandApiController {
+
+	private static Logger logger = Logger.getLogger(SecurityConfig.class);
 
 
 	@Autowired
@@ -54,5 +64,26 @@ public class BrandApiController {
 	public void validate(@RequestBody BrandForm f) throws ApiException {
 		dto.validate(f);
 	}
+
+//	@ApiOperation(value = "upload tsv from UI")
+//	@RequestMapping(path="/api/brand/upload", method = RequestMethod.POST)
+//    public String upload(@RequestParam(value="file") MultipartFile file, ModelMap modelMap){
+//		modelMap.addAttribute(file);
+//		return file.getOriginalFilename();
+//	}
+
+//	@ApiOperation(value="upload brand categrory using tsv")
+//	@RequestMapping(path="/api/brand/upload", method = RequestMethod.POST)
+//	public List<ErrorBrandData> upload(@RequestBody String tsvData) throws ApiException{
+//		return dto.upload(tsvData);
+//
+//	}
+    @ApiOperation(value = "upload tsv from UI")
+	@RequestMapping(path="/api/brand/upload", method = RequestMethod.POST)
+    public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
+//		modelMap.addAttribute(file);
+		 dto.upload(file);
+	}
+
 
 }

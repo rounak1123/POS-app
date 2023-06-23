@@ -12,10 +12,10 @@ public class InventoryFlowService {
     @Autowired
     public ProductDao dao;
 
-    public int getProductIdByBarcode (String barcode) throws ApiException{
+    public int getProductIdByBarcode (String barcode){
         ProductPojo p = dao.getProductByBarcode(barcode);
         if(p==null)
-            throw new ApiException("Product Id not found");
+            return -1;
         return p.getId();
     }
 

@@ -21,6 +21,7 @@ public class ProductFlowService {
 
     public int getBrandCategoryId(String brand, String category){
         BrandPojo p = dao.select(brand,category);
+        if(p==null) return -1;
         return p.getId();
     }
 

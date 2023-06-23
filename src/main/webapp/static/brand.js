@@ -1,3 +1,6 @@
+$(document).ready( function () {
+    $('#brand-table').DataTable();
+});
 
 function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -20,6 +23,7 @@ function addBrand(event){
        },	   
 	   success: function(response) {
 	   		getBrandList();
+	   		$("#brand-form")[0].reset();
 	   },
 	   error: handleAjaxError
 	});
@@ -75,21 +79,97 @@ var errorFlag = false;
 var errorCount = 0;
 
 function processData(){
-	var file = $('#brandFile')[0].files[0];
-	readFileData(file, readFileDataCallback);
+var url = getBrandUrl()+'/upload';
+
+
+    var fileUpload = document.getElementById("brandFile");
+
+    if (fileUpload .value != null) {
+        var files = $("#brandFile").get(0).files;
+        // Add the uploaded file content to the form data collection
+        console.log(files);
+        if (files.length > 0) {
+    var formTag = $("#import-form")[0];
+    var formData = new FormData(formTag);
+    formData.append("file", files[0]);
+            $.ajax({
+                url: url,
+                data:formData,
+                type:"post",
+
+                // Tell jQuery not to process data or not to worry about content-type
+                // You *must* include these options in order to send MultipartFile objects
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+
+                success:function(data){
+                    console.log(data);
+                    $.notify("Successfully Uploaded the file",{type:"success"});
+                   getBrandList();
+
+
+                },
+                error: function(response){
+                      errorOnUpload();
+                      handleAjaxError(response);
+                }
+            });
+        }
+    }
+    resetUploadDialog();
 }
+//document.getElementById("download-errors").addEventListener("click", function() {
+//  var fileUrl = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv"; // Replace with the actual file URL
+//  var fileName = "errorFile.tsv"; // Replace with the actual file name
+//
+//  var a = document.createElement("a");
+//  a.href = fileUrl;
+//  a.download = fileName;
+//  document.body.appendChild(a);
+//  a.click();
+//  document.body.removeChild(a);
+//});
+
+function errorOnUpload(){
+$('#download-errors').prop("disabled", false);
+}
+//function processData(){
+//var url = getBrandUrl() + '/upload';
+//var fileInput = document.getElementById('brandFile');
+//    var file = fileInput.files[0];
+//    var reader = new FileReader();
+//    console.log(file,fileInput);
+//resetUploadDialog();
+//    reader.onload = function (e) {
+//        var tsvData = e.target.result;
+//        $.ajax({
+//            url: url,
+//            type: 'POST',
+//            data: tsvData,
+//            contentType: 'text/plain',
+//            success: function (response) {
+//                console.log('File Uploaded Successfully.');
+//                if(response != null)
+//                $.notify("Unable to Upload File!")
+//            },
+//            error: function (response) {
+//                console.log("Unable to upload file")
+//            }
+//        });
+//    };
+//
+//    reader.readAsText(file);
+//}
 
 function readFileDataCallback(results){
 	fileData = results.data;
-	console.log(fileData);
-    resetUploadDialog();
-
 	checkUpload();
 }
 
 function uploadRows(){
-	//Update progress
-//	updateUploadDialog();
 	//If everything processed then return
 	if(processCount==fileData.length){
 	    processCount=0;
@@ -172,25 +252,42 @@ console.log(json);
 }
 
 function downloadErrors(){
-	writeFileData(errorData);
+
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	var url =  baseUrl + "/error/errorFile.tsv";
+	$.ajax({
+    	   url: url,
+    	   type: 'GET',
+    	   success: function(data) {
+    	        console.log(data);
+	            writeFileData(data);
+    	   },
+    	   error: handleAjaxError
+    	});
+
+
 }
 
 //UI DISPLAY METHODS
 
 function displayBrandList(data){
 	var $tbody = $('#brand-table').find('tbody');
-	$tbody.empty();
+	 var table = $('#brand-table').DataTable();
+	table.clear().draw();
+
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')">edit</button>'
-		var row = '<tr>'
-		+ '<td>' + e.id + '</td>'
-		+ '<td>' + e.brand + '</td>'
-		+ '<td>'  + e.category + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
-		+ '</tr>';
-        $tbody.append(row);
+		var serialNo = parseInt(i)+1;
+		var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')"><i class="fas fa-edit fa-sm"></i></button>'
+
+          table.row.add([
+            serialNo,
+            e.brand,
+            e.category,
+            buttonHtml
+          ]).draw();
 	}
+
 }
 
 function displayEditBrand(id){

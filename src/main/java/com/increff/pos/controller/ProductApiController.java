@@ -9,7 +9,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Api
@@ -55,6 +58,11 @@ public class ProductApiController {
 	@RequestMapping(path = "/api/product/validate", method = RequestMethod.POST)
 	public void validate(@RequestBody ProductForm f) throws ApiException {
 		dto.validate(f);
+	}
+	@ApiOperation(value = "upload tsv from UI")
+	@RequestMapping(path="/api/product/upload", method = RequestMethod.POST)
+	public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
+		dto.upload(file);
 	}
 
 

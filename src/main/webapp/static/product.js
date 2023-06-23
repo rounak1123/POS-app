@@ -20,6 +20,7 @@ function addProduct(event){
        },	   
 	   success: function(response) {
 	   		getProductList();
+	   		$("#product-form")[0].reset();
 	   },
 	   error: handleAjaxError
 	});
@@ -67,7 +68,10 @@ function getProductList(){
 	});
 }
 
-// FILE UPLOAD METHODS
+$(document).ready( function () {
+    $('#product-table').DataTable();
+} );
+
 var fileData = [];
 var errorData = [];
 var processCount = 0;
@@ -75,9 +79,54 @@ var errorFlag = false;
 
 
 
+//function processData(){
+//	var file = $('#productFile')[0].files[0];
+//	readFileData(file, readFileDataCallback);
+//}
+
 function processData(){
-	var file = $('#productFile')[0].files[0];
-	readFileData(file, readFileDataCallback);
+   var url = getProductUrl()+'/upload';
+    var fileUpload = document.getElementById("productFile");
+
+    if (fileUpload .value != null) {
+        var files = $("#productFile").get(0).files;
+        // Add the uploaded file content to the form data collection
+        console.log(files);
+        if (files.length > 0) {
+    var formTag = $("#import-product-form")[0];
+    var formData = new FormData(formTag);
+    formData.append("file", files[0]);
+            $.ajax({
+                url: url,
+                data:formData,
+                type:"post",
+
+                // Tell jQuery not to process data or not to worry about content-type
+                // You *must* include these options in order to send MultipartFile objects
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+
+                success:function(data){
+                    console.log(data);
+                    $.notify("Successfully Uploaded the file",{type:"success"});
+                    getProductList();
+
+                },
+                error: function(response){
+                      errorOnUpload();
+                      handleAjaxError(response);
+                }
+            });
+        }
+    }
+  resetUploadDialog();
+}
+
+function errorOnUpload(){
+    $('#download-errors').prop("disabled", false);
 }
 
 function readFileDataCallback(results){
@@ -119,6 +168,7 @@ function uploadRows(){
 	   		uploadRows();
 	   }
 	});
+	resetUploadDialog();
 
 }
 
@@ -167,28 +217,28 @@ console.log(json);
 
 }
 
-function downloadErrors(){
-	writeFileData(errorData);
-}
+//function downloadErrors(){
+//	writeFileData(errorData);
+//}
 
 //UI DISPLAY METHODS
 
 function displayProductList(data){
 	var $tbody = $('#product-table').find('tbody');
-	$tbody.empty();
+	 var table = $('#product-table').DataTable();
+	table.clear().draw();
 	for(var i in data){
 		var e = data[i];
 		var buttonHtml = ' <button onclick="displayEditProduct(' + e.id + ')">edit</button>'
-		var row = '<tr>'
-		+ '<td>' + e.id + '</td>'
-		+ '<td>' + e.barcode + '</td>'
-		+ '<td>'  + e.brand + '</td>'
-		+ '<td>'  + e.category + '</td>'
-		+ '<td>'  + e.name + '</td>'
-		+ '<td>'  + e.mrp + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
-		+ '</tr>';
-        $tbody.append(row);
+          table.row.add([
+            e.id,
+            e.barcode,
+            e.brand,
+            e.category,
+            e.name,
+            e.mrp,
+            buttonHtml
+          ]).draw();
 	}
 }
 
@@ -252,7 +302,7 @@ function init(){
 	$('#refresh-data').click(getProductList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
-	$('#download-errors').click(downloadErrors);
+//	$('#download-errors').click(downloadErrors);
     $('#productFile').on('change', updateFileName)
 }
 

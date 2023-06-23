@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Api
@@ -51,7 +53,7 @@ public class InventoryApiController {
     }
 
     @ApiOperation(value = "Adds to existing inventory using barcode")
-    @RequestMapping(path = "/api/inventory", method = RequestMethod.PUT)
+    @RequestMapping(path = "/api/inventory/add", method = RequestMethod.PUT)
     public void updateByBarcode( @RequestBody InventoryForm f) throws ApiException{
         dto.updateByBarcode(f);
     }
@@ -60,6 +62,12 @@ public class InventoryApiController {
     @RequestMapping(path = "/api/inventory/validate", method = RequestMethod.POST)
     public void validate( @RequestBody InventoryForm f) throws ApiException{
         dto.validate(f);
+    }
+
+    @ApiOperation(value = "upload tsv from UI")
+    @RequestMapping(path="/api/inventory/upload", method = RequestMethod.POST)
+    public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
+        dto.upload(file);
     }
 
 

@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.dao.BrandDao;
+import com.increff.pos.model.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,13 @@ public class BrandService {
 
 	@Transactional(rollbackOn = ApiException.class)
 	public void add(BrandPojo p) throws ApiException {
-		BrandPojo brandP = dao.select(p.getBrand(), p.getCategory());
-		if(brandP != null)
-			throw new ApiException("Brand Category combination already exists.");
+		brandCategoryCombinationCheck(p);
 		dao.insert(p);
 	}
 
 	@Transactional
 	public void delete(int id)  throws ApiException{
-		if(dao.select(id) != null)
+		if(dao.select(id) == null)
 			throw  new ApiException("Brand doesn't exists");
 		dao.delete(id);
 	}
@@ -42,6 +41,7 @@ public class BrandService {
 
 	@Transactional(rollbackOn  = ApiException.class)
 	public void update(int id, BrandPojo p) throws ApiException {
+		brandCategoryCombinationCheck(p);
 		BrandPojo ex = getCheck(id);
 		ex.setCategory(p.getCategory());
 		ex.setBrand(p.getBrand());
@@ -58,10 +58,18 @@ public class BrandService {
 	}
 
 	@Transactional
-	public void validate(BrandPojo p) throws ApiException{
+	public void brandCategoryCombinationCheck(BrandPojo p) throws ApiException{
+		BrandPojo brandP = dao.select(p.getBrand(), p.getCategory());
+		if(brandP != null)
+			throw new ApiException("Brand Category combination already exists.");
+	}
+
+	@Transactional
+	public String validate(BrandPojo p) throws ApiException{
 		BrandPojo brandP = dao.select(p.getBrand(),p.getCategory());
 		if(brandP != null)
-			throw new ApiException("Already Exists");
+			return "Brand Category already exists";
+		return "";
 	}
 
 }

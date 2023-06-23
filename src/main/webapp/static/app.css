@@ -17,6 +17,14 @@ body {
 	background-color: #f5f5f5;
 }
 
+button {
+  background-color: DodgerBlue; /* Blue background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 10px 10px; /* Some padding */
+  font-size: 14px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
 
 .fas{
     font-size: 4rem;

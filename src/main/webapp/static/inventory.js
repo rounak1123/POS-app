@@ -7,10 +7,11 @@ function getInventoryUrl(){
 //BUTTON ACTIONS
 function addInventory(event){
 	//Set the values to update
-	var $form = $("#inventory-form");
+		$('#add-inventory-modal').modal('toggle');
+	var $form = $("#inventory-add-form");
 	var json = toJson($form);
 	var url = getInventoryUrl();
-
+     url+='/add';
 	$.ajax({
 	   url: url,
 	   type: 'PUT',
@@ -28,6 +29,31 @@ function addInventory(event){
 }
 
 function updateInventory(event){
+	$('#edit-inventory-modal').modal('toggle');
+	//Get the ID
+	var id = $("#inventory-edit-form input[name=id]").val();
+	var url = getInventoryUrl() + "/" + id;
+	//Set the values to update
+	var $form = $("#inventory-edit-form");
+	var json = toJson($form);
+
+	$.ajax({
+	   url: url,
+	   type: 'PUT',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(response) {
+	   		getInventoryList();
+	   },
+	   error: handleAjaxError
+	});
+
+	return false;
+}
+
+function addToInventory(event){
 	$('#edit-inventory-modal').modal('toggle');
 	//Get the ID
 	var id = $("#inventory-edit-form input[name=id]").val();
@@ -53,7 +79,6 @@ function updateInventory(event){
 	return false;
 }
 
-
 function getInventoryList(){
 	var url = getInventoryUrl();
 	$.ajax({
@@ -68,6 +93,9 @@ function getInventoryList(){
 }
 
 
+$(document).ready( function () {
+    $('#inventory-table').DataTable();
+} );
 
 // FILE UPLOAD METHODS
 var fileData = [];
@@ -76,9 +104,54 @@ var processCount = 0;
 var errorFlag = false;
 var errorCount = 0;
 
+//function processData(){
+//	var file = $('#inventoryFile')[0].files[0];
+//	readFileData(file, readFileDataCallback);
+//}
+
 function processData(){
-	var file = $('#inventoryFile')[0].files[0];
-	readFileData(file, readFileDataCallback);
+   var url = getInventoryUrl()+'/upload';
+    var fileUpload = document.getElementById("inventoryFile");
+
+    if (fileUpload .value != null) {
+        var files = $("#inventoryFile").get(0).files;
+        // Add the uploaded file content to the form data collection
+        console.log(files);
+        if (files.length > 0) {
+    var formTag = $("#import-inventory-form")[0];
+    var formData = new FormData(formTag);
+    formData.append("file", files[0]);
+            $.ajax({
+                url: url,
+                data:formData,
+                type:"post",
+
+                // Tell jQuery not to process data or not to worry about content-type
+                // You *must* include these options in order to send MultipartFile objects
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+
+                success:function(data){
+                    console.log(data);
+                    $.notify("Successfully Uploaded the file",{type:"success"});
+                   getInventoryList();
+
+                },
+                error: function(response){
+                      errorOnUpload();
+                      handleAjaxError(response);
+                }
+            });
+        }
+    }
+  resetUploadDialog();
+}
+
+function errorOnUpload(){
+    $('#download-errors').prop("disabled", false);
 }
 
 function readFileDataCallback(results){
@@ -181,21 +254,23 @@ function downloadErrors(){
 
 function displayInventoryList(data){
 	var $tbody = $('#inventory-table').find('tbody');
-	$tbody.empty();
+		 var table = $('#inventory-table').DataTable();
+	table.clear().draw();
+
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayEditInventory(' + e.id + ')">add inventory</button>'
-		var row = '<tr>'
-		+ '<td>' + e.id + '</td>'
-		+ '<td>' + e.barcode + '</td>'
-		+ '<td>'  + e.quantity + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
-		+ '</tr>';
-        $tbody.append(row);
+		var buttonHtml = ' <button onclick="displayAddInventory(' + e.id + ')">add quantity</button>'+
+		                 ' <button onclick="displayEditInventory(' + e.id + ')">edit quantity</button>'
+          table.row.add([
+            e.id,
+            e.barcode,
+            e.quantity,
+            buttonHtml
+          ]).draw();
 	}
 }
 
-function displayEditInventory(id){
+function displayAddInventory(id){
 	var url = getInventoryUrl() + "/" + id;
 	$.ajax({
 	   url: url,
@@ -205,6 +280,18 @@ function displayEditInventory(id){
 	   },
 	   error: handleAjaxError
 	});
+}
+
+function displayEditInventory(id){
+  	var url = getInventoryUrl() + "/" + id;
+  	$.ajax({
+  	   url: url,
+  	   type: 'GET',
+  	   success: function(data) {
+  	   		displayInventoryEditModal(data);
+  	   },
+  	   error: handleAjaxError
+  	});
 }
 
 function resetUploadDialog(){
@@ -240,9 +327,16 @@ function displayUploadData(){
 }
 
 function displayInventory(data){
+	$("#inventory-add-form input[name=id]").val(data.id);
+	$("#inventory-add-form input[name=barcode]").val(data.barcode);
+	$("#inventory-add-form input[name=quantity]").val(0);
+	$('#add-inventory-modal').modal('toggle');
+}
+
+function displayInventoryEditModal(data){
 	$("#inventory-edit-form input[name=id]").val(data.id);
 	$("#inventory-edit-form input[name=barcode]").val(data.barcode);
-	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
+	$("#inventory-edit-form input[name=quantity]").val(0);
 	$('#edit-inventory-modal').modal('toggle');
 }
 

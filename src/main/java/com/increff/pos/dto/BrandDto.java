@@ -2,6 +2,8 @@ package com.increff.pos.dto;
 
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
+import com.increff.pos.model.ErrorBrandData;
+import com.increff.pos.model.MessageData;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
@@ -10,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class BrandDto {
@@ -41,20 +47,84 @@ public class BrandDto {
         for (BrandPojo p : list) {
             list2.add(convert(p));
         }
+        list2.sort((o1, o2) -> {
+            if (o1.getId() > o2.getId()) return -1;
+            else return 1;
+        });
         return list2;
     }
 
     public void update(@PathVariable int id, @RequestBody BrandForm f) throws ApiException {
         normalize(f);
+        emptyCheck(f);
         BrandPojo p = convert(f);
         service.update(id, p);
     }
 
-    public void validate(@RequestBody BrandForm f) throws ApiException {
+    public String validate(@RequestBody BrandForm f) throws ApiException {
         normalize(f);
+        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))
+            return "Brand or Category empty";
+
         BrandPojo p = convert(f);
-        service.validate(p);
+        return service.validate(p);
     }
+
+
+    public void upload( MultipartFile file) throws ApiException{
+        List<BrandForm> brandList = convertTsvToForm(file);
+        List<ErrorBrandData> errorBrandDataList = new ArrayList<>();
+        int errorCount=0;
+
+        for(int i=0; i< brandList.size();i++){
+            normalize(brandList.get(i));
+            String error = validate(brandList.get(i));
+            if(StringUtil.isEmpty(error) == false)
+                errorCount++;
+            ErrorBrandData data = new ErrorBrandData();
+            data.setBrand(brandList.get(i).getBrand());
+            data.setCategory(brandList.get(i).getCategory());
+            data.setError(error);
+            errorBrandDataList.add(data);
+        }
+
+        if(errorCount > 0){
+            convertFormToTsv(errorBrandDataList);
+            throw new ApiException("Unable to upload due to invalid data");
+        }
+
+        for(int i=0; i< brandList.size();i++){
+            add(brandList.get(i));
+        }
+
+    }
+//    public List<ErrorBrandData> upload(@RequestBody String tsvData) throws ApiException{
+//        List<BrandForm>brandList = convertTsvToForm(tsvData);
+//        List<ErrorBrandData> errorBrandDataList = new ArrayList<>();
+//        int errorCount=0;
+//
+//        for(int i=0; i< brandList.size();i++){
+//            normalize(brandList.get(i));
+//            String error = validate(brandList.get(i));
+//            if(StringUtil.isEmpty(error) == false)
+//                errorCount++;
+//            ErrorBrandData data = new ErrorBrandData();
+//            data.setBrand(brandList.get(i).getBrand());
+//            data.setCategory(brandList.get(i).getCategory());
+//            data.setError(error);
+//            errorBrandDataList.add(data);
+//        }
+
+//        if(errorCount > 0){
+//            return errorBrandDataList;
+////            throw new ApiException("Unable to upload due to invalid data");
+//        }
+//
+//        for(int i=0; i< brandList.size();i++){
+//            add(brandList.get(i));
+//        }
+//        return new ArrayList<>();
+//    }
 
     private  BrandData convert(BrandPojo p) {
         BrandData d = new BrandData();
@@ -63,8 +133,62 @@ public class BrandDto {
         d.setId(p.getId());
         return d;
     }
+    private List<BrandForm> convertTsvToForm(MultipartFile file) throws ApiException{
+        		List<BrandForm> myObjects = new ArrayList<>();
+        try {
+            InputStream inputStream = file.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            int rowCount=0;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] columns = line.split("\t");
+                if(rowCount == 0) {
+                    rowCount++;
+                    continue;
+                }
+                if (columns.length >= 2) {
+                    BrandForm myObject = new BrandForm();
+                    myObject.setBrand(columns[0]);
+                    myObject.setCategory(columns[1]);
+                    myObjects.add(myObject);
+                }
+            }
 
-    private  BrandPojo convert(BrandForm f) {
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Unable to convert tsvData to BrandForm");
+        }
+        return myObjects;
+
+
+    }
+
+    private void convertFormToTsv(List<ErrorBrandData> errorList){
+        String filePath = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv"; // Output file path
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,false))) {
+            // Write the header row
+            writer.write("Brand\tCategory\tError\n");
+
+            // Write each object as a new row
+            for (Object obj : errorList) {
+                if (obj instanceof ErrorBrandData) {
+                    ErrorBrandData brandData = (ErrorBrandData) obj;
+                    writer.write(brandData.getBrand() + "\t" + brandData.getCategory() + "\t"+ brandData.getError()+"\n");
+                }
+            }
+
+            System.out.println("TSV file generated successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing TSV file: " + e.getMessage());
+        }
+    }
+
+//    private  String convertFormToTsv(List<ErrorBrandData> ErrorBrandDataList){
+//
+//    }
+
+    private  BrandPojo convert(BrandForm f) throws ApiException {
         normalize(f);
         BrandPojo p = new BrandPojo();
         p.setBrand(f.getBrand());
@@ -72,9 +196,11 @@ public class BrandDto {
         return p;
     }
 
-    public static void normalize(BrandForm f){
-        f.setBrand(StringUtil.toLowerCase(f.getBrand()));
-        f.setCategory(StringUtil.toLowerCase(f.getCategory()));
+    public static void normalize(BrandForm f) throws ApiException{
+        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim().replaceAll(" +", " "));
+        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim().replaceAll(" +", " "));
+        if(hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
+            throw new ApiException("invalid character in brand or category.");
     }
 
     public static void emptyCheck(BrandForm f) throws ApiException{
@@ -82,5 +208,13 @@ public class BrandDto {
             throw  new ApiException("Brand field cannot be empty.");
         if(StringUtil.isEmpty(f.getCategory()))
             throw  new ApiException("Category cannot be empty");
+    }
+
+    public static boolean hasSpecialCharacter(String input) {
+        String allowedCharacters = "-a-zA-Z0-9_\\s";
+        String patternString = "[^" + allowedCharacters + "]";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(input);
+        return matcher.find();
     }
 }

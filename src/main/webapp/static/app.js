@@ -16,7 +16,7 @@ function toJson($form){
 function handleAjaxError(response){
     console.log('response data', response);
 	var response = JSON.parse(response.responseText);
-	alert(response.message);
+	$.notify(response.message);
 }
 
 function readFileData(file, callback){
@@ -32,24 +32,24 @@ function readFileData(file, callback){
 }
 
 
-function writeFileData(arr){
-	var config = {
-		quoteChar: '',
-		escapeChar: '',
-		delimiter: "\t"
-	};
-	
-	var data = Papa.unparse(arr, config);
+function writeFileData(data){
+//	var config = {
+//		quoteChar: '',
+//		escapeChar: '',
+//		delimiter: "\t"
+//	};
+//
+//	var data = Papa.unparse(arr, config);
     var blob = new Blob([data], {type: 'text/tsv;charset=utf-8;'});
     var fileUrl =  null;
 
     if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, 'download.tsv');
+        fileUrl = navigator.msSaveBlob(blob, 'errorFile.tsv');
     } else {
         fileUrl = window.URL.createObjectURL(blob);
     }
     var tempLink = document.createElement('a');
     tempLink.href = fileUrl;
-    tempLink.setAttribute('download', 'download.tsv');
+    tempLink.setAttribute('download', 'errorFile.tsv');
     tempLink.click(); 
 }

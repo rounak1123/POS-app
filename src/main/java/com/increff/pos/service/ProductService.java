@@ -49,11 +49,12 @@ public class ProductService {
 		dao.update(ex);
 	}
 
-	public void validate(ProductPojo p) throws ApiException {
+	public String validate(ProductPojo p) throws ApiException {
 		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());
 		if(pojo != null){
-			throw new ApiException("Already Exists with same barcode.");
+			return  "Already Exists with same barcode.";
 		}
+		return "";
 	}
 
 	@Transactional

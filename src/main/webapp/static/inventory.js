@@ -98,16 +98,6 @@ $(document).ready( function () {
 } );
 
 // FILE UPLOAD METHODS
-var fileData = [];
-var errorData = [];
-var processCount = 0;
-var errorFlag = false;
-var errorCount = 0;
-
-//function processData(){
-//	var file = $('#inventoryFile')[0].files[0];
-//	readFileData(file, readFileDataCallback);
-//}
 
 function processData(){
    var url = getInventoryUrl()+'/upload';
@@ -154,100 +144,9 @@ function errorOnUpload(){
     $('#download-errors').prop("disabled", false);
 }
 
-function readFileDataCallback(results){
-	fileData = results.data;
-	console.log(fileData);
-	checkUpload();
-}
-
-function uploadRows(){
-	//Update progress
-//	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-	    processCount=0;
-	    errorData=[];
-	    displayInventoryList();
-		return;
-	}
-
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-	console.log(row, fileData);
-	var obj = {};
-	obj.barcode = row.barcode;
-	obj.quantity = row.quantity;
-	var json = JSON.stringify(obj);
-	var url = getInventoryUrl();
-	//Make ajax call
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	   		uploadRows();
-	   },
-	   error: function(response){
-	   		uploadRows();
-	   }
-	});
-
-}
-
-function checkUpload(){
-
-	//Update progress
-	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-	  processCount = 0;
-      errorCount = 0;
-
-	   if(errorFlag == false){
-	     uploadRows();
-	     }
-
-		return;
-	}
-
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-
-	var json = JSON.stringify(row);
-	var url = getInventoryUrl();
-	url+='/validate';
-console.log(json);
-	//Make ajax call
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	       row.error="";
-	       errorData.push(row);
-	   		checkUpload();
-	   },
-	   error: function(response){
-	        errorFlag = true;
-	        errorCount++;
-	   		row.error="Invalid data";
-	   		errorData.push(row);
-	   		checkUpload();
-	   }
-	});
-
-}
-
 function downloadErrors(){
-	writeFileData(errorData);
+    $('#download-errors').prop("disabled", true);
+
 }
 
 //UI DISPLAY METHODS

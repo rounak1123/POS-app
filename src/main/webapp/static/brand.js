@@ -72,11 +72,6 @@ function getBrandList(){
 
 
 // FILE UPLOAD METHODS
-var fileData = [];
-var errorData = [];
-var processCount = 0;
-var errorFlag = false;
-var errorCount = 0;
 
 function processData(){
 var url = getBrandUrl()+'/upload';
@@ -121,150 +116,13 @@ var url = getBrandUrl()+'/upload';
     }
     resetUploadDialog();
 }
-//document.getElementById("download-errors").addEventListener("click", function() {
-//  var fileUrl = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv"; // Replace with the actual file URL
-//  var fileName = "errorFile.tsv"; // Replace with the actual file name
-//
-//  var a = document.createElement("a");
-//  a.href = fileUrl;
-//  a.download = fileName;
-//  document.body.appendChild(a);
-//  a.click();
-//  document.body.removeChild(a);
-//});
 
 function errorOnUpload(){
 $('#download-errors').prop("disabled", false);
 }
-//function processData(){
-//var url = getBrandUrl() + '/upload';
-//var fileInput = document.getElementById('brandFile');
-//    var file = fileInput.files[0];
-//    var reader = new FileReader();
-//    console.log(file,fileInput);
-//resetUploadDialog();
-//    reader.onload = function (e) {
-//        var tsvData = e.target.result;
-//        $.ajax({
-//            url: url,
-//            type: 'POST',
-//            data: tsvData,
-//            contentType: 'text/plain',
-//            success: function (response) {
-//                console.log('File Uploaded Successfully.');
-//                if(response != null)
-//                $.notify("Unable to Upload File!")
-//            },
-//            error: function (response) {
-//                console.log("Unable to upload file")
-//            }
-//        });
-//    };
-//
-//    reader.readAsText(file);
-//}
-
-function readFileDataCallback(results){
-	fileData = results.data;
-	checkUpload();
-}
-
-function uploadRows(){
-	//If everything processed then return
-	if(processCount==fileData.length){
-	    processCount=0;
-	    errorData=[];
-	    displayBrandList();
-		return;
-	}
-	
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-	
-	var json = JSON.stringify(row);
-	var url = getBrandUrl();
-
-	//Make ajax call
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
-	   		uploadRows();  
-	   },
-	   error: function(response){
-	   		uploadRows();
-	   }
-	});
-
-}
-
-function checkUpload(){
-
-	//Update progress
-	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-	  processCount = 0;
-      errorCount = 0;
-
-	   if(errorFlag == false){
-	     uploadRows();
-	     }
-
-		return;
-	}
-
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-
-	var json = JSON.stringify(row);
-	var url = getBrandUrl();
-	url+='/validate';
-console.log(json);
-	//Make ajax call
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	       row.error="";
-	       errorData.push(row);
-	   		checkUpload();
-	   },
-	   error: function(response){
-	        errorFlag = true;
-	        errorCount++;
-	   		row.error="Invalid data";
-	   		errorData.push(row);
-	   		checkUpload();
-	   }
-	});
-
-}
 
 function downloadErrors(){
-
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	var url =  baseUrl + "/error/errorFile.tsv";
-	$.ajax({
-    	   url: url,
-    	   type: 'GET',
-    	   success: function(data) {
-    	        console.log(data);
-	            writeFileData(data);
-    	   },
-    	   error: handleAjaxError
-    	});
-
+$('#download-errors').prop("disabled", true);
 
 }
 

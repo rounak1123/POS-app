@@ -71,18 +71,7 @@ function getProductList(){
 $(document).ready( function () {
     $('#product-table').DataTable();
 } );
-
-var fileData = [];
-var errorData = [];
-var processCount = 0;
-var errorFlag = false;
-
-
-
-//function processData(){
-//	var file = $('#productFile')[0].files[0];
-//	readFileData(file, readFileDataCallback);
-//}
+// FILE UPLOAD METHOD
 
 function processData(){
    var url = getProductUrl()+'/upload';
@@ -128,98 +117,11 @@ function processData(){
 function errorOnUpload(){
     $('#download-errors').prop("disabled", false);
 }
-
-function readFileDataCallback(results){
-	fileData = results.data;
-	console.log(fileData);
-	checkUpload();
-}
-
-function uploadRows(){
-	//Update progress
-	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-	    processCount=0;
-	    errorData=[];
-	    displayProductList();
-		return;
-	}
-	
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-	
-	var json = JSON.stringify(row);
-	var url = getProductUrl();
-
-	//Make ajax call
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
-	   		uploadRows();  
-	   },
-	   error: function(response){
-	   		uploadRows();
-	   }
-	});
-	resetUploadDialog();
+function downloadErrors(){
+$('#download-errors').prop("disabled", true);
 
 }
 
-function checkUpload(){
-
-	//Update progress
-	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-	   if(errorFlag == false){
-	     processCount = 0;
-	     console.log('uploading all');
-	     uploadRows();
-	     }
-		return;
-	}
-
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-
-	var json = JSON.stringify(row);
-	var url = getProductUrl();
-	url+='/validate';
-console.log(json);
-	//Make ajax call
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	       row.error="";
-	       errorData.push(row);
-	   		checkUpload();
-	   },
-	   error: function(response){
-	        errorFlag = true;
-	   		row.error="Invalid data";
-	   		errorData.push(row);
-	   		checkUpload();
-	   }
-	});
-
-}
-
-//function downloadErrors(){
-//	writeFileData(errorData);
-//}
 
 //UI DISPLAY METHODS
 
@@ -302,7 +204,7 @@ function init(){
 	$('#refresh-data').click(getProductList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
-//	$('#download-errors').click(downloadErrors);
+	$('#download-errors').click(downloadErrors);
     $('#productFile').on('change', updateFileName)
 }
 

@@ -1,4 +1,3 @@
-Brand	Category	Error
-nike3	shoes44	Brand Category already exists
-nike	tshirt234	Brand Category already exists
-nike	tshirts	Brand Category already exists
+Barcode	Brand	Category	Name	Mrp	Error
+3452-x	33030	
+432	11	Product with given barcode doesn't exists

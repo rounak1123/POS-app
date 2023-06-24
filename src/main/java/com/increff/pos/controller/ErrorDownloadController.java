@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,10 +20,8 @@ public class ErrorDownloadController {
         // get your file as InputStream
         response.setContentType("text/csv");
         response.addHeader("Content-disposition:", "attachment; filename=" + fileName);
-        String fileClasspath = "/com/increff/pos/" + fileName;
-        System.out.println(fileClasspath);
-        InputStream is = SampleController.class.getResourceAsStream(fileClasspath);
-        // copy it to response's OutputStream
+        File f = new File("/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv");
+        InputStream is = new FileInputStream(f);
         try {
             IOUtils.copy(is, response.getOutputStream());
             response.flushBuffer();

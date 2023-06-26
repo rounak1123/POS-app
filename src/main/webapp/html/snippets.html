@@ -11,6 +11,8 @@
 <link rel="stylesheet" th:href="@{/static/app.css}">
   <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 </head>
 
 <!--// New Name head-->
@@ -32,7 +34,7 @@
 
 <header th:fragment="index_nav_bar" class="header-navbar">
   <!--NavBar-->
-  <div class="logo"><a href=""><img src="../static/logo-increff.png" class="logo-increff-index"><strong>POINT-OF-SCALE</strong></a></div>
+  <div class="logo"><a href=""><img src="../static/logo-increff.png" class="logo-increff-index"><strong><span >smart-POS</span></strong></a></div>
   <div class="burger "><i class="ri-menu-line icon"></i></div>
   <nav class="navbar">
     <ul class="icons">
@@ -125,7 +127,7 @@
   <!--NavBar-->
   <div class="logo">
     <a class="navbar-brand" th:href="@{/}">
-      <img src="../static/logo-increff.png" class="logo-increff-home">
+      <img src="../static/logo-increff.png" class="logo-increff-home"> <span >smart-POS</span>
     </a>
   </div>
   <div class="burger "><i class="ri-menu-line icon"></i></div>
@@ -151,9 +153,20 @@
           <a  th:href="@{/ui/order}">
             <li>Orders</li>
           </a>
-        <a th:href="@{session/logout}">
+        <a th:href="@{/session/logout}">
           <li>Logout</li>
         </a>
+
+        <div class="dropdown">
+          <div class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Reports
+          </div>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" th:href="@{/ui/report/sales}">Sales Report</a>
+            <a class="dropdown-item" th:href="@{/ui/report/brand}">Brand Report</a>
+            <a class="dropdown-item" th:href="@{/ui/report/inventory}">Inventory Report</a>
+          </div>
+        </div>
 
       </ul>
 
@@ -179,7 +192,6 @@
 
 <footer class="footer  mt-1" id="footer" th:fragment="name_footer">
 	Copyright Increff 2019
-	&nbsp;
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/7b294536da.js" crossorigin="anonymous"></script>
@@ -187,6 +199,8 @@
 	<script th:src="@{/static/app.js}"/></script>
 	<script th:src="@{/static/papaparse.min.js}"/></script>
     <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 </footer>
 

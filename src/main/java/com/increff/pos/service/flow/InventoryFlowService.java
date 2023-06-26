@@ -1,16 +1,24 @@
 package com.increff.pos.service.flow;
 
+import com.increff.pos.dao.BrandDao;
 import com.increff.pos.dao.ProductDao;
+import com.increff.pos.model.InventoryReportForm;
+import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 @Component
 public class InventoryFlowService {
 
     @Autowired
     public ProductDao dao;
+    @Autowired
+    public BrandDao brandDao;
 
     public int getProductIdByBarcode (String barcode){
         ProductPojo p = dao.getProductByBarcode(barcode);
@@ -23,5 +31,13 @@ public class InventoryFlowService {
         ProductPojo p = dao.select(id);
         return p.getBarcode();
     }
+
+    public BrandPojo getBrandByProductId(int id){
+//       List<BrandData>
+        ProductPojo p = dao.select(id);
+        BrandPojo brandPojo = brandDao.select(p.getBrand_category_id());
+        return brandPojo;
+    }
+
 
 }

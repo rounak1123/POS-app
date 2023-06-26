@@ -1,0 +1,105 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="snippets.html :: name_head"></head>
+
+<body style="background-color: white;">
+
+<nav th:replace="snippets.html :: site_nav_bar_imp"></nav>
+
+<div class="container">
+
+    <h3 class="brand-header">
+        Brands Details
+        <button type="button" class="btn btn-primary brand-header-child" id="filter-data" >Filter <i class="fa fa-filter"></i></button>
+
+    </h3>
+
+
+    <!-- Blank Row -->
+    <div class="row">
+        &nbsp;
+    </div>
+    <div class="row">
+
+        <!-- Table -->
+        <div class="col-12">
+            <table class="table table-striped" id="brand-table">
+                <thead>
+                <tr>
+                    <th scope="col">Sl No.</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+<!--	Brand Search Modal -->
+<!-- Modal -->
+<div class="modal fade" id="searchBrand" tabindex="-1" aria-labelledby="searchBrandLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchBrandLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" id="brand-search-form">
+                    <div class="form-group">
+                        <label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCategorySearch" class="col-sm-2 col-form-label">Category Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category name">
+                        </div>
+                    </div>
+                    <!--					<div class="form-group">-->
+                    <!--						<label for="inputBrandName" class="col-sm-2 col-form-label">Brand Name</label>-->
+                    <!--						<div class="col-sm-10">-->
+                    <!--							<select class="brand-select" multiple="multiple" style="width:50%;"></select>-->
+                    <!--						</div>-->
+                    <!--					</div>-->
+
+                    <!--					<div class="form-group">-->
+                    <!--						<label for="inputCategoryName" class="col-sm-2 col-form-label">Category Name</label>-->
+                    <!--						<div class="col-sm-10">-->
+                    <!--							<select class="brand-select" multiple="multiple" style="width:50%;"></select>-->
+                    <!--						</div>-->
+                    <!--					</div>-->
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="search-brand-category">Filter</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+
+</div> <!-- Container end-->
+
+<footer th:replace="snippets.html :: name_footer"></footer>
+
+<script th:src="@{/static/brand.js}"/></script>
+
+
+</body>
+
+</html>

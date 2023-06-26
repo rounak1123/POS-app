@@ -2,7 +2,9 @@ package com.increff.pos.dto;
 
 import com.increff.pos.model.*;
 import com.increff.pos.model.InventoryForm;
+import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
+import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.flow.InventoryFlowService;
@@ -53,6 +55,16 @@ public class InventoryDto {
        InventoryPojo p = convert(f,"add");
        service.update(p.getId(),p);
     }
+
+    public List<InventoryReportForm> getReports(){
+        List<InventoryReportForm> list = new ArrayList<>();
+        List<InventoryPojo> list2 = service.getAll();
+        for (InventoryPojo p : list2) {
+            list.add(convertInventoryToReportForm(p));
+        }
+        return list;
+    }
+
 
     public String validate(InventoryForm f) throws ApiException{
         if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
@@ -143,6 +155,17 @@ public class InventoryDto {
         }
     }
 
+    private InventoryReportForm convertInventoryToReportForm(InventoryPojo inv){
+        BrandPojo p = flowService.getBrandByProductId(inv.getId());
+        String productBarcode = flowService.getProductBarcodeById(inv.getId());
+        InventoryReportForm f = new InventoryReportForm();
+        f.setQuantity(inv.getQuantity());
+        f.setBrand(p.getBrand());
+        f.setCategory(p.getCategory());
+        f.setId(inv.getId());
+        f.setBarcode(productBarcode);
+        return f;
+    }
     private  InventoryData convert(InventoryPojo p) {
         InventoryData d = new InventoryData();
         String barcode = flowService.getProductBarcodeById(p.getId());

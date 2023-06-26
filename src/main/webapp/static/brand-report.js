@@ -19,7 +19,7 @@ function addBrand(event){
 	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
-       },	   
+       },
 	   success: function(response) {
 	   		getBrandList();
 	   		$("#brand-form")[0].reset();
@@ -45,7 +45,7 @@ function updateBrand(event){
 	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
-       },	   
+       },
 	   success: function(response) {
 	   		getBrandList();
 	   },
@@ -135,13 +135,10 @@ function displayBrandList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')"><i class="fas fa-edit fa-sm"></i></button>'
-
           table.row.add([
             serialNo,
             e.brand,
-            e.category,
-            buttonHtml
+            e.category
           ]).draw();
 	}
 
@@ -156,7 +153,7 @@ function displayEditBrand(id){
 	   		displayBrand(data);
 	   },
 	   error: handleAjaxError
-	});	
+	});
 }
 
 function resetUploadDialog(){
@@ -170,7 +167,7 @@ function resetUploadDialog(){
 	errorData = [];
 	errorCount = 0;
 	errorFlag = false;
-	//Update counts	
+	//Update counts
 	updateUploadDialog();
 }
 
@@ -187,7 +184,7 @@ function updateFileName(){
 }
 
 function displayUploadData(){
- 	resetUploadDialog(); 	
+ 	resetUploadDialog();
 	$('#upload-brand-modal').modal('toggle');
 }
 
@@ -277,7 +274,6 @@ function initDatatable(){
 
             return false;
         });
-//$('table'). dataTable({dom: 'lrtip'});
 
 }
 

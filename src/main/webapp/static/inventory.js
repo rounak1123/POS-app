@@ -158,8 +158,8 @@ function displayInventoryList(data){
 
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayAddInventory(' + e.id + ')">add quantity</button>'+
-		                 ' <button onclick="displayEditInventory(' + e.id + ')">edit quantity</button>'
+		var buttonHtml = ' <button onclick="displayAddInventory(' + e.id + ')">add <i class="fa fa-plus " ></i></button>'+
+		                 ' <button onclick="displayEditInventory(' + e.id + ')">edit <i class="fa fa-edit " ></i></button>'
           table.row.add([
             e.id,
             e.barcode,

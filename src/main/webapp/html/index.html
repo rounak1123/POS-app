@@ -4,28 +4,38 @@
 
 <head th:replace="snippets.html :: name_head"></head>
 
-<body>
+<body style="  background-color: #c6e6fd!important;">
 
-<nav th:replace="snippets.html :: name_site_navbar"></nav>
+<header th:replace="snippets.html :: index_nav_bar"></header>
 
-<div class="container">
-<div class="row">
-<div class="col-6">
- 
-<div class="jumbotron">
-  <h1 class="display-4">Hello, world!</h1>
-  <p class="lead">Welcome to Increff Spring Tutorial</p>
-  <hr class="my-4">
-  <p>This application teaches you Spring concepts and creating awesome web applications</p>
-<!--  <a class="btn btn-primary btn-lg" th:href="@{/site/login}" role="button">Get Started</a>-->
-</div>
+<div class="landing-page">
+  <div class="content">
+    <div class="container">
+      <div class="info">
+        <div class="typewriter-div">
+          <a href="" class="typewrite" data-period="2000" id="typewriter" data-type='[ "WELCOME!", "Streamline Your Business with our All-in-One POS Application"]'>
+            <span class="wrap"></span>
+          </a>
+        </div>
+        <a class="login-trigger" th:href="@{site/login}" >Login to continue!</a>
 
+      </div>
+      <div class="image-landing">
+        <!--                <img  src="https://i.postimg.cc/65QxYYzh/001234.png">-->
+        <!--                <img src="https://img.freepik.com/free-vector/scan-pay-concept-illustration_114360-7455.jpg?size=626&ext=jpg&ga=GA1.1.2136309884.1687512560&semt=ais">-->
+        <!--                    <img src="https://img.freepik.com/premium-vector/qr-code-checkin-scanning-cinema-entrance-vector-illustration-contactless-qr-code-visitor-registra_103044-1167.jpg?size=626&ext=jpg&ga=GA1.1.2136309884.1687512560&semt=ais">-->
+        <!--                    <img src="https://img.freepik.com/free-vector/making-purchases-using-self-service-machines-set-flat-vector-illustration_1284-67493.jpg?size=626&ext=jpg&ga=GA1.1.2136309884.1687512560&semt=ais">-->
+        <img id="landing-image" src="https://img.freepik.com/free-vector/coronavirus-supermarket-concept_23-2148517350.jpg?w=1380&t=st=1687621294~exp=1687621894~hmac=8f26fd8704458f7c5dc66ae39529d27ba2513274d7679a7fd496d63bb7afbcad">
+
+      </div>
+
+    </div>
+  </div>
 </div>
-</div>
-</div> <!--Container-->
 
 <footer th:replace="snippets.html :: name_footer"></footer>
 <script src="bootstrap-notify.js"></script>
+<script src="../static/index.js"></script>
 
 </body>
 

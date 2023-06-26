@@ -4,38 +4,19 @@
 
 <head th:replace="snippets.html :: name_head"></head>
 
-<body>
+<body style="background-color: white;">
 
-<nav th:replace="snippets.html :: name_app_navbar"></nav>
+<nav th:replace="snippets.html :: site_nav_bar_imp"></nav>
 
 <div class="container">
 
-<h3>Brands Details</h3>
-
- <!-- Top row with form-->
- <div class="row">
-	 <div class="col-12">
-			<form class="form-inline" id="brand-form">
-			  <div class="form-group">
-			    <label for="inputBrandName" class="col-sm-2 col-form-label">Brand Name</label>
-			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="brand" id="inputBrandName" placeholder="enter name">
-			    </div>
-			  </div>
-			  <div class="form-group">
-			    <label for="inputCategoryName" class="col-sm-2 col-form-label">Category Name</label>
-			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="category" id="inputCategoryName" placeholder="enter category name">
-			    </div>
-			  </div>
-			  <button type="button" class="btn btn-primary" id="add-brand">Add</button>
-			  &nbsp;
-			  <button type="button" class="btn btn-primary" id="refresh-data">Refresh</button>
-			  &nbsp;
-			  <button type="button" class="btn btn-primary" id="upload-data">Upload</button>
-			</form>
-	 </div>	
-</div> 
+<h3 class="brand-header">
+	Brands Details
+	    <button type="button" class="btn btn-primary brand-header-child" data-toggle="modal" data-target="#addBrand">	Add	<i class="fa fa-plus " ></i></button>
+        <button type="button" class="btn btn-primary brand-header-child" id="upload-data">	Upload    <i class="fa fa-upload" ></i>
+		</button>
+	<button type="button" class="btn btn-primary brand-header-child" id="refresh-data">Refresh <i class="fa fa-refresh"></i></button>
+</h3>
 
 
 <!-- Blank Row -->
@@ -62,7 +43,7 @@
 </div>
 </div>
 
-<!-- Employee Edit Modal -->
+<!-- Brand Edit Modal -->
 <div class="modal" tabindex="-1" role="dialog" id="edit-brand-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -135,6 +116,44 @@
     </div>
   </div>
 </div>
+
+<!--	Add Brand Category Modal -->
+	<!-- Modal -->
+	<div class="modal fade" id="addBrand" tabindex="-1" aria-labelledby="addBrandLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="addBrandLabel">Add Brand-Category</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form class="form-inline" id="brand-form">
+						<div class="form-group">
+							<label for="inputBrandName" class="col-sm-2 col-form-label">Brand Name</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="brand" id="inputBrandName" placeholder="enter name">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputCategoryName" class="col-sm-2 col-form-label">Category Name</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="category" id="inputCategoryName" placeholder="enter category name">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="add-brand">Add</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
 
 </div> <!-- Container end-->
 

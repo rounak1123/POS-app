@@ -24,10 +24,10 @@ public class OrderItemDto {
     @Autowired
     private OrderItemFlowService flowService;
 
-
     public void add(@RequestBody OrderItemForm form) throws ApiException {
         emptyCheck(form);
         OrderItemPojo p = convert(form);
+        flowService.reduceInventory(p.getProduct_id(),p.getQuantity());
         service.add(p);
     }
     public void delete(@PathVariable int id) throws ApiException {
@@ -65,7 +65,7 @@ public class OrderItemDto {
         d.setBarcode(barcode);
         return d;
     }
-// @TODO me
+
     private  OrderItemPojo convert(OrderItemForm f) throws ApiException{
         normalize(f);
         OrderItemPojo p = new OrderItemPojo();

@@ -6,24 +6,28 @@
 
 <body>
 
-<nav th:replace="snippets.html :: name_app_navbar"></nav>
+<nav th:replace="snippets.html :: site_nav_bar_imp"></nav>
 
 <div class="container">
-
-<h3>Home</h3>
-
  <!-- Top row with form-->
 <div class="row">
 	<div class="col-2">
-		<a th:href="@{/ui/brand}" title="Brand"> Brand </i> </a>
+<!--		<a th:href="@{/ui/brand}" title="Brand"> Brand </i> </a>-->
+<!--	</div>-->
+<!--	<div class="col-2">-->
+<!--	 	<a th:href="@{/ui/employee}" title="Employees"> <i class="fas fa-users"></i> </a>-->
+<!--	 </div>	-->
+<!--	 <div class="col-2">-->
+<!--	 	<a th:href="@{/ui/admin}" title="Admin"> <i class="fas fa-cog"></i> </a>-->
+	 </div>	
+</div>
+	<div >
+		<img class="home-image" src="https://img.freepik.com/free-vector/scan-pay-concept-illustration_114360-7455.jpg?w=1380&t=st=1687713854~exp=1687714454~hmac=efba54b06e769ac17d93aaceaf45edf3357c9ca39a190d51a3363c967808e2aa">
 	</div>
-	<div class="col-2">
-	 	<a th:href="@{/ui/employee}" title="Employees"> <i class="fas fa-users"></i> </a>
-	 </div>	
-	 <div class="col-2">
-	 	<a th:href="@{/ui/admin}" title="Admin"> <i class="fas fa-cog"></i> </a>
-	 </div>	
-</div> 
+	<div class="home-description">
+		Take Control of Your Sales and Inventory like Never Before!
+
+	</div>
 
 
 

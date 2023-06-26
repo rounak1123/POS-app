@@ -13,7 +13,48 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-1" th:fragment="name_site_navbar">
+<!--// New Name head-->
+<head th:fragment="name_head_login">
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="baseUrl" th:attr="content=${baseUrl}">
+
+  <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" th:href="@{/static/login.css}">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+
+<header th:fragment="index_nav_bar" class="header-navbar">
+  <!--NavBar-->
+  <div class="logo"><a href=""><img src="../static/logo-increff.png" class="logo-increff-index"><strong>POINT-OF-SCALE</strong></a></div>
+  <div class="burger "><i class="ri-menu-line icon"></i></div>
+  <nav class="navbar">
+    <ul class="icons">
+      <a href="">
+        <li><i class="ri-account-circle-line icon" title="Account"></i></li>
+      </a>
+      <a href="">
+        <li><i class="ri-shopping-basket-line icon" title="Shopping"></i></li>
+      </a>
+    </ul>
+    <ul class="links">
+      <a th:href="@{site/login}">
+        <li>Login</li>
+      </a>
+    </ul>
+  </nav>
+</header>
+
+
+
+
+<nav class="header-navbar navbar navbar-expand-lg navbar-light bg-light mb-1" th:fragment="name_site_navbar">
   <a class="navbar-brand" th:href="@{/}">
     <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
   </a>
@@ -40,7 +81,7 @@
   </div>
 </nav>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light  mb-1" th:fragment="name_app_navbar">
+<nav class="header-navbar navbar navbar-expand-lg navbar-light bg-light  mb-1" th:fragment="name_app_navbar">
   <a class="navbar-brand" th:href="@{/}">
     <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
   </a>
@@ -80,7 +121,63 @@
   </div>
 </nav>
 
-<footer class="footer  mt-1" th:fragment="name_footer">
+<header th:fragment="site_nav_bar_imp" class="header-navbar">
+  <!--NavBar-->
+  <div class="logo">
+    <a class="navbar-brand" th:href="@{/}">
+      <img src="../static/logo-increff.png" class="logo-increff-home">
+    </a>
+  </div>
+  <div class="burger "><i class="ri-menu-line icon"></i></div>
+  <nav class="navbar">
+
+<!--    <div >-->
+      <ul class="links">
+
+          <a th:href="@{/ui/home}">
+            <li>Home</li>
+          </a>
+          <a class="nav-link" th:href="@{/ui/brand}">
+            <li>Brands</li>
+          </a>
+
+          <a class="nav-link" th:href="@{/ui/product}">
+            <li>Product</li>
+          </a>
+
+          <a class="nav-link" th:href="@{/ui/inventory}">
+            <li>Inventory</li></a>
+
+          <a  th:href="@{/ui/order}">
+            <li>Orders</li>
+          </a>
+        <a th:href="@{session/logout}">
+          <li>Logout</li>
+        </a>
+
+      </ul>
+
+<!--      <ul class="navbar-nav ml-auto">-->
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" th:href="@{/session/logout}">Logout</a>-->
+<!--        </li>-->
+<!--      </ul>-->
+
+
+<!--    </div>-->
+<!--    <ul class="icons">-->
+<!--      <a href="">-->
+<!--        <li><i class="ri-account-circle-line icon" title="Account"></i></li>-->
+<!--      </a>-->
+<!--      <a href="">-->
+<!--        <li><i class="ri-shopping-basket-line icon" title="Shopping"></i></li>-->
+<!--      </a>-->
+<!--    </ul>-->
+  </nav>
+</header>
+
+
+<footer class="footer  mt-1" id="footer" th:fragment="name_footer">
 	Copyright Increff 2019
 	&nbsp;
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

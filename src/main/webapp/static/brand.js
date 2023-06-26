@@ -1,6 +1,3 @@
-$(document).ready( function () {
-    $('#brand-table').DataTable();
-});
 
 function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -130,7 +127,7 @@ $('#download-errors').prop("disabled", true);
 
 function displayBrandList(data){
 	var $tbody = $('#brand-table').find('tbody');
-	 var table = $('#brand-table').DataTable();
+	 var table = $('#brand-table').DataTable({searching: false});
 	table.clear().draw();
 
 	for(var i in data){

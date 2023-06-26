@@ -98,33 +98,6 @@ public class BrandDto {
         }
 
     }
-//    public List<ErrorBrandData> upload(@RequestBody String tsvData) throws ApiException{
-//        List<BrandForm>brandList = convertTsvToForm(tsvData);
-//        List<ErrorBrandData> errorBrandDataList = new ArrayList<>();
-//        int errorCount=0;
-//
-//        for(int i=0; i< brandList.size();i++){
-//            normalize(brandList.get(i));
-//            String error = validate(brandList.get(i));
-//            if(StringUtil.isEmpty(error) == false)
-//                errorCount++;
-//            ErrorBrandData data = new ErrorBrandData();
-//            data.setBrand(brandList.get(i).getBrand());
-//            data.setCategory(brandList.get(i).getCategory());
-//            data.setError(error);
-//            errorBrandDataList.add(data);
-//        }
-
-//        if(errorCount > 0){
-//            return errorBrandDataList;
-////            throw new ApiException("Unable to upload due to invalid data");
-//        }
-//
-//        for(int i=0; i< brandList.size();i++){
-//            add(brandList.get(i));
-//        }
-//        return new ArrayList<>();
-//    }
 
     private  BrandData convert(BrandPojo p) {
         BrandData d = new BrandData();
@@ -183,10 +156,6 @@ public class BrandDto {
             System.err.println("Error writing TSV file: " + e.getMessage());
         }
     }
-
-//    private  String convertFormToTsv(List<ErrorBrandData> ErrorBrandDataList){
-//
-//    }
 
     private  BrandPojo convert(BrandForm f) throws ApiException {
         normalize(f);

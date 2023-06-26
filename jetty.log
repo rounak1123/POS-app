@@ -2110,3 +2110,431 @@ org.springframework.web.HttpMediaTypeNotAcceptableException: Could not find acce
 2023-06-24 02:17:06 INFO  SecurityConfig:33 - Configuration complete
 2023-06-24 02:25:47 INFO  SecurityConfig:33 - Configuration complete
 2023-06-24 02:34:58 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 00:32:10 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 00:34:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 00:57:14 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:00:55 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:03:13 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:05:30 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:11:00 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:13:18 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:15:24 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:22:25 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:32:36 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:38:01 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 01:51:20 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 12:14:19 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 12:19:16 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 12:26:59 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 12:57:18 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 12:58:43 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:17:42 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:30:21 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:32:14 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:37:24 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:39:17 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:42:39 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 13:59:22 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:00:42 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:02:44 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:05:39 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:12:30 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:18:16 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:20:40 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:24:06 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:26:21 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:45:25 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:55:06 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 14:57:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 15:13:55 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 15:57:56 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 16:02:30 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 16:06:00 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 16:46:41 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 16:49:59 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 16:52:11 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 17:56:38 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [com/increff/pos/spring/DbConfig.class]: Invocation of init method failed; nested exception is org.hibernate.AnnotationException: @Temporal should only be set on a java.util.Date or java.util.Calendar property: com.increff.pos.pojo.OrderPojo.time
+2023-06-25 17:56:38 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [com/increff/pos/spring/DbConfig.class]: Invocation of init method failed; nested exception is org.hibernate.AnnotationException: @Temporal should only be set on a java.util.Date or java.util.Calendar property: com.increff.pos.pojo.OrderPojo.time
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1628)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1081)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:856)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:352)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:312)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:580)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:117)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:117)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.server.Server.start(Server.java:407)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:110)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.server.Server.doStart(Server.java:371)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.AbstractJettyMojo.startJetty(AbstractJettyMojo.java:449)
+	at org.eclipse.jetty.maven.plugin.AbstractJettyMojo.execute(AbstractJettyMojo.java:310)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.execute(JettyRunMojo.java:155)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:81)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:56)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:305)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:192)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:105)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:957)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:289)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:282)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:225)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:406)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:347)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:47)
+Caused by: org.hibernate.AnnotationException: @Temporal should only be set on a java.util.Date or java.util.Calendar property: com.increff.pos.pojo.OrderPojo.time
+	at org.hibernate.cfg.annotations.SimpleValueBinder.setType(SimpleValueBinder.java:189)
+	at org.hibernate.cfg.annotations.PropertyBinder.makePropertyAndValue(PropertyBinder.java:185)
+	at org.hibernate.cfg.annotations.PropertyBinder.makePropertyValueAndBind(PropertyBinder.java:205)
+	at org.hibernate.cfg.AnnotationBinder.processElementAnnotations(AnnotationBinder.java:2286)
+	at org.hibernate.cfg.AnnotationBinder.processIdPropertiesIfNotAlready(AnnotationBinder.java:979)
+	at org.hibernate.cfg.AnnotationBinder.bindClass(AnnotationBinder.java:806)
+	at org.hibernate.boot.model.source.internal.annotations.AnnotationMetadataSourceProcessorImpl.processEntityHierarchies(AnnotationMetadataSourceProcessorImpl.java:250)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess$1.processEntityHierarchies(MetadataBuildingProcess.java:231)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:274)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:903)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:934)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:60)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:353)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:373)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1687)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1624)
+	... 74 more
+2023-06-25 18:05:03 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [com/increff/pos/spring/DbConfig.class]: Invocation of init method failed; nested exception is org.hibernate.AnnotationException: @Temporal should only be set on a java.util.Date or java.util.Calendar property: com.increff.pos.pojo.OrderPojo.time
+2023-06-25 18:05:03 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [com/increff/pos/spring/DbConfig.class]: Invocation of init method failed; nested exception is org.hibernate.AnnotationException: @Temporal should only be set on a java.util.Date or java.util.Calendar property: com.increff.pos.pojo.OrderPojo.time
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1628)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1081)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:856)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:352)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:312)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:580)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:117)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:117)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.server.Server.start(Server.java:407)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:110)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.server.Server.doStart(Server.java:371)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.AbstractJettyMojo.startJetty(AbstractJettyMojo.java:449)
+	at org.eclipse.jetty.maven.plugin.AbstractJettyMojo.execute(AbstractJettyMojo.java:310)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.execute(JettyRunMojo.java:155)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:81)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:56)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:305)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:192)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:105)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:957)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:289)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:282)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:225)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:406)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:347)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:47)
+Caused by: org.hibernate.AnnotationException: @Temporal should only be set on a java.util.Date or java.util.Calendar property: com.increff.pos.pojo.OrderPojo.time
+	at org.hibernate.cfg.annotations.SimpleValueBinder.setType(SimpleValueBinder.java:189)
+	at org.hibernate.cfg.annotations.PropertyBinder.makePropertyAndValue(PropertyBinder.java:185)
+	at org.hibernate.cfg.annotations.PropertyBinder.makePropertyValueAndBind(PropertyBinder.java:205)
+	at org.hibernate.cfg.AnnotationBinder.processElementAnnotations(AnnotationBinder.java:2286)
+	at org.hibernate.cfg.AnnotationBinder.processIdPropertiesIfNotAlready(AnnotationBinder.java:979)
+	at org.hibernate.cfg.AnnotationBinder.bindClass(AnnotationBinder.java:806)
+	at org.hibernate.boot.model.source.internal.annotations.AnnotationMetadataSourceProcessorImpl.processEntityHierarchies(AnnotationMetadataSourceProcessorImpl.java:250)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess$1.processEntityHierarchies(MetadataBuildingProcess.java:231)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:274)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:903)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:934)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:60)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:353)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:373)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1687)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1624)
+	... 74 more
+2023-06-25 18:05:52 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'documentationPluginsBootstrapper' defined in URL [jar:file:/Users/rounakagrawal/.m2/repository/io/springfox/springfox-spring-web/2.4.0/springfox-spring-web-2.4.0.jar!/springfox/documentation/spring/web/plugins/DocumentationPluginsBootstrapper.class]: Unsatisfied dependency expressed through constructor parameter 1; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'webMvcRequestHandlerProvider' defined in URL [jar:file:/Users/rounakagrawal/.m2/repository/io/springfox/springfox-spring-web/2.4.0/springfox-spring-web-2.4.0.jar!/springfox/documentation/spring/web/plugins/WebMvcRequestHandlerProvider.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'orderItemApiController' method 
+public java.util.List<com.increff.pos.model.OrderItemData> com.increff.pos.controller.OrderItemApiController.getAll()
+to {[/api/order-item],methods=[GET]}: There is already 'orderController' bean method
+public java.util.List<com.increff.pos.model.OrderData> com.increff.pos.controller.OrderController.getAll() mapped.
+2023-06-25 18:05:52 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'documentationPluginsBootstrapper' defined in URL [jar:file:/Users/rounakagrawal/.m2/repository/io/springfox/springfox-spring-web/2.4.0/springfox-spring-web-2.4.0.jar!/springfox/documentation/spring/web/plugins/DocumentationPluginsBootstrapper.class]: Unsatisfied dependency expressed through constructor parameter 1; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'webMvcRequestHandlerProvider' defined in URL [jar:file:/Users/rounakagrawal/.m2/repository/io/springfox/springfox-spring-web/2.4.0/springfox-spring-web-2.4.0.jar!/springfox/documentation/spring/web/plugins/WebMvcRequestHandlerProvider.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'orderItemApiController' method 
+public java.util.List<com.increff.pos.model.OrderItemData> com.increff.pos.controller.OrderItemApiController.getAll()
+to {[/api/order-item],methods=[GET]}: There is already 'orderController' bean method
+public java.util.List<com.increff.pos.model.OrderData> com.increff.pos.controller.OrderController.getAll() mapped.
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:749)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:189)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1193)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1095)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:513)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:352)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:312)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:580)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:117)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:117)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLifeCycle.java:169)
+	at org.eclipse.jetty.server.Server.start(Server.java:407)
+	at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(ContainerLifeCycle.java:110)
+	at org.eclipse.jetty.server.handler.AbstractHandler.doStart(AbstractHandler.java:106)
+	at org.eclipse.jetty.server.Server.doStart(Server.java:371)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.AbstractJettyMojo.startJetty(AbstractJettyMojo.java:449)
+	at org.eclipse.jetty.maven.plugin.AbstractJettyMojo.execute(AbstractJettyMojo.java:310)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.execute(JettyRunMojo.java:155)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:81)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:56)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:305)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:192)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:105)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:957)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:289)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:282)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:225)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:406)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:347)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:47)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'webMvcRequestHandlerProvider' defined in URL [jar:file:/Users/rounakagrawal/.m2/repository/io/springfox/springfox-spring-web/2.4.0/springfox-spring-web-2.4.0.jar!/springfox/documentation/spring/web/plugins/WebMvcRequestHandlerProvider.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'orderItemApiController' method 
+public java.util.List<com.increff.pos.model.OrderItemData> com.increff.pos.controller.OrderItemApiController.getAll()
+to {[/api/order-item],methods=[GET]}: There is already 'orderController' bean method
+public java.util.List<com.increff.pos.model.OrderData> com.increff.pos.controller.OrderController.getAll() mapped.
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:749)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:189)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1193)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1095)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:513)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.addCandidateEntry(DefaultListableBeanFactory.java:1309)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1275)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeans(DefaultListableBeanFactory.java:1180)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:835)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:741)
+	... 77 more
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'orderItemApiController' method 
+public java.util.List<com.increff.pos.model.OrderItemData> com.increff.pos.controller.OrderItemApiController.getAll()
+to {[/api/order-item],methods=[GET]}: There is already 'orderController' bean method
+public java.util.List<com.increff.pos.model.OrderData> com.increff.pos.controller.OrderController.getAll() mapped.
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1628)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.addCandidateEntry(DefaultListableBeanFactory.java:1309)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1275)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeans(DefaultListableBeanFactory.java:1180)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:835)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:741)
+	... 94 more
+Caused by: java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'orderItemApiController' method 
+public java.util.List<com.increff.pos.model.OrderItemData> com.increff.pos.controller.OrderItemApiController.getAll()
+to {[/api/order-item],methods=[GET]}: There is already 'orderController' bean method
+public java.util.List<com.increff.pos.model.OrderData> com.increff.pos.controller.OrderController.getAll() mapped.
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping$MappingRegistry.assertUniqueMethodMapping(AbstractHandlerMethodMapping.java:576)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping$MappingRegistry.register(AbstractHandlerMethodMapping.java:540)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.registerHandlerMethod(AbstractHandlerMethodMapping.java:264)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.detectHandlerMethods(AbstractHandlerMethodMapping.java:250)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.initHandlerMethods(AbstractHandlerMethodMapping.java:214)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.afterPropertiesSet(AbstractHandlerMethodMapping.java:184)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping.afterPropertiesSet(RequestMappingHandlerMapping.java:127)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1687)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1624)
+	... 108 more
+2023-06-25 18:07:22 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:17:04 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:20:16 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:23:19 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:27:12 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:31:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:36:07 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 18:41:20 WARN  SqlExceptionHelper:137 - SQL Error: 1146, SQLState: 42S02
+2023-06-25 18:41:20 ERROR SqlExceptionHelper:142 - Table 'pos-app.orderpojo' doesn't exist
+2023-06-25 18:41:30 WARN  SqlExceptionHelper:137 - SQL Error: 1146, SQLState: 42S02
+2023-06-25 18:41:30 ERROR SqlExceptionHelper:142 - Table 'pos-app.orderpojo' doesn't exist
+2023-06-25 18:45:28 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:10:47 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:17:00 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:20:37 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:29:47 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:32:56 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:36:15 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:39:41 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:43:42 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:45:03 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:46:27 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:49:51 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 22:55:58 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:06:06 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:10:00 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:14:52 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:22:32 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:26:27 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:33:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:35:32 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:37:35 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:42:39 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:45:46 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:51:06 INFO  SecurityConfig:33 - Configuration complete
+2023-06-25 23:58:18 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 00:00:10 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 08:53:33 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 08:57:07 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 08:59:08 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:01:43 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:03:11 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:25:53 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:26:50 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:28:24 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:28:46 INFO  SecurityConfig:33 - Configuration complete
+2023-06-26 09:29:32 INFO  SecurityConfig:33 - Configuration complete

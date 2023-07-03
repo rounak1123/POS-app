@@ -18,6 +18,9 @@ public class OrderPojo {
     private int id;
 
     @Column(name="time")
-    private Timestamp time;
+    private LocalDateTime time;
+
+    @Column(name="status")
+    private String status = "active";
 
 }

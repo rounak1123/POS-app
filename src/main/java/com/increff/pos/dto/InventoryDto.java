@@ -4,7 +4,6 @@ import com.increff.pos.model.*;
 import com.increff.pos.model.InventoryForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
-import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.flow.InventoryFlowService;
@@ -56,8 +55,8 @@ public class InventoryDto {
        service.update(p.getId(),p);
     }
 
-    public List<InventoryReportForm> getReports(){
-        List<InventoryReportForm> list = new ArrayList<>();
+    public List<InventoryReportData> getReports(){
+        List<InventoryReportData> list = new ArrayList<>();
         List<InventoryPojo> list2 = service.getAll();
         for (InventoryPojo p : list2) {
             list.add(convertInventoryToReportForm(p));
@@ -155,10 +154,10 @@ public class InventoryDto {
         }
     }
 
-    private InventoryReportForm convertInventoryToReportForm(InventoryPojo inv){
+    private InventoryReportData convertInventoryToReportForm(InventoryPojo inv){
         BrandPojo p = flowService.getBrandByProductId(inv.getId());
         String productBarcode = flowService.getProductBarcodeById(inv.getId());
-        InventoryReportForm f = new InventoryReportForm();
+        InventoryReportData f = new InventoryReportData();
         f.setQuantity(inv.getQuantity());
         f.setBrand(p.getBrand());
         f.setCategory(p.getCategory());

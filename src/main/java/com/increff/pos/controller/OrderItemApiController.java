@@ -24,7 +24,6 @@ public class OrderItemApiController {
         dto.add(form);
     }
 
-
     @ApiOperation(value = "Deletes and order-item")
     @RequestMapping(path = "/api/order-item/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id) throws ApiException {
@@ -38,9 +37,9 @@ public class OrderItemApiController {
     }
 
     @ApiOperation(value = "Gets list of all order-items")
-    @RequestMapping(path = "/api/order-item", method = RequestMethod.GET)
-    public List<OrderItemData> getAll() {
-        return dto.getAll();
+    @RequestMapping(path = "/api/order-item/order/{orderId}", method = RequestMethod.GET)
+    public List<OrderItemData> getAll(@PathVariable int orderId) {
+        return dto.getAll(orderId);
     }
 
     @ApiOperation(value = "Updates an order-item")
@@ -48,6 +47,20 @@ public class OrderItemApiController {
     public void update(@PathVariable int id, @RequestBody OrderItemForm f) throws ApiException {
         dto.update(id,f);
     }
+
+    @ApiOperation(value = "Valdiates an order-item")
+    @RequestMapping(path = "/api/order-item/validate", method = RequestMethod.POST)
+    public void validate( @RequestBody OrderItemForm f) throws ApiException {
+        dto.validate(f);
+    }
+
+    @ApiOperation(value = "Adds all order-items")
+    @RequestMapping(path = "/api/order-item/all", method = RequestMethod.POST)
+    public void addAll(@RequestBody List<OrderItemForm> list) throws ApiException {
+        dto.addAll(list);
+    }
+
+
 
 }
 

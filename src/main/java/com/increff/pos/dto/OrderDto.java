@@ -1,19 +1,24 @@
 package com.increff.pos.dto;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.increff.pos.model.InvoiceData;
+import com.increff.pos.model.InvoiceItem;
 import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderForm;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
+import com.increff.pos.service.flow.OrderFlowService;
 import com.increff.pos.service.flow.OrderItemFlowService;
-import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Date;
-import java.sql.Timestamp;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +30,15 @@ public class OrderDto {
     private OrderService service;
 
     @Autowired
-    private OrderItemFlowService flowService;
+    private OrderFlowService flowService;
 
 
-    public void add() throws ApiException {
-        OrderPojo p = convert();
-        service.add(p);
+
+
+    public OrderPojo add() throws ApiException {
+        OrderPojo p = new OrderPojo();
+        p.setTime(LocalDateTime.now());
+        return service.add(p);
     }
     public void delete(@PathVariable int id) throws ApiException {
         service.delete(id);
@@ -51,25 +59,48 @@ public class OrderDto {
     }
 
     public void update(@PathVariable int id, @RequestBody OrderForm f) throws ApiException {
-        OrderPojo p = convert();
+        OrderPojo p = new OrderPojo();
+        p.setTime(LocalDateTime.now());
         service.update(id, p);
+    }
+
+    public void placeOrder(@PathVariable int id) throws ApiException {
+        OrderPojo p = new OrderPojo();
+        p.setTime(LocalDateTime.now());
+        p.setStatus("invoiced");
+        service.update(id, p);
+    }
+
+    public ResponseEntity<Resource> downloadInvoice(@PathVariable int id) throws ApiException, IOException {
+        OrderPojo p = service.get(id);
+        InvoiceData inv= convertInvoice(p);
+        return service.downloadInvoice(inv);
+
+    }
+
+    public InvoiceData convertInvoice(OrderPojo p) throws ApiException {
+        String invoiceNumber = "INV-"+p.getId();
+        // Create DateTimeFormatter instance with specified format
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDateTime = p.getTime().format(dateTimeFormatter);
+        List<InvoiceItem> list = flowService.getInvoiceItemList(p.getId());
+
+        InvoiceData invoice = new InvoiceData();
+        invoice.setNumber(invoiceNumber);
+        invoice.setDate(formattedDateTime);
+        invoice.setInvoiceItems(list);
+        return invoice;
     }
 
 
     private  OrderData convert(OrderPojo p) {
         OrderData d = new OrderData();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = p.getTime().format(dateTimeFormatter);
         d.setId(p.getId());
-        d.setTime(p.getTime());
+        d.setDateTime(formattedDateTime);
+        d.setStatus(p.getStatus());
         return d;
-    }
-
-    private  OrderPojo convert() throws ApiException{
-        OrderPojo p = new OrderPojo();
-        Date date = new Date();
-        p.setTime(new Timestamp(date.getTime()));
-
-
-        return p;
     }
 
 }

@@ -30,9 +30,23 @@ public class AppUiController extends AbstractUiController {
 		return mav("inventory.html");
 	}
 
-	@RequestMapping(value = "/ui/order")
-	public ModelAndView order() {
+	@RequestMapping(value = "/ui/order/new")
+	public ModelAndView orderNew() {
 		return mav("order.html");
+	}
+
+	@RequestMapping(value = "/ui/order/view")
+	public ModelAndView orderView() {
+		return mav("order-view.html");
+	}
+	@RequestMapping(value = "/ui/order-item/edit")
+	public ModelAndView orderItemEdit() {
+		return mav("order-item-edit.html");
+	}
+
+	@RequestMapping(value = "/ui/order-item/view")
+	public ModelAndView orderItemView() {
+		return mav("order-item-view.html");
 	}
 
 	@RequestMapping(value = "/ui/report/brand")
@@ -43,6 +57,11 @@ public class AppUiController extends AbstractUiController {
 	@RequestMapping(value = "/ui/report/inventory")
 	public ModelAndView inventoryReport() {
 		return mav("inventory-report.html");
+	}
+
+	@RequestMapping(value = "/ui/report/sales")
+	public ModelAndView salesReport() {
+		return mav("sales-report.html");
 	}
 
 	@RequestMapping(value = "/ui/admin")

@@ -3,9 +3,8 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryForm;
-import com.increff.pos.model.InventoryReportForm;
+import com.increff.pos.model.InventoryReportData;
 import com.increff.pos.service.ApiException;
-import com.increff.pos.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +72,7 @@ public class InventoryApiController {
 
     @ApiOperation(value= "inventory report")
     @RequestMapping(path = "/api/inventory/report", method = RequestMethod.GET)
-    public List<InventoryReportForm> getReports() {
+    public List<InventoryReportData> getReports() {
         return dto.getReports();
     }
 

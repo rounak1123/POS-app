@@ -10,12 +10,12 @@
 
 <div class="container">
 
-    <h3>Order Details</h3>
+    <h3>Order Items Edit</h3>
 
     <!-- Top row with form-->
     <div class="row">
         <div class="col-12">
-            <form class="form-inline" id="item-form">
+            <form class="form-inline" id="order-item-form">
                 <div class="form-group">
                     <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
                     <div class="col-sm-10">
@@ -35,16 +35,13 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-success mr-2" id="add-item">Add</button>
+                <button type="button" class="btn btn-primary" id="add-order-item">Add</button>
+                &nbsp;
 
-                <button type="button" class="btn btn-primary mr-2" id="save-order">Save Order</button>
-                <button type="button" class="btn btn-primary mr-2" id="place-order">Place Order</button>
-                <button type="button" class="btn btn-danger mr-2" id="clear-order">Clear</button>
-
+                <button type="button" class="btn btn-primary" id="refresh-data">Refresh </button>
             </form>
         </div>
     </div>
-
 
     <!-- Blank Row -->
     <div class="row">
@@ -54,14 +51,13 @@
 
         <!-- Table -->
         <div class="col-12">
-            <table class="table table-striped" id="order-table">
+            <table class="table table-striped" id="order-item-table">
                 <thead>
                 <tr>
                     <th scope="col" name="barcode">Barcode</th>
                     <th scope="col" name="quantity">Quantity</th>
-                    <th scope="col" name="sellingPrice">Selling Price (INR) </th>
-
-                    <th scope="col">Actions</th>
+                    <th scope="col" name="sellingPrice">Selling Price</th>
+                    <th scope="col" >Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -72,7 +68,7 @@
     </div>
 
     <!-- Item Edit Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="edit-item-modal">
+    <div class="modal" tabindex="-1" role="dialog" id="order-item-edit-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -82,18 +78,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="form-inline" id="item-edit-form">
+                    <form class="form-inline" id="order-item-edit-form">
                         <div class="form-group">
                             <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="barcode" placeholder="enter barcode" readonly>
+                                <input type="text"  class="form-control" name="barcode" placeholder="enter barcode" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control" name="quantity" placeholder="enter quantity"
-                                step="1">
+                                <input type="number"  class="form-control" name="quantity" placeholder="enter quantity"
+                                       step="1">
                             </div>
                         </div>
                         <div class="form-group">
@@ -107,7 +103,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="update-item">Update</button>
+                    <button type="button" class="btn btn-primary" id="update-order-item">Update</button>
                 </div>
             </div>
         </div>
@@ -117,7 +113,7 @@
 
 <footer th:replace="snippets.html :: name_footer"></footer>
 
-<script th:src="@{/static/order.js}"/></script>
+<script th:src="@{/static/order-item-edit.js}"/></script>
 <script src="bootstrap-notify.js"></script>
 
 </body>

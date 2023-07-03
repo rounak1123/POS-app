@@ -3,12 +3,17 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderForm;
+import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.List;
 
 @Api
@@ -20,8 +25,8 @@ public class OrderApiController {
 
     @ApiOperation(value = "Adds an order")
     @RequestMapping(path = "/api/order", method = RequestMethod.POST)
-    public void add() throws ApiException {
-        dto.add();
+    public OrderPojo add() throws ApiException {
+        return dto.add();
     }
 
 
@@ -49,5 +54,16 @@ public class OrderApiController {
         dto.update(id,f);
     }
 
+    @ApiOperation(value = "Makes an order Invoiced")
+    @RequestMapping(path = "/api/order/place/{id}", method = RequestMethod.PUT)
+    public void placeOrder(@PathVariable int id) throws ApiException {
+        dto.placeOrder(id);
+    }
+
+    @ApiOperation(value = "Downloads invoice for the order.")
+    @RequestMapping(path = "api/order/download/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Resource>  downloadInvoice(@PathVariable int id, HttpServletResponse response) throws ApiException, IOException {
+        return dto.downloadInvoice(id);
+    }
 }
 

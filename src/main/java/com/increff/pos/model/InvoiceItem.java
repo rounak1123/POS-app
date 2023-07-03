@@ -1,12 +1,11 @@
 package com.increff.pos.model;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class OrderItemForm {
-    private String barcode;
-    private double sellingPrice;
+public class InvoiceItem {
+    private String name;
     private int quantity;
-    private int orderId;
+    private double price;
+    private double total;
 }

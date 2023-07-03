@@ -127,7 +127,7 @@
   <!--NavBar-->
   <div class="logo">
     <a class="navbar-brand" th:href="@{/}">
-      <img src="../static/logo-increff.png" class="logo-increff-home"> <span >smart-POS</span>
+      <img th:src="@{/static/logo-increff.png}" class="logo-increff-home"> <span >smart-POS</span>
     </a>
   </div>
   <div class="burger "><i class="ri-menu-line icon"></i></div>
@@ -150,12 +150,16 @@
           <a class="nav-link" th:href="@{/ui/inventory}">
             <li>Inventory</li></a>
 
-          <a  th:href="@{/ui/order}">
-            <li>Orders</li>
-          </a>
-        <a th:href="@{/session/logout}">
-          <li>Logout</li>
-        </a>
+        <div class="dropdown">
+          <div class="dropdown-toggle" type="button" id="dropdownMenuButtonOrder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Orders
+          </div>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" th:href="@{/ui/order/new}">Unsaved Order/Create New Order</a>
+            <a class="dropdown-item" th:href="@{/ui/order/view}">View Orders</a>
+          </div>
+        </div>
+
 
         <div class="dropdown">
           <div class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -167,6 +171,10 @@
             <a class="dropdown-item" th:href="@{/ui/report/inventory}">Inventory Report</a>
           </div>
         </div>
+
+        <a th:href="@{/session/logout}">
+          <li>Logout</li>
+        </a>
 
       </ul>
 
@@ -191,7 +199,7 @@
 
 
 <footer class="footer  mt-1" id="footer" th:fragment="name_footer">
-	Copyright Increff 2019
+	Copyright Increff 2023
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/7b294536da.js" crossorigin="anonymous"></script>

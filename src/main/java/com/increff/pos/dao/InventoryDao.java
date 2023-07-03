@@ -1,7 +1,6 @@
 package com.increff.pos.dao;
 
 import com.increff.pos.pojo.InventoryPojo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,7 +16,6 @@ public class InventoryDao extends AbstractDao {
     private static String delete_id = "delete from InventoryPojo p where id=:id";
     private static String select_id = "select p from InventoryPojo p where id=:id";
     private static String select_all = "select p from InventoryPojo p";
-    private static String select_product_id= "select p from InventoryPojo p where product_id=:productId";
 
     @PersistenceContext
     private EntityManager em;
@@ -47,10 +45,10 @@ public class InventoryDao extends AbstractDao {
     public void update(InventoryPojo p) {
     }
 
-    public InventoryPojo getInventoryByBarcode(int productId){
+    public InventoryPojo getInventoryByProductId(int productId){
 
-        TypedQuery<InventoryPojo> query = getQuery(select_product_id, InventoryPojo.class);
-        query.setParameter("product_id", productId);
+        TypedQuery<InventoryPojo> query = getQuery(select_id, InventoryPojo.class);
+        query.setParameter("id", productId);
         return getSingle(query);
 
     }

@@ -16,15 +16,15 @@ public class OrderDao extends AbstractDao {
 
     private static String delete_id = "delete from OrderPojo p where id=:id";
     private static String select_id = "select p from OrderPojo p where id=:id";
-    private static String select_all = "select p from OrderPojo p";
+    private static String select_all = "select p from OrderPojo p order by id desc";
 
     @PersistenceContext
     private EntityManager em;
 
     @Transactional
-    public int insert(OrderPojo p) {
+    public OrderPojo insert(OrderPojo p) {
         em.persist(p);
-        return p.getId();
+        return p;
     }
 
     public int delete(int id) {

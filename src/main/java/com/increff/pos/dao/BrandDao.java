@@ -1,7 +1,6 @@
 package com.increff.pos.dao;
 
 import com.increff.pos.pojo.BrandPojo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

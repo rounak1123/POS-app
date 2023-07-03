@@ -10,8 +10,17 @@
 
 <div class="container">
 
-    <h3 class="inventory-header">Inventory Report
-    </h3>
+    <h3>Order Items View</h3>
+
+    <!-- Top row with form-->
+    <div class="row">
+        <div class="col-12">
+
+                <button type="button" class="btn btn-primary" id="download-invoice">Download Invoice</button>
+
+        </div>
+    </div>
+
 
     <!-- Blank Row -->
     <div class="row">
@@ -21,14 +30,12 @@
 
         <!-- Table -->
         <div class="col-12">
-            <table class="table table-striped" id="inventory-table">
+            <table class="table table-striped" id="order-item-table">
                 <thead>
                 <tr>
-                    <th scope="col">Sl No.</th>
-                    <th scope="col">Barcode</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col" name="barcode">Barcode</th>
+                    <th scope="col" name="quantity">Quantity</th>
+                    <th scope="col" name="sellingPrice">Selling Price</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -37,14 +44,12 @@
 
         </div>
     </div>
-
 </div> <!-- Container end-->
 
 <footer th:replace="snippets.html :: name_footer"></footer>
 
-<script th:src="@{/static/inventory-report.js}"/></script>
+<script th:src="@{/static/order-item-view.js}"/></script>
 <script src="bootstrap-notify.js"></script>
-
 
 </body>
 

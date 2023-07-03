@@ -35,8 +35,13 @@ public class OrderItemService {
     }
 
     @Transactional
-    public List<OrderItemPojo> getAll() {
-        return dao.selectAll();
+    public List<OrderItemPojo> getAll(int orderId) {
+        return dao.selectAll(orderId);
+    }
+
+    @Transactional
+    public OrderItemPojo getOrderItemByProductId(int productId, int orderId) {
+        return dao.getOrderItemByProductId(productId,orderId);
     }
 
     @Transactional(rollbackOn  = ApiException.class)

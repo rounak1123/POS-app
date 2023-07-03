@@ -1,4 +1,4 @@
-var brandData = []; // Programatically-generated options array with > 5 options
+var brandData = [];
 var categoryData = [];
 
 function getBrandUrl(){
@@ -91,8 +91,6 @@ var url = getBrandUrl()+'/upload';
                 data:formData,
                 type:"post",
 
-                // Tell jQuery not to process data or not to worry about content-type
-                // You *must* include these options in order to send MultipartFile objects
                 cache: false,
                 contentType: false,
                 processData: false,
@@ -128,8 +126,6 @@ $('#download-errors').prop("disabled", true);
 //UI DISPLAY METHODS
 
 function displayBrandList(data){
-	var $tbody = $('#brand-table').find('tbody');
-//	 var table = $('#brand-table').DataTable({searching: false});
 	table.clear().draw();
 
 	for(var i in data){
@@ -235,9 +231,6 @@ function openFilterModal() {
 
 }
 
-// DROPDOWN
-
-
 
 //INITIALIZATION CODE
 var table;
@@ -252,7 +245,6 @@ table.draw();
 
 function initDatatable(){
             table = $('#brand-table').DataTable(
-//            {searching: false}
               {dom: 'lrtip'}
             );
 

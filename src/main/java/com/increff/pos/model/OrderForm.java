@@ -9,5 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class OrderForm {
-    private Timestamp time;
+    private LocalDateTime time;
+    private String status;
 }

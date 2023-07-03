@@ -10,37 +10,13 @@
 
 <div class="container">
 
-    <h3>Order Details</h3>
+    <h3>Order View</h3>
 
     <!-- Top row with form-->
     <div class="row">
         <div class="col-12">
             <form class="form-inline" id="item-form">
-                <div class="form-group">
-                    <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="barcode" id="inputBarcode" placeholder="enter barcode">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="quantity" id="inputQuantity" placeholder="enter quantity">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputSellingPrice" class="col-sm-2 col-form-label">Selling Price (INR) </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="sellingPrice" id="inputSellingPrice" placeholder="enter selling price">
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-success mr-2" id="add-item">Add</button>
-
-                <button type="button" class="btn btn-primary mr-2" id="save-order">Save Order</button>
-                <button type="button" class="btn btn-primary mr-2" id="place-order">Place Order</button>
-                <button type="button" class="btn btn-danger mr-2" id="clear-order">Clear</button>
-
+                <button type="button" class="btn btn-success" id="create-new-order"  ><a th:href="@{/ui/order/new}">Create New Order</a></button>
             </form>
         </div>
     </div>
@@ -54,13 +30,13 @@
 
         <!-- Table -->
         <div class="col-12">
-            <table class="table table-striped" id="order-table">
+            <table class="table table-striped" id="order-view-table">
                 <thead>
                 <tr>
-                    <th scope="col" name="barcode">Barcode</th>
-                    <th scope="col" name="quantity">Quantity</th>
-                    <th scope="col" name="sellingPrice">Selling Price (INR) </th>
+                    <th scope="col" name="id">Order Id</th>
+                    <th scope="col" name="date-time">Last-Saved/Invoiced</th>
 
+                    <th scope="col" name="quantity">Status</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -86,20 +62,20 @@
                         <div class="form-group">
                             <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="barcode" placeholder="enter barcode" readonly>
+                                <input type="text" id="inputBarcode" class="form-control" name="barcode" placeholder="enter barcode" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control" name="quantity" placeholder="enter quantity"
-                                step="1">
+                                <input type="number" id="inputQuantity" class="form-control" name="quantity" placeholder="enter quantity"
+                                       step="1">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputSellingPrice" class="col-sm-2 col-form-label">Selling Price (INR)</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="sellingPrice" placeholder="0.0">
+                                <input type="text" id="inputSellingPrice" class="form-control" name="sellingPrice" placeholder="0.0">
                             </div>
                         </div>
                         <input type="hidden" name="id" >
@@ -117,7 +93,7 @@
 
 <footer th:replace="snippets.html :: name_footer"></footer>
 
-<script th:src="@{/static/order.js}"/></script>
+<script th:src="@{/static/order-view.js}"/></script>
 <script src="bootstrap-notify.js"></script>
 
 </body>

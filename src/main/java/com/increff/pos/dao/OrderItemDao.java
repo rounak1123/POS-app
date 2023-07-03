@@ -16,7 +16,8 @@ public class OrderItemDao extends AbstractDao {
 
     private static String delete_id = "delete from OrderItemPojo p where id=:id";
     private static String select_id = "select p from OrderItemPojo p where id=:id";
-    private static String select_all = "select p from OrderItemPojo p";
+    private static String select_all = "select p from OrderItemPojo p where order_id=:orderId";
+    private static String select_product_id = "select p from OrderItemPojo p where product_id=:productId  and order_id=:orderId ";
 
     @PersistenceContext
     private EntityManager em;
@@ -38,11 +39,18 @@ public class OrderItemDao extends AbstractDao {
         return getSingle(query);
     }
 
-    public List<OrderItemPojo> selectAll() {
+    public List<OrderItemPojo> selectAll(int orderId) {
         TypedQuery<OrderItemPojo> query = getQuery(select_all, OrderItemPojo.class);
+        query.setParameter("orderId", orderId);
         return query.getResultList();
     }
-
+    public OrderItemPojo getOrderItemByProductId(int productId, int orderId){
+        TypedQuery<OrderItemPojo> query = getQuery(select_product_id, OrderItemPojo.class);
+        System.out.println(productId + " " + orderId);
+        query.setParameter("productId", productId);
+        query.setParameter("orderId", orderId);
+        return getSingle(query);
+    }
     public void update(OrderItemPojo p) {
     }
 }

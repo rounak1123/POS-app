@@ -36,16 +36,13 @@ public class InventoryService {
         InventoryPojo ex = getCheck(id);
         if(ex==null)
             throw new ApiException("Product id is invalid.");
-        else
         ex.setQuantity(p.getQuantity());
-
         dao.update(ex);
     }
 
     @Transactional
     public InventoryPojo getCheck(int id) throws ApiException {
         InventoryPojo p = dao.select(id);
-
         return p;
     }
 

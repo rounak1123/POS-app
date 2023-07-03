@@ -2,15 +2,10 @@ package com.increff.pos.service.flow;
 
 import com.increff.pos.dao.BrandDao;
 import com.increff.pos.dao.ProductDao;
-import com.increff.pos.model.InventoryReportForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.transaction.Transactional;
-import java.util.List;
 
 @Component
 public class InventoryFlowService {

@@ -1,9 +1,10 @@
 package com.increff.pos.service.flow;
 
-import com.increff.pos.dao.BrandDao;
-import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
+import com.increff.pos.service.ApiException;
+import com.increff.pos.service.BrandService;
+import com.increff.pos.service.InventoryService;
 import com.increff.pos.spring.SecurityConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,32 +15,24 @@ public class ProductFlowService {
     private static Logger logger = Logger.getLogger(SecurityConfig.class);
 
     @Autowired
-    public BrandDao dao;
+    public BrandService brandService;
 
     @Autowired
-    public InventoryDao inventoryDao;
+    InventoryService inventoryService;
 
-    public int getBrandCategoryId(String brand, String category){
-        BrandPojo p = dao.select(brand,category);
-        if(p==null) return -1;
-        return p.getId();
+
+    public BrandPojo get(String brand, String category) throws ApiException {
+        return brandService.get(brand, category);
     }
 
-    public String getBrand(int id){
-        BrandPojo p = dao.select(id);
-        return p.getBrand();
+    public BrandPojo getBrandCategory(int id) throws ApiException {
+        return brandService.get(id);
     }
-
-    public String getCategory(int id){
-        BrandPojo p = dao.select(id);
-        return p.getCategory();
-    }
-
-    public void addInventory(int id){
+    public void addInventory(int id) throws ApiException {
         InventoryPojo invPojo = new InventoryPojo();
         invPojo.setId(id);
         invPojo.setQuantity(0);
-        inventoryDao.insert(invPojo);
+        inventoryService.add(invPojo);
     }
 
 

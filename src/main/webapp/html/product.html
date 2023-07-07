@@ -10,11 +10,11 @@
 
 <div class="container">
 
-<h3 class="product-header">Product Details
-	<button type="button" class="btn btn-primary product-header-child" data-toggle="modal" data-target="#addProduct">	Add	<i class="fa fa-plus " ></i></button>
-	<button type="button" class="btn btn-primary product-header-child" id="upload-data">	Upload    <i class="fa fa-upload" ></i>
+<h3 class="product-header mt-2">Product Details
+	<button type="button" id = "add-product-header" class="btn btn-primary product-header-child access-supervisor" data-toggle="modal" data-target="#addProduct">	Add	<i class="fa fa-plus " ></i></button>
+	<button type="button" class="btn btn-primary product-header-child access-supervisor" id="upload-data">	Upload    <i class="fa fa-upload" ></i>
 	</button>
-	<button type="button" class="btn btn-primary product-header-child" id="refresh-data">Refresh <i class="fa fa-refresh"></i></button>
+	<button type="button" class="btn btn-primary product-header-child access-supervisor" id="refresh-data">Refresh <i class="fa fa-refresh"></i></button>
 </h3>
 
  <!-- Top row with form-->
@@ -69,6 +69,55 @@
 <div class="row">
 	&nbsp;
 </div>
+
+	<div class="row mb-4">
+		<div class="col-12">
+			<form class="form-inline" id="product-search-form">
+				<div class="form-group">
+					<label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand</label>
+					<div class="col-sm-10">
+
+						<select id="inputBrandSearch" class="form-control" name="brand">
+							<option value="">Select an option</option>
+						</select>
+						<!--						<input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter brand">-->
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputCategorySearch" class="col-sm-2 col-form-label">Category</label>
+					<div class="col-sm-10">
+						<select id="inputCategorySearch" class="form-control"  name="category">
+							<option value="">Select an option</option>
+						</select>
+						<!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label for="inputProductNameSearch" class="col-sm-2 col-form-label">Product Name</label>
+					<div class="col-sm-10">
+						<select id="inputProductNameSearch" class="form-control"  name="productName">
+							<option value="">Select an option</option>
+						</select>
+						<!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label for="inputBarcodeSearch" class="col-sm-2 col-form-label">Barcode</label>
+					<div class="col-sm-10">
+						<select id="inputBarcodeSearch" class="form-control"  name="barcode">
+							<option value="">Select an option</option>
+						</select>
+						<!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+					</div>
+
+				</div>
+				&nbsp;
+				<button type="button" class="btn btn-primary" id="search-product">Search</button>
+			</form>
+		</div>
+	</div>
 <div class="row">
 
  <!-- Table -->
@@ -91,6 +140,7 @@
 
 </div>
 </div>
+
 
 <!-- product Edit Modal -->
 <div class="modal" tabindex="-1" role="dialog" id="edit-product-modal">
@@ -146,7 +196,7 @@
 </div>
 
 
-<!-- product Edit Modal -->
+<!-- product Upload Modal -->
 <div class="modal" tabindex="-1" role="dialog" id="upload-product-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -189,7 +239,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="addBrandLabel">Add Brand-Category</h4>
+					<h4 class="modal-title" id="addBrandLabel">Add Product</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -205,14 +255,21 @@
 						<div class="form-group">
 							<label for="inputBrand" class="col-sm-2 col-form-label">Brand Name</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">
+								<select id="inputBrand" class="form-control" name="brand">
+									<option value="">Select an option</option>
+								</select>
+<!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">
+							<select id="inputCategory" class="form-control"  name="category" disabled>
+								<option value="">Select an option</option>
+							</select>
+<!--								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->
 							</div>
+
 						</div>
 						<div class="form-group">
 							<label for="inputName" class="col-sm-2 col-form-label"> Product Name</label>
@@ -229,7 +286,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="add-brand">Add</button>
+					<button type="button" class="btn btn-primary" id="add-product">Add</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>

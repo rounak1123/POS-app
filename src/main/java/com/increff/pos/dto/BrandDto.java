@@ -29,13 +29,10 @@ public class BrandDto {
 
     public void add(@RequestBody BrandForm form) throws ApiException {
         emptyCheck(form);
+        normalize(form);
         BrandPojo p = convert(form);
         service.add(p);
     }
-    public void delete(@PathVariable int id) throws ApiException {
-        service.delete(id);
-    }
-
     public BrandData get(@PathVariable int id) throws ApiException {
         BrandPojo p = service.get(id);
         return convert(p);
@@ -59,15 +56,6 @@ public class BrandDto {
         emptyCheck(f);
         BrandPojo p = convert(f);
         service.update(id, p);
-    }
-
-    public String validate(@RequestBody BrandForm f) throws ApiException {
-        normalize(f);
-        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))
-            return "Brand or Category empty";
-
-        BrandPojo p = convert(f);
-        return service.validate(p);
     }
 
 
@@ -97,6 +85,10 @@ public class BrandDto {
             add(brandList.get(i));
         }
 
+    }
+
+    public List<BrandPojo> search(BrandForm f){
+          return service.search(f.getBrand(), f.getCategory());
     }
 
     private  BrandData convert(BrandPojo p) {
@@ -158,18 +150,28 @@ public class BrandDto {
     }
 
     private  BrandPojo convert(BrandForm f) throws ApiException {
-        normalize(f);
         BrandPojo p = new BrandPojo();
         p.setBrand(f.getBrand());
         p.setCategory(f.getCategory());
         return p;
     }
 
+    // CHECKS AND NORMALIZATION FOR THE FORM.
+
     public static void normalize(BrandForm f) throws ApiException{
-        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim().replaceAll(" +", " "));
-        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim().replaceAll(" +", " "));
+        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim());
+        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim());
         if(hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
             throw new ApiException("invalid character in brand or category.");
+    }
+
+    public String validate(@RequestBody BrandForm f) throws ApiException {
+        normalize(f);
+        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))
+            return "Brand or Category empty";
+
+        BrandPojo p = convert(f);
+        return service.validate(p);
     }
 
     public static void emptyCheck(BrandForm f) throws ApiException{
@@ -180,7 +182,7 @@ public class BrandDto {
     }
 
     public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_\\s";
+        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
         String patternString = "[^" + allowedCharacters + "]";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);

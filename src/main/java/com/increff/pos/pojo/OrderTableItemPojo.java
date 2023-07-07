@@ -19,4 +19,5 @@ public class OrderTableItemPojo {
     private int product_id;
     private int quantity;
     private double selling_price;
+    private int user_id;
 }

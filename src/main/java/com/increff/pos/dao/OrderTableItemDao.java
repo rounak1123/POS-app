@@ -14,8 +14,10 @@ import java.util.List;
 public class OrderTableItemDao extends AbstractDao {
 
     private static String delete_id = "delete from OrderTableItemPojo p where id=:id";
+    private static String delete_all_id = "delete from OrderTableItemPojo p where user_id=:userId";
     private static String select_id = "select p from OrderTableItemPojo p where id=:id";
-    private static String select_all = "select p from OrderTableItemPojo p";
+    private static String select_barcode = "select p from OrderTableItemPojo p where user_id=:userId and product_id=:productId";
+    private static String select_all = "select p from OrderTableItemPojo p where user_id=:userId";
 
     @PersistenceContext
     private EntityManager em;
@@ -31,15 +33,29 @@ public class OrderTableItemDao extends AbstractDao {
         return query.executeUpdate();
     }
 
+    public int deleteAll(int id) {
+        Query query = em.createQuery(delete_all_id);
+        query.setParameter("userId", id);
+        return query.executeUpdate();
+    }
+
     public OrderTableItemPojo select(int id) {
         TypedQuery<OrderTableItemPojo> query = getQuery(select_id, OrderTableItemPojo.class);
         query.setParameter("id", id);
         return getSingle(query);
     }
 
-    public List<OrderTableItemPojo> selectAll() {
+    public List<OrderTableItemPojo> selectAll(int id) {
         TypedQuery<OrderTableItemPojo> query = getQuery(select_all, OrderTableItemPojo.class);
+        query.setParameter("userId", id);
         return query.getResultList();
+    }
+
+    public OrderTableItemPojo getOrderTableItemByBarcode(int userId, int productId){
+        TypedQuery<OrderTableItemPojo> query = getQuery(select_barcode, OrderTableItemPojo.class);
+        query.setParameter("userId", userId);
+        query.setParameter("productId", productId);
+        return getSingle(query);
     }
 
     public void update(OrderTableItemPojo p) {

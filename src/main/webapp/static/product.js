@@ -1,8 +1,54 @@
-
+var brandCategoryList=[];
+var brandList=[];
+var table ;
 function getProductUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/product";
 }
+
+function getBrandUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/brand";
+}
+
+
+function addProductHeaderClick(){
+console.log("in add product header click");
+var brandDropdown = $('#inputBrand');
+brandDropdown.empty();
+brandDropdown.append($('<option></option>').val('').html('Select an option'));
+$.each(brandList, function (i, brand){
+    brandDropdown.append($('<option></option>').val(brand).html(brand));
+})
+console.log(brandList,brandDropdown);
+}
+
+$(document).ready(function() {
+  // When the first dropdown changes
+  $('#inputBrand').change(function() {
+    var selectedValue = $(this).val();
+    var categoryDropdown = $('#inputCategory');
+
+    if (selectedValue != '' && selectedValue != null) {
+      // Enable the second dropdown and make an AJAX call to fetch data
+      categoryDropdown.prop('disabled', false);
+      var categoryList = brandCategoryList.filter(function(data){
+      return data.brand == selectedValue;
+      });
+      console.log(categoryList);
+      categoryDropdown.empty();
+      categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+
+      $.each(categoryList, function(key,value){
+      categoryDropdown.append($('<option></option>').val(value.category).html(value.category));
+      })
+
+    } else {
+      categoryDropdown.prop('disabled', true);
+    }
+  });
+});
+
 
 //BUTTON ACTIONS
 function addProduct(event){
@@ -21,6 +67,7 @@ function addProduct(event){
 	   success: function(response) {
 	   		getProductList();
 	   		$("#product-form")[0].reset();
+	   		$.notify("Product added successfully", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -62,15 +109,114 @@ function getProductList(){
 	   type: 'GET',
 	   success: function(data) {
 	        console.log('product list', data);
+	        updateSearchList(data);
 	   		displayProductList(data);
 	   },
 	   error: handleAjaxError
 	});
 }
 
-$(document).ready( function () {
-    $('#product-table').DataTable();
-} );
+
+// Add to brandList array and brandCategoryList Arrray
+function setBrandCategory(data) {
+    brandList = [];
+    brandCategoryList = [];
+
+	for(var i in data){
+		var e = data[i];
+		brandList.push(e.brand);
+		brandCategoryList.push({
+		brand: e.brand,
+		category: e.category});
+	}
+	brandList = [...new Set(brandList)];
+
+}
+
+function getBrandList(){
+	var url = getBrandUrl();
+	$.ajax({
+	   url: url,
+	   type: 'GET',
+	   success: function(data) {
+	     setBrandCategory(data);
+	   },
+	   error: handleAjaxError
+	});
+}
+
+function updateSearchList(data){
+    brandData = [];
+    categoryData = [];
+    productNameData = [];
+    barcodeData = [];
+
+	for(var i in data){
+		var e = data[i];
+		brandData.push(e.brand);
+		categoryData.push(e.category);
+		productNameData.push(e.name);
+		barcodeData.push(e.barcode);
+	}
+    console.log(productNameData);
+
+	brandData = [...new Set(brandData)];
+	categoryData = [...new Set(categoryData)];
+	productNameData = [...new Set(productNameData)]
+
+	  var brandDropdown = $('#inputBrandSearch');
+      brandDropdown.empty();
+      brandDropdown.append($('<option></option>').val('').html('Select an option'));
+      $.each(brandData, function (i, brand){
+          brandDropdown.append($('<option></option>').val(brand).html(brand));
+      })
+        var categoryDropdown = $('#inputCategorySearch');
+        categoryDropdown.empty();
+        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+        $.each(categoryData, function (i, category){
+            categoryDropdown.append($('<option></option>').val(category).html(category));
+        })
+
+        var productDropdown = $('#inputProductNameSearch');
+              productDropdown.empty();
+              productDropdown.append($('<option></option>').val('').html('Select an option'));
+              $.each(productNameData, function (i, product){
+                  productDropdown.append($('<option></option>').val(product).html(product));
+              })
+        var barcodeDropdown = $('#inputBarcodeSearch');
+                barcodeDropdown.empty();
+                barcodeDropdown.append($('<option></option>').val('').html('Select an option'));
+                $.each(barcodeData, function (i, barcode){
+                    barcodeDropdown.append($('<option></option>').val(barcode).html(barcode));
+                })
+}
+
+function searchProduct() {
+  console.log($("#inputBrandSearch").val(), $("#inputCategorySearch").val());
+    var brand = $("#inputBrandSearch").val();
+    var category = $("#inputCategorySearch").val();
+    var name = $("#inputProductNameSearch").val();
+    var barcode = $("#inputBarcodeSearch").val();
+
+    var obj = {brand, category, name, barcode};
+
+    var url = getProductUrl();
+    url+='/search';
+
+  	$.ajax({
+  	   url: url,
+  	   type: 'POST',
+  	   data: JSON.stringify(obj),
+  	   headers: {
+         	'Content-Type': 'application/json'
+         },
+  	   success: function(response) {
+  	   		displayProductList(response);
+  	   		$("#product-search-form")[0].reset();
+  	   },
+  	   error: handleAjaxError
+  	});
+}
 // FILE UPLOAD METHOD
 
 function processData(){
@@ -126,12 +272,10 @@ $('#download-errors').prop("disabled", true);
 //UI DISPLAY METHODS
 
 function displayProductList(data){
-	var $tbody = $('#product-table').find('tbody');
-	 var table = $('#product-table').DataTable();
 	table.clear().draw();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayEditProduct(' + e.id + ')">edit</button>'
+		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditProduct(' + e.id + ')" ><i class="fa fa-edit fa-sm text-white" ></i></button>' ;
           table.row.add([
             e.id,
             e.barcode,
@@ -177,7 +321,8 @@ function updateUploadDialog(){
 
 function updateFileName(){
 	var $file = $('#productFile');
-	var fileName = $file.val();
+var fileName = $file.val().split('\\').pop();
+
 	$('#productFileName').html(fileName);
 }
 
@@ -198,8 +343,28 @@ function displayProduct(data){
 
 
 //INITIALIZATION CODE
+
+ function initDatatable() {
+    table = $('#product-table').DataTable(
+                    {dom: 'lrtip',
+                    paging: false,
+                    scrollY: '450px',
+                    scrollColapse: 'true',
+                    }
+    );
+    console.log(user_role);
+    if(user_role == 'standard'){
+           console.log("making the first colmn hidden");
+            table.column(6).visible(false);
+     }
+} ;
+
+
 function init(){
+    initDatatable();
+    $('#add-product-header').click(addProductHeaderClick);
 	$('#add-product').click(addProduct);
+	$('#search-product').click(searchProduct);
 	$('#update-product').click(updateProductDetails);
 	$('#refresh-data').click(getProductList);
 	$('#upload-data').click(displayUploadData);
@@ -210,4 +375,5 @@ function init(){
 
 $(document).ready(init);
 $(document).ready(getProductList);
+$(document).ready(getBrandList);
 

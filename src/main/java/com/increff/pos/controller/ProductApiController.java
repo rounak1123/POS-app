@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,52 +16,46 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping(path = "api/product")
 public class ProductApiController {
 
-	private static Logger logger = Logger.getLogger(SecurityConfig.class);
 	@Autowired
 	private ProductDto dto;
 
 	@ApiOperation(value = "Adds a product")
-	@RequestMapping(path = "/api/product", method = RequestMethod.POST)
+	@PostMapping
 	public void add(@RequestBody ProductForm f) throws ApiException {
 		dto.add(f);
 	}
 
-	
-	@ApiOperation(value = "Deletes and product")
-	@RequestMapping(path = "/api/product/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable int id) {
-		dto.delete(id);
-	}
-
 	@ApiOperation(value = "Gets an product by ID")
-	@RequestMapping(path = "/api/product/{id}", method = RequestMethod.GET)
+	@GetMapping("/{id}")
 	public ProductData get(@PathVariable int id) throws ApiException {
 		return dto.get(id);
 	}
 
 	@ApiOperation(value = "Gets list of all products")
-	@RequestMapping(path = "/api/product", method = RequestMethod.GET)
-	public List<ProductData> getAll() {
+	@GetMapping
+	public List<ProductData> getAll() throws ApiException {
         return dto.getAll();
 	}
 
 	@ApiOperation(value = "Updates an product")
-	@RequestMapping(path = "/api/product/{id}", method = RequestMethod.PUT)
+	@PutMapping("/{id}")
 	public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
 		dto.update(id,f);
 	}
 
-	@ApiOperation(value = "Validates a product")
-	@RequestMapping(path = "/api/product/validate", method = RequestMethod.POST)
-	public void validate(@RequestBody ProductForm f) throws ApiException {
-		dto.validate(f);
-	}
 	@ApiOperation(value = "upload tsv from UI")
-	@RequestMapping(path="/api/product/upload", method = RequestMethod.POST)
+	@PostMapping("/upload")
 	public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
 		dto.upload(file);
+	}
+
+	@ApiOperation(value = "search product based on filters")
+	@PostMapping("/search")
+	public List<ProductData> search(@RequestBody ProductForm f) throws ApiException{
+		return dto.search(f);
 	}
 
 

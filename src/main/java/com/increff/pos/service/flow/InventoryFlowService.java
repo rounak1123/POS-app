@@ -1,9 +1,10 @@
 package com.increff.pos.service.flow;
 
-import com.increff.pos.dao.BrandDao;
-import com.increff.pos.dao.ProductDao;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.service.ApiException;
+import com.increff.pos.service.BrandService;
+import com.increff.pos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,28 +12,22 @@ import org.springframework.stereotype.Component;
 public class InventoryFlowService {
 
     @Autowired
-    public ProductDao dao;
+    public ProductService productService;
     @Autowired
-    public BrandDao brandDao;
+    public BrandService brandService;
 
-    public int getProductIdByBarcode (String barcode){
-        ProductPojo p = dao.getProductByBarcode(barcode);
-        if(p==null)
-            return -1;
-        return p.getId();
+    public ProductPojo getProductByBarcode(String barcode){
+        return productService.getProductByBarcode(barcode);
     }
 
-    public String getProductBarcodeById(int id){
-        ProductPojo p = dao.select(id);
-        return p.getBarcode();
+    public ProductPojo getProductById(int id) throws ApiException {
+        return productService.get(id);
     }
 
-    public BrandPojo getBrandByProductId(int id){
-//       List<BrandData>
-        ProductPojo p = dao.select(id);
-        BrandPojo brandPojo = brandDao.select(p.getBrand_category_id());
+    public  BrandPojo getBrandByProductId(int id) throws ApiException {
+        ProductPojo p = productService.get(id);
+        BrandPojo brandPojo = brandService.get(p.getBrand_category_id());
         return brandPojo;
     }
-
 
 }

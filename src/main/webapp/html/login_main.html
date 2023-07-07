@@ -1,0 +1,48 @@
+<html>
+<head th:replace="snippets.html :: name_head_login"></head>
+<head>
+    <link th:href="@{/static/login_main.css}" rel="stylesheet">
+</head>
+<body>
+<section>
+    <div class="container">
+        <div class="user signinBx">
+            <div class="imgBx"><img src="../static/img.png" alt="" /></div>
+            <div class="formBx">
+                <form method="POST" th:action="@{/session/login}">
+                    <h2>Sign In</h2>
+                    <input type="text" name="email" id= "email" placeholder="Email" />
+                    <input type="password" name="password" id="password" placeholder="Password" />
+                    <button type="submit" class="btn btn-primary" name="" value="login" > Login </button>
+                    <div class="card-footer text-danger">
+                        [[${info.getMessage()}]]
+                    </div>
+                    <p class="signup">
+                        Don't have an account ?
+                        <a onclick="toggleForm();">Sign Up.</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+        <div class="user signupBx">
+            <div class="formBx">
+                <form id="signup-form">
+                    <h2>Create an account</h2>
+                    <input type="email" name="email" placeholder="Email Address" />
+                    <input type="password" name="password" placeholder="Create Password" />
+                    <input type="password" name="confirm-password" placeholder="Confirm Password" />
+                    <button  class="btn btn-primary"  id="sign-up" type="button"> Sign Up </button>
+                    <p class="signup">
+                        Already have an account ?
+                        <a  onclick="toggleForm();">Sign in.</a>
+                    </p>
+                </form>
+            </div>
+            <div class="imgBx"><img src="../static/img_1.png" alt="" /></div>
+        </div>
+    </div>
+</section>
+<footer th:replace="snippets.html :: name_footer"></footer>
+<script th:src="@{/static/login_main.js}"></script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 package com.increff.pos.dto;
 
+import com.increff.pos.model.DaySalesData;
 import com.increff.pos.model.SalesReportData;
 import com.increff.pos.model.SalesReportForm;
+import com.increff.pos.pojo.DaySalesPojo;
 import com.increff.pos.service.ReportsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,23 @@ public class ReportsDto {
         return convert(obj);
     }
 
+    public List<DaySalesData> daySalesReport(){
+        List<DaySalesPojo> list =  service.daySalesReport();
+        return convertToDaySalesData(list);
+    }
+
+    public List<DaySalesData> convertToDaySalesData(List<DaySalesPojo> list){
+        List<DaySalesData> listData = new ArrayList<>();
+        for(DaySalesPojo p: list){
+            DaySalesData data = new DaySalesData();
+            data.setTotalRevenue(p.getTotal_revenue());
+            data.setInvoicedItemsCount(p.getInvoiced_items_count());
+            data.setInvoicedOrdersCount(p.getInvoiced_items_count());
+            data.setDate(p.getDate().toString());
+            listData.add(data);
+        }
+        return listData;
+    }
     public List<SalesReportData>  convert(List<Object[]> objList){
         System.out.println("object list length"+objList.toArray().length);
         List<SalesReportData> list = new ArrayList<>();

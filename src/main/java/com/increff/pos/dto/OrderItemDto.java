@@ -1,5 +1,6 @@
 package com.increff.pos.dto;
 
+import com.google.protobuf.Api;
 import com.increff.pos.model.OrderItemData;
 import com.increff.pos.model.OrderItemForm;
 import com.increff.pos.pojo.OrderItemPojo;
@@ -88,13 +89,28 @@ public class OrderItemDto {
         validateCheck(form);
     }
 
+    public void validateUpdate(@RequestBody OrderItemForm f) throws ApiException {
+        emptyCheck(f);
+        validateUpdateCheck(f);
+    }
+
     public void addAll(@RequestBody List<OrderItemForm> list) throws ApiException {
         for(OrderItemForm f: list){
             add(f);
         }
-
     }
 
+    public void validateUpdateCheck(OrderItemForm f) throws ApiException {
+        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
+        int productId = flowService.getProductIdByBarcode(f.getBarcode());
+        int quantity = flowService.getInventoryByProductId(productId);
+
+        if(quantity < f.getQuantity())
+            throw new ApiException("Ordered quantity is more than existing inventory");
+        double sellPrice = f.getSellingPrice();
+        if(p.getMrp() < sellPrice)
+            throw new ApiException("Selling Price is more than MRP of Product.");
+    }
 
     private  OrderItemData convert(OrderItemPojo p) {
         OrderItemData d = new OrderItemData();

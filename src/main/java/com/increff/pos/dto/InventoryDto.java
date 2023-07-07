@@ -4,6 +4,7 @@ import com.increff.pos.model.*;
 import com.increff.pos.model.InventoryForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
+import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.flow.InventoryFlowService;
@@ -27,16 +28,12 @@ public class InventoryDto {
     @Autowired
     private InventoryFlowService flowService;
 
-    public void delete(@PathVariable int id) throws ApiException {
-        service.delete(id);
-    }
-
     public InventoryData get(@PathVariable int id) throws ApiException {
         InventoryPojo p = service.get(id);
         return convert(p);
     }
 
-    public List<InventoryData> getAll() {
+    public List<InventoryData> getAll() throws ApiException {
         List<InventoryPojo> list = service.getAll();
         List<InventoryData> list2 = new ArrayList<InventoryData>();
         for (InventoryPojo p : list) {
@@ -45,8 +42,8 @@ public class InventoryDto {
         return list2;
     }
 
-    public void update(@PathVariable int id, @RequestBody InventoryForm f, String method) throws ApiException {
-        InventoryPojo p = convert(f,method);
+    public void update(@PathVariable int id, @RequestBody InventoryForm f) throws ApiException {
+        InventoryPojo p = convert(f,"update");
         service.update(id, p);
     }
 
@@ -55,7 +52,7 @@ public class InventoryDto {
        service.update(p.getId(),p);
     }
 
-    public List<InventoryReportData> getReports(){
+    public List<InventoryReportData> getReports() throws ApiException {
         List<InventoryReportData> list = new ArrayList<>();
         List<InventoryPojo> list2 = service.getAll();
         for (InventoryPojo p : list2) {
@@ -154,9 +151,9 @@ public class InventoryDto {
         }
     }
 
-    private InventoryReportData convertInventoryToReportForm(InventoryPojo inv){
+    private InventoryReportData convertInventoryToReportForm(InventoryPojo inv) throws ApiException {
         BrandPojo p = flowService.getBrandByProductId(inv.getId());
-        String productBarcode = flowService.getProductBarcodeById(inv.getId());
+        String productBarcode = flowService.getProductById(inv.getId()).getBarcode();
         InventoryReportData f = new InventoryReportData();
         f.setQuantity(inv.getQuantity());
         f.setBrand(p.getBrand());
@@ -165,9 +162,9 @@ public class InventoryDto {
         f.setBarcode(productBarcode);
         return f;
     }
-    private  InventoryData convert(InventoryPojo p) {
+    private  InventoryData convert(InventoryPojo p) throws ApiException {
         InventoryData d = new InventoryData();
-        String barcode = flowService.getProductBarcodeById(p.getId());
+        String barcode = flowService.getProductById(p.getId()).getBarcode();
         d.setBarcode(barcode);
         d.setQuantity(p.getQuantity());
         d.setId(p.getId());
@@ -175,19 +172,19 @@ public class InventoryDto {
     }
 
     private boolean checkProductExistsUpload(InventoryForm f){
-        int id = flowService.getProductIdByBarcode(f.getBarcode());
-        if(id < 0) return false;
+        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
+        if(p == null) return false;
         return true;
     }
     private void checkProductExists(InventoryForm f) throws ApiException {
-        int id = flowService.getProductIdByBarcode(f.getBarcode());
-        if(id < 0)
+        ProductPojo p  = flowService.getProductByBarcode(f.getBarcode());
+        if(p == null)
             throw new ApiException("Product barcode is not valid");
     }
 
     private  InventoryPojo convert(InventoryForm f,String method) throws ApiException {
         normalize(f);
-        int id = flowService.getProductIdByBarcode(f.getBarcode());
+        int id = flowService.getProductByBarcode(f.getBarcode()).getId();
         int quantity = 0;
         InventoryPojo invPojo = service.get(id);
 

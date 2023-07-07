@@ -31,16 +31,22 @@ public class OrderTableItemApiController {
         dto.delete(id);
     }
 
+    @ApiOperation(value = "Deletes entire order-table-item based on user id")
+    @RequestMapping(path = "/api/order-table-item/all/{id}", method = RequestMethod.DELETE)
+    public void deleteAll(@PathVariable int id) throws ApiException {
+        dto.deleteAll(id);
+    }
+
     @ApiOperation(value = "Gets an order-table-item by ID")
     @RequestMapping(path = "/api/order-table-item/{id}", method = RequestMethod.GET)
     public OrderTableItemData get(@PathVariable int id) throws ApiException {
         return dto.get(id);
     }
 
-    @ApiOperation(value = "Gets list of all order-table-items")
-    @RequestMapping(path = "/api/order-table-item", method = RequestMethod.GET)
-    public List<OrderTableItemData> getAll() {
-        return dto.getAll();
+    @ApiOperation(value = "Gets list of all order-table-items based on user id")
+    @RequestMapping(path = "/api/order-table-item/all/{id}", method = RequestMethod.GET)
+    public List<OrderTableItemData> getAll(@PathVariable int id) throws ApiException {
+        return dto.getAll(id);
     }
 
     @ApiOperation(value = "Updates an order-table-item")

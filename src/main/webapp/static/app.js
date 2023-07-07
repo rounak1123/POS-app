@@ -53,3 +53,14 @@ function writeFileData(data){
     tempLink.setAttribute('download', 'errorFile.tsv');
     tempLink.click(); 
 }
+
+
+function init(){
+
+  if(user_role == 'standard'){
+  $(".access-supervisor").hide();
+  }
+}
+
+$(document).ready(init);
+

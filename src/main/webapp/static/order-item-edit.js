@@ -97,8 +97,8 @@ function displayOrderItemList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')"><i class="fas fa-edit fa-sm"></i></button>'
-            buttonHtml += ' <button onclick="deleteOrderItem(' + e.id + ')" ><i class="fas fa-trash fa-sm"></i></button>'
+		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')" class="btn btn-primary"><i class="fas fa-edit fa-sm"></i></button>'
+            buttonHtml += ' <button onclick="deleteOrderItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
           table.row.add([
             e.barcode,
             e.quantity,
@@ -152,7 +152,11 @@ var table;
 
 function initDatatable(){
             table = $('#order-item-table').DataTable(
-              {dom: 'lrtip'}
+                    {dom: 'lrtip',
+                     paging: false,
+                     scrollY: '450px',
+                     scrollColapse: 'true',
+                     }
             );
 
 }

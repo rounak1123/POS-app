@@ -79,9 +79,9 @@ public class OrderDto {
     }
 
     public InvoiceData convertInvoice(OrderPojo p) throws ApiException {
+
         String invoiceNumber = "INV-"+p.getId();
-        // Create DateTimeFormatter instance with specified format
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = p.getTime().format(dateTimeFormatter);
         List<InvoiceItem> list = flowService.getInvoiceItemList(p.getId());
 

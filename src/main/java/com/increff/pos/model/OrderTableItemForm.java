@@ -8,4 +8,5 @@ public class OrderTableItemForm {
     private String barcode;
     private double sellingPrice;
     private int quantity;
+    private int  userId;
 }

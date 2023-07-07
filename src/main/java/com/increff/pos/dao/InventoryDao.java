@@ -21,7 +21,7 @@ public class InventoryDao extends AbstractDao {
     private EntityManager em;
 
     @Transactional
-    public void insert(InventoryPojo p) {
+    public void add(InventoryPojo p) {
         em.persist(p);
     }
 
@@ -44,16 +44,4 @@ public class InventoryDao extends AbstractDao {
 
     public void update(InventoryPojo p) {
     }
-
-    public InventoryPojo getInventoryByProductId(int productId){
-
-        TypedQuery<InventoryPojo> query = getQuery(select_id, InventoryPojo.class);
-        query.setParameter("id", productId);
-        return getSingle(query);
-
-    }
-
-
-
-
 }

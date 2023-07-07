@@ -8,10 +8,14 @@
 <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Inconsolata&family=Roboto+Slab&display=swap" rel="stylesheet">
 <link rel="stylesheet" th:href="@{/static/app.css}">
   <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 </head>
 
@@ -34,7 +38,7 @@
 
 <header th:fragment="index_nav_bar" class="header-navbar">
   <!--NavBar-->
-  <div class="logo"><a href=""><img src="../static/logo-increff.png" class="logo-increff-index"><strong><span >smart-POS</span></strong></a></div>
+  <div class="logo"><a href=""><img src="../static/img_2.png" class="logo-increff-index"><strong><span >SMART-POS</span></strong></a></div>
   <div class="burger "><i class="ri-menu-line icon"></i></div>
   <nav class="navbar">
     <ul class="icons">
@@ -57,7 +61,7 @@
 
 
 <nav class="header-navbar navbar navbar-expand-lg navbar-light bg-light mb-1" th:fragment="name_site_navbar">
-  <a class="navbar-brand" th:href="@{/}">
+  <a class="navbar-logo-name" th:href="@{/}">
     <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
   </a>
 
@@ -84,7 +88,7 @@
 </nav>
 
 <nav class="header-navbar navbar navbar-expand-lg navbar-light bg-light  mb-1" th:fragment="name_app_navbar">
-  <a class="navbar-brand" th:href="@{/}">
+  <a class="navbar-logo-name" th:href="@{/}">
     <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
   </a>
 
@@ -126,8 +130,8 @@
 <header th:fragment="site_nav_bar_imp" class="header-navbar">
   <!--NavBar-->
   <div class="logo">
-    <a class="navbar-brand" th:href="@{/}">
-      <img th:src="@{/static/logo-increff.png}" class="logo-increff-home"> <span >smart-POS</span>
+    <a class="navbar-logo-name" th:href="@{/}">
+      <img th:src="@{/static/img_2.png}" class="logo-increff-home"> <span >SMART-POS</span>
     </a>
   </div>
   <div class="burger "><i class="ri-menu-line icon"></i></div>
@@ -151,7 +155,7 @@
             <li>Inventory</li></a>
 
         <div class="dropdown">
-          <div class="dropdown-toggle" type="button" id="dropdownMenuButtonOrder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div class="dropdown-toggle " type="button" id="dropdownMenuButtonOrder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Orders
           </div>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -162,11 +166,12 @@
 
 
         <div class="dropdown">
-          <div class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div class="dropdown-toggle access-supervisor" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Reports
           </div>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" th:href="@{/ui/report/sales}">Sales Report</a>
+            <a class="dropdown-item" th:href="@{/ui/report/day-sales}">Daily Sales Report</a>
             <a class="dropdown-item" th:href="@{/ui/report/brand}">Brand Report</a>
             <a class="dropdown-item" th:href="@{/ui/report/inventory}">Inventory Report</a>
           </div>
@@ -200,6 +205,9 @@
 
 <footer class="footer  mt-1" id="footer" th:fragment="name_footer">
 	Copyright Increff 2023
+    <script>
+      	    var user_role = '[[${info.getRole()}]]';
+    </script>
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/7b294536da.js" crossorigin="anonymous"></script>

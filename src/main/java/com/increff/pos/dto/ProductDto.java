@@ -36,16 +36,12 @@ public class ProductDto {
         flowService.addInventory(id);
     }
 
-    public void delete(@PathVariable int id) {
-        service.delete(id);
-    }
-
     public ProductData get(@PathVariable int id) throws ApiException {
         ProductPojo p = service.get(id);
         return convert(p);
     }
 
-    public List<ProductData> getAll() {
+    public List<ProductData> getAll() throws ApiException {
         List<ProductPojo> list = service.getAll();
         List<ProductData> list2 = new ArrayList<ProductData>();
         for (ProductPojo p : list) {
@@ -55,6 +51,8 @@ public class ProductDto {
     }
 
     public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
+        emptyCheck(f);
+        normalize(f);
         ProductPojo p = convert(f);
         service.update(id, p);
     }
@@ -83,9 +81,7 @@ public class ProductDto {
 
         for(int i=0; i< productList.size();i++){
             normalize(productList.get(i));
-            System.out.println("normalizaataoin done");
             String error = validate(productList.get(i));
-            System.out.println("validation done");
             if(StringUtil.isEmpty(error) == false)
                 errorCount++;
             ErrorProductData data = new ErrorProductData();
@@ -109,6 +105,28 @@ public class ProductDto {
             add(productList.get(i));
         }
 
+    }
+
+    public List<ProductData> search(ProductForm f) {
+        List<Object[]> list = service.search(f.getBrand(), f.getCategory(), f.getName(), f.getBarcode());
+        return convert(list);
+    }
+
+    // CONVERSION METHODS FROM ONE FORM TO ANOTHER
+    private List<ProductData>  convert(List<Object[]> objList){
+        System.out.println("object list length"+objList.toArray().length);
+        List<ProductData> list = new ArrayList<>();
+        for(Object[] obj : objList){
+            ProductData data = new ProductData();
+            data.setId((int) obj[0]);
+            data.setBarcode((String) obj[1]);
+            data.setBrand((String) obj[2]);
+            data.setCategory((String) obj[3]);
+            data.setName((String) obj[4]);
+            data.setMrp((double) obj[5]);
+            list.add(data);
+        }
+        return list;
     }
 
     private List<ProductForm> convertTsvToForm(MultipartFile file) throws ApiException{
@@ -166,10 +184,11 @@ public class ProductDto {
         }
     }
 
-    public ProductData convert(ProductPojo p) {
+    public ProductData convert(ProductPojo p) throws ApiException {
         ProductData d = new ProductData();
-        String brand = flowService.getBrand(p.getBrand_category_id());
-        String category = flowService.getCategory(p.getBrand_category_id());
+        BrandPojo brandPojo = flowService.getBrandCategory(p.getBrand_category_id());
+        String brand = brandPojo.getBrand();
+        String category = brandPojo.getCategory();
         d.setBarcode(p.getBarcode());
         d.setBrand(brand);
         d.setCategory(category);
@@ -184,11 +203,11 @@ public class ProductDto {
     public ProductPojo convert(ProductForm f) throws ApiException{
         normalize(f);
         ProductPojo p = new ProductPojo();
-        int brandCategoryId = flowService.getBrandCategoryId(f.getBrand(), f.getCategory());
-        if(brandCategoryId == -1)
+        BrandPojo b = flowService.get(f.getBrand(), f.getCategory());
+        if(b==null)
             throw new ApiException("Brand Category doesn't exists");
         p.setBarcode(f.getBarcode());
-        p.setBrand_category_id(brandCategoryId);
+        p.setBrand_category_id(b.getId());
         p.setName(f.getName());
         p.setMrp(f.getMrp());
 
@@ -198,16 +217,18 @@ public class ProductDto {
     public ProductPojo convertForUpload(ProductForm f) throws ApiException{
         normalize(f);
         ProductPojo p = new ProductPojo();
-        int brandCategoryId = flowService.getBrandCategoryId(f.getBrand(), f.getCategory());
-        if(brandCategoryId == -1)
+        BrandPojo b = flowService.get(f.getBrand(), f.getCategory());
+        if(b == null)
             return null;
         p.setBarcode(f.getBarcode());
-        p.setBrand_category_id(brandCategoryId);
+        p.setBrand_category_id(b.getId());
         p.setName(f.getName());
         p.setMrp(f.getMrp());
 
         return p;
     }
+
+    // CHECKS FOR EMPTY AND NORMALIZATION
 
     public void normalize(ProductForm f) throws ApiException {
         f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
@@ -227,7 +248,7 @@ public class ProductDto {
     }
 
     public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_\\s";
+        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
         String patternString = "[^" + allowedCharacters + "]";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);

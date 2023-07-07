@@ -64,6 +64,7 @@ function getBrandList(){
 	   success: function(data) {
 	        console.log('brand list', data);
 	   		displayBrandList(data);
+	   		updateBrandCategoryList(data);
 	   },
 	   error: handleAjaxError
 	});
@@ -131,7 +132,8 @@ function displayBrandList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')"><i class="fas fa-edit fa-sm"></i></button>'
+		var buttonHtml = '<button class="btn btn-primary mr-2 " onclick="displayEditBrand(' + e.id + ')" ><i class="fa fa-edit fa-sm text-white" ></i></button>' ;
+
 
           table.row.add([
             serialNo,
@@ -178,7 +180,7 @@ function updateUploadDialog(){
 
 function updateFileName(){
 	var $file = $('#brandFile');
-	var fileName = $file.val();
+var fileName = $file.val().split('\\').pop();
 	$('#brandFileName').html(fileName);
 }
 
@@ -197,7 +199,7 @@ function displayBrand(data){
 function updateBrandCategoryList(data) {
 
     brandData = [];
-    productData = [];
+    categoryData = [];
 
 	for(var i in data){
 		var e = data[i];
@@ -206,16 +208,20 @@ function updateBrandCategoryList(data) {
 	}
 
 	brandData = [...new Set(brandData)];
-	productData = [...new Set(productData)];
-	        $('#searchBrand').modal('toggle');
-	        var placeholder = "Select brand";
+	categoryData = [...new Set(categoryData)];
 
-            $(".brand-select").select2({
-                data: brandData,
-                placeholder: placeholder,
-                allowClear: false,
-                minimumResultsForSearch: 5
-            })
+	  var brandDropdown = $('#inputBrandSearch');
+      brandDropdown.empty();
+      brandDropdown.append($('<option></option>').val('').html('Select an option'));
+      $.each(brandData, function (i, brand){
+          brandDropdown.append($('<option></option>').val(brand).html(brand));
+      })
+        var categoryDropdown = $('#inputCategorySearch');
+        categoryDropdown.empty();
+        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+        $.each(categoryData, function (i, brand){
+            categoryDropdown.append($('<option></option>').val(brand).html(brand));
+        })
 }
 function openFilterModal() {
 	var url = getBrandUrl();
@@ -243,11 +249,41 @@ table.draw();
         $('#searchBrand').modal('toggle');
 }
 
+function searchBrandCategoryDropdown() {
+  console.log($("#inputBrandSearch").val(), $("#inputCategorySearch").val());
+    var brand = $("#inputBrandSearch").val();
+    var category = $("#inputCategorySearch").val();
+    var obj = {brand, category};
+
+    var url = getBrandUrl();
+    url+='/search';
+
+  	$.ajax({
+  	   url: url,
+  	   type: 'POST',
+  	   data: JSON.stringify(obj),
+  	   headers: {
+         	'Content-Type': 'application/json'
+         },
+  	   success: function(response) {
+  	   		displayBrandList(response);
+  	   		$("#brand-search-form")[0].reset();
+  	   },
+  	   error: handleAjaxError
+  	});
+}
+
 function initDatatable(){
             table = $('#brand-table').DataTable(
-              {dom: 'lrtip'}
+              {dom: 'lrtip',
+               paging: false,
+               scrollY: '450px',
+               scrollColapse: 'true',
+               }
             );
-
+        if(user_role == 'standard'){
+        table.column(3).visible(false);
+        }
 
         // Custom range filtering function
         $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
@@ -273,6 +309,49 @@ function initDatatable(){
 
 }
 
+//$(document).ready(function() {
+//  // When the first dropdown changes
+//  var brandDropdown = $('#inputBrandSearch');
+//  brandDropdown.empty();
+//  brandDropdown.append($('<option></option>').val('').html('Select an option'));
+//  $.each(brandData, function (i, brand){
+//      brandDropdown.append($('<option></option>').val(brand).html(brand));
+//  })
+//
+//    var categoryDropdown = $('#inputCategorySearch');
+//    categoryDropdown.empty();
+//    categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+//    $.each(categoryData, function (i, brand){
+//        brandDropdown.append($('<option></option>').val(brand).html(brand));
+//    })
+//
+
+
+//  $('#inputBrandSearch').change(function() {
+//    var selectedValue = $(this).val();
+//    var categoryDropdown = $('#inputCategory');
+//
+//    if (selectedValue != '' && selectedValue != null) {
+//      // Enable the second dropdown and make an AJAX call to fetch data
+//      categoryDropdown.prop('disabled', false);
+//      var categoryList = brandCategoryList.filter(function(data){
+//      return data.brand == selectedValue;
+//      });
+//      console.log(categoryList);
+//      categoryDropdown.empty();
+//      categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+//
+//      $.each(categoryList, function(key,value){
+//      categoryDropdown.append($('<option></option>').val(value.category).html(value.category));
+//      })
+//
+//    } else {
+//      categoryDropdown.prop('disabled', true);
+//    }
+//  });
+//});
+
+
 function init(){
     initDatatable();
 	$('#add-brand').click(addBrand);
@@ -282,7 +361,7 @@ function init(){
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
     $('#brandFile').on('change', updateFileName);
-    $('#search-brand-category').click(searchBrandCategory);
+    $('#search-brand-category').click(searchBrandCategoryDropdown);
     $('#filter-data').click(openFilterModal);
 }
 

@@ -5,28 +5,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
-//import controllerm.increff.employeeee.model.InfoData;
-//import com.increff.employee.util.SecurityUtil;
-//import com.increff.employee.util.UserPrincipal;
+import com.increff.pos.model.InfoData;
+import com.increff.pos.util.SecurityUtil;
+import com.increff.pos.util.UserPrincipal;
 
 @Controller
 public abstract class AbstractUiController {
 
 	@Autowired
-//	private InfoData info;
+	private InfoData info;
 
 	@Value("${app.baseUrl}")
 	private String baseUrl;
 
 	protected ModelAndView mav(String page) {
 		// Get current user
-//		UserPrincipal principal = SecurityUtil.getPrincipal();
+		UserPrincipal principal = SecurityUtil.getPrincipal();
 
-//		info.setEmail(principal == null ? "" : principal.getEmail());
+		info.setRole(principal == null ? "" : principal.getRole());
+		info.setEmail(principal == null ? "" : principal.getEmail());
+		info.setId(principal == null ? -1 : principal.getId());
+
 
 		// Set info
 		ModelAndView mav = new ModelAndView(page);
-//		mav.addObject("info", info);
+		mav.addObject("info", info);
 		mav.addObject("baseUrl", baseUrl);
 		return mav;
 	}

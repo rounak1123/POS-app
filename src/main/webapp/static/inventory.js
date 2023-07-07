@@ -1,4 +1,4 @@
-
+var table;
 function getInventoryUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/inventory";
@@ -92,11 +92,6 @@ function getInventoryList(){
 	});
 }
 
-
-$(document).ready( function () {
-    $('#inventory-table').DataTable();
-} );
-
 // FILE UPLOAD METHODS
 
 function processData(){
@@ -152,14 +147,12 @@ function downloadErrors(){
 //UI DISPLAY METHODS
 
 function displayInventoryList(data){
-	var $tbody = $('#inventory-table').find('tbody');
-		 var table = $('#inventory-table').DataTable();
 	table.clear().draw();
 
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayAddInventory(' + e.id + ')">add <i class="fa fa-plus " ></i></button>'+
-		                 ' <button onclick="displayEditInventory(' + e.id + ')">edit <i class="fa fa-edit " ></i></button>'
+		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditInventory(' + e.id + ')" ><i class="fa fa-edit fa-sm text-white" ></i></button>' ;
+
           table.row.add([
             e.id,
             e.barcode,
@@ -167,18 +160,6 @@ function displayInventoryList(data){
             buttonHtml
           ]).draw();
 	}
-}
-
-function displayAddInventory(id){
-	var url = getInventoryUrl() + "/" + id;
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		displayInventory(data);
-	   },
-	   error: handleAjaxError
-	});
 }
 
 function displayEditInventory(id){
@@ -216,7 +197,7 @@ function updateUploadDialog(){
 
 function updateFileName(){
 	var $file = $('#inventoryFile');
-	var fileName = $file.val();
+var fileName = $file.val().split('\\').pop();
 	$('#inventoryFileName').html(fileName);
 }
 
@@ -235,13 +216,28 @@ function displayInventory(data){
 function displayInventoryEditModal(data){
 	$("#inventory-edit-form input[name=id]").val(data.id);
 	$("#inventory-edit-form input[name=barcode]").val(data.barcode);
-	$("#inventory-edit-form input[name=quantity]").val(0);
+	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
 	$('#edit-inventory-modal').modal('toggle');
 }
 
 
 //INITIALIZATION CODE
+ function initDatatable() {
+    table = $('#inventory-table').DataTable(
+                  {dom: 'lrtip',
+                   paging: false,
+                   scrollY: '450px',
+                   scrollColapse: 'true',
+                   });
+
+   if(user_role == 'standard'){
+     table.column(3).visible(false);
+    }
+} ;
+
+
 function init(){
+    initDatatable();
 	$('#add-inventory').click(addInventory);
 	$('#update-inventory').click(updateInventory);
 	$('#refresh-data').click(getInventoryList);

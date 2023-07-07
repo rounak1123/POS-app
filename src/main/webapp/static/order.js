@@ -1,5 +1,6 @@
 var table;
 var counter=0;
+var barcodeList = [];
 
 function getOrderItemUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -16,24 +17,37 @@ function getOrderTableItemUrl() {
    	return baseUrl + "/api/order-table-item";
 }
 
+function getProductUrl() {
+   	var baseUrl = $("meta[name=baseUrl]").attr("content")
+   	return baseUrl + "/api/product";
+}
+
 //BUTTON ACTIONS
-//function addOrderItem(event){
-//  var barcode = $('#inputBarcode');
-//  var quantity = $('#inputQuantity');
-//  var sellingPrice = $('#inputSellingPrice');
-//
-//  var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')"><i class="fas fa-edit fa-sm"></i></button>';
-//          table.row.add([
-//            e.brand,
-//            e.quantity,
-//            e.sellingPrice,
-//            buttonHtml
-//          ]).draw();
-//
-//	//Set the values to update
-//
-//	return false;*/
-//}
+function addOrderTableItem(event){
+  var barcode = $("select[name='barcode']").val();
+  var quantity = $("input[name='quantity']").val();
+  var sellingPrice = $("input[name='sellingPrice']").val();
+  var url = getOrderTableItemUrl();
+  var obj = {barcode, quantity, sellingPrice, userId: user_id};
+
+  	$.ajax({
+  	   url: url,
+  	   type: 'POST',
+  	   data: JSON.stringify(obj),
+  	   headers: {
+         	'Content-Type': 'application/json'
+         },
+  	   success: function(response) {
+  	   		getOrderItemList();
+            console.log(response);
+  	   },
+  	   error: handleAjaxError
+  	});
+        $("input[name='barcode']").val('');
+        $("input[name='quantity']").val('');
+        $("input[name='sellingPrice']").val('');
+	return false;
+}
 
 function updateOrderItemDetails(event){
 	$('#edit-item-modal').modal('toggle');
@@ -64,6 +78,8 @@ function updateOrderItemDetails(event){
 
 function getOrderItemList(){
 	var url = getOrderTableItemUrl();
+	url+='/all/'+user_id;
+
 	$.ajax({
 	   url: url,
 	   type: 'GET',
@@ -73,6 +89,25 @@ function getOrderItemList(){
 	   },
 	   error: handleAjaxError
 	});
+}
+
+function setBarcodeDropdown(){
+   var url = getProductUrl();
+   var barcodeDropdown = $('#inputBarcode');
+   barcodeDropdown.empty();
+ $.ajax({
+   url: url,
+   type: 'GET',
+   success: function(data){
+   barcodeDropdown.append($('<option></option>').val('').html('Select an option'));
+   $.each(data, function (i, product){
+       console.log(product);
+       barcodeDropdown.append($('<option></option>').val(product.barcode).html(product.barcode));
+   })
+
+   },
+   error: handleAjaxError
+ })
 }
 
 //@TODO createOrder
@@ -91,13 +126,15 @@ $('#order-table tbody tr').each(function() {
     data.push(row);
 });
 console.log(data);
+clearOrder();
 $.ajax({
     url: '/api/order-item/all',
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify(data),
     success: function(response) {
-    console.log("Order Items added successfully to the database");
+    $.notify("Order Items added successfully to the database", "success");
+    console.log("order added to database");
     },
     error: handleAjaxError
 });
@@ -161,9 +198,6 @@ console.log('inPlace order')
      addOrderItems(response.id);
      setStatusInvoiced(response.id);
     window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
-
-
-
      },
      error: handleAjaxError
  });
@@ -175,19 +209,27 @@ console.log('inPlace order')
 //UI DISPLAY METHODS
 
 function displayOrderItemList(data){
-	var $tbody = $('#order-table').find('tbody');
-	$tbody.empty();
+//	var $tbody = $('#order-table').find('tbody');
+//	$tbody.empty();
+    table.clear().draw();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayEditItem(' + e.id + ')">edit</button>'
-		var row = '<tr>'
-		+ '<td>' + e.id + '</td>'
-		+ '<td>' + e.barcode + '</td>'
-		+ '<td>'  + e.quantity + '</td>'
-		+ '<td>'  + e.sellingPrice + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
-		+ '</tr>';
-        $tbody.append(row);
+		var buttonHtml = ' <button onclick="displayEditItem(' + e.id + ')" class="btn btn-primary"><i class="fas fa-edit fa-sm"></i></button>';
+		 buttonHtml += ' <button onclick="deleteTableItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
+
+//		var row = '<tr>'
+//		+ '<td>' + e.barcode + '</td>'
+//		+ '<td>'  + e.quantity + '</td>'
+//		+ '<td>'  + e.sellingPrice + '</td>'
+//		+ '<td>' + buttonHtml + '</td>'
+//		+ '</tr>';
+//        $tbody.append(row);
+          table.row.add([
+            e.barcode,
+            e.quantity,
+            e.sellingPrice,
+            buttonHtml
+          ]).draw();
 	}
 }
 
@@ -198,6 +240,18 @@ function displayEditItem(id){
 	   type: 'GET',
 	   success: function(data) {
 	   		displayItem(data);
+	   },
+	   error: handleAjaxError
+	});
+}
+
+function deleteTableItem(id){
+	var url = getOrderTableItemUrl() + "/" + id;
+	$.ajax({
+	   url: url,
+	   type: 'DELETE',
+	   success: function(data) {
+	   getOrderItemList();
 	   },
 	   error: handleAjaxError
 	});
@@ -222,7 +276,7 @@ function displayItem(data){
 // Create Order Dynamic Table
 
 function addOrderItemToTable(){
-        var barcode = $("input[name='barcode']").val();
+        var barcode = $("select[name='barcode']").val();
         var quantity = $("input[name='quantity']").val();
         var sellingPrice = $("input[name='sellingPrice']").val();
        console.log(barcode,quantity,sellingPrice);
@@ -233,7 +287,7 @@ function addOrderItemToTable(){
         $("input[name='sellingPrice']").val('');
 }
 function addOrderItem() {
-
+    addOrderTableItem();
     var $form = $("#item-form");
 	var json = toJson($form);
 	var url = getOrderItemUrl();
@@ -308,17 +362,19 @@ console.log('in add order item');
                	'Content-Type': 'application/json'
                },
         	   success: function(response) {
-        	           $(this).parents("tr").find("td:eq(0)").text(barcode);
-                       $(this).parents("tr").find("td:eq(1)").text(quantity);
-                       $(this).parents("tr").find("td:eq(2)").text(sellingPrice);
+        	     $.notify("updated the item successfully.", "success" );
 
-                       $(this).parents("tr").attr('data-barcode', barcode);
-                       $(this).parents("tr").attr('data-quantity', quantity);
-                       $(this).parents("tr").attr('data-sellingPrice', sellingPrice);
         	   },
-        	   error: handleAjaxError
+        	   error: function(response){
+        	   handleAjaxError(response);
+         barcode = $(this).parents("tr").attr('data-barcode');
+         quantity = $(this).parents("tr").attr('data-quantity');
+         sellingPrice = $(this).parents("tr").attr('data-sellingPrice');
+        	   }
         	});
-
+        $(this).parents("tr").find("td:eq(0)").text(barcode);
+        $(this).parents("tr").find("td:eq(1)").text(quantity);
+        $(this).parents("tr").find("td:eq(2)").text(sellingPrice);
 
         $(this).parents("tr").find(".btn-edit").show();
         $(this).parents("tr").find(".btn-cancel").remove();
@@ -327,13 +383,39 @@ console.log('in add order item');
 
 
 function clearOrder(){
-$("#order-table").find("tr:gt(0)").remove();
+
+	var url = getOrderTableItemUrl();
+	url+='/all/'+user_id;
+    console.log('in clear order');
+	$.ajax({
+	   url: url,
+	   type: 'DELETE',
+	   success: function(data) {
+	        console.log('Order Item list', data);
+	   		displayOrderItemList(data);
+	   },
+	   error: handleAjaxError
+	});
 }
 
 //INITIALIZATION CODE
+
+function initDatatable(){
+            table = $('#order-table').DataTable(
+              {
+               dom: 'lrtip',
+               paging: false,
+               scrollY: '450px',
+               scrollColapse: 'true',
+               }
+            );
+}
+
 function init(){
-//    initDatatable();
-	$('#add-item').click(addOrderItem);
+    initDatatable();
+    setBarcodeDropdown();
+//	$('#add-item').click(addOrderItem);
+	$('#add-item').click(addOrderTableItem);
 	$('#update-item').click(updateOrderItemDetails);
 	$('#refresh-data').click(getOrderItemList);
 	$('#save-order').click(saveOrder);

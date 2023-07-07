@@ -27,14 +27,24 @@ public class OrderTableItemService {
         dao.delete(id);
     }
 
+    @Transactional
+    public void deleteAll(int id)  throws ApiException{
+        dao.deleteAll(id);
+    }
+
     @Transactional(rollbackOn = ApiException.class)
     public OrderTableItemPojo get(int id) throws ApiException {
         return getCheck(id);
     }
 
+    @Transactional(rollbackOn = ApiException.class)
+    public OrderTableItemPojo get(int userId, int productId) throws ApiException {
+        return dao.getOrderTableItemByBarcode(userId,productId);
+    }
+
     @Transactional
-    public List<OrderTableItemPojo> getAll() {
-        return dao.selectAll();
+    public List<OrderTableItemPojo> getAll(int id) {
+        return dao.selectAll(id);
     }
 
     @Transactional(rollbackOn  = ApiException.class)

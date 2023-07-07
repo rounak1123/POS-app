@@ -42,11 +42,11 @@ button {
     margin: 0;
     list-style-type: none;
     text-decoration: none;
-    font-family: copperplate;
+    font-family: "Inconsolata", copperplate;
     /* color: white; */
 }
 body {
-  font-family: copperplate;
+  font-family: "Inconsolata", copperplate;
   color: black;
 }
 a {
@@ -75,6 +75,7 @@ header {
     display: inline-block;
     padding: 10px;
     font-size: 1.7rem;
+    color: white;
 
 }
 
@@ -136,11 +137,12 @@ header {
     padding: 20px;
 }
 
-.links a li {
-    font-size: 1.7rem;
+.links a li, #dropdownMenuButtonOrder, #dropdownMenuButton {
+    font-size: 23px;
     display: inline-block;
     padding: 2px;
     position: relative;
+        color: white;
 }
 
 .links a li::after {
@@ -213,7 +215,7 @@ header {
 text-decoration: none!important;
     color: #446e73;
     font-size: 40px;
-    font-family: copperplate;
+    font-family:  copperplate;
 
 }
 
@@ -270,10 +272,6 @@ color: black;
 color: white;
 }
 
-a {
-color: white;
-}
-
 .home-image {
 width: 50%;
 position: absolute;
@@ -319,9 +317,13 @@ margin: 0.6rem;
 
 /* logo increff */
 .logo-increff-index {
-width: 10%;
+width: 35px;
 }
 
 .logo-increff-home {
-width: 15%;
+width: 35px;
+}
+
+.navbar-logo-name {
+color: white;
 }

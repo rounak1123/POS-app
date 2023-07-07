@@ -76,12 +76,12 @@ function displayOrderList(data){
 
 		var buttonHtml ;
 		if(e.status == 'Active'|| e.status == 'active' || e.status == null){
-		buttonHtml = '<button class="btn btn-primary mr-2" ><i class="fa fa-edit fa-sm onclick="editOrder(' + e.id + ')"></i></button>';
-		buttonHtml+= '<button class="btn btn-primary" onclick="generateInvoice(' + e.id + ')">Generate <i class="fa fa-folder-plus"></i></button>';
+		buttonHtml = '<button class="btn btn-primary mr-2" onclick="viewOrder(' + e.id + ')"><i class="fa fa-eye fa-sm" ></i></button><button class="btn btn-primary mr-2" onclick="editOrder(' + e.id + ')" ><i class="fa fa-edit fa-sm" ></i></button>' ;
+		buttonHtml+= '<button class="btn btn-success" onclick="generateInvoice(' + e.id + ')">Generate <i class="fa fa-folder-plus"></i></button>';
 		}
 		else{
-		buttonHtml = '<button class="btn btn-primary mr-2" ><i class="fa fa-eye fa-sm onclick="viewOrder(' + e.id + ')"></i></button>';
-		buttonHtml+= '<button class="btn btn-success" onclick="downloadGeneratedInvoice(' + e.id + ')">Download <i class="fa fa-download fa-sm"></i></button>';
+		buttonHtml = '<button class="btn btn-primary mr-2" onclick="viewOrder(' + e.id + ')"><i class="fa fa-eye fa-sm" ></i></button><button class="btn btn-primary mr-2" onclick="editOrder(' + e.id + ')" disabled><i class="fa fa-edit fa-sm"  ></i></button>';
+		 buttonHtml += '<button class="btn btn-success" onclick="downloadGeneratedInvoice(' + e.id + ')">Download <i class="fa fa-download fa-sm"></i></button>';
 		}
           console.log(e);
           table.row.add([
@@ -101,7 +101,11 @@ function displayOrderList(data){
 
 function init(){
     table = $('#order-view-table').DataTable(
-              {dom: 'lrtip'}
+              {dom: 'lrtip',
+               paging: false,
+               scrollY: '450px',
+               scrollColapse: 'true',
+               }
             );
     getOrderList();
 }

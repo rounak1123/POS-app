@@ -58,7 +58,7 @@ public class LoginController {
 	@RequestMapping(path = "/session/logout", method = RequestMethod.GET)
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) {
 		request.getSession().invalidate();
-		return new ModelAndView("redirect:/site/logout");
+		return new ModelAndView("redirect:/");
 	}
 
 	private static Authentication convert(UserPojo p) {
@@ -66,6 +66,7 @@ public class LoginController {
 		UserPrincipal principal = new UserPrincipal();
 		principal.setEmail(p.getEmail());
 		principal.setId(p.getId());
+		principal.setRole(p.getRole());
 
 		// Create Authorities
 		ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();

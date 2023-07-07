@@ -86,7 +86,11 @@ var table;
 
 function initDatatable(){
             table = $('#order-item-table').DataTable(
-              {dom: 'lrtip'}
+                            {dom: 'lrtip',
+                             paging: false,
+                             scrollY: '450px',
+                             scrollColapse: 'true',
+                             }
             );
 
 }

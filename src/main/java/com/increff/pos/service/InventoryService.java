@@ -14,11 +14,9 @@ public class InventoryService {
     @Autowired
     private InventoryDao dao;
 
-    @Transactional
-    public void delete(int id)  throws ApiException{
-        if(dao.select(id) != null)
-            throw  new ApiException("Brand doesn't exists");
-        dao.delete(id);
+    @Transactional(rollbackOn = ApiException.class)
+    public void add(InventoryPojo p) throws ApiException {
+        dao.add(p);
     }
 
     @Transactional(rollbackOn = ApiException.class)

@@ -16,6 +16,8 @@ com/increff/pos/model/ErrorInventoryData.class
 com/increff/pos/model/SalesReportForm.class
 com/increff/pos/service/flow/ProductFlowService.class
 com/increff/pos/controller/AppUiController.class
+com/increff/pos/controller/UserApiController.class
+com/increff/pos/dto/UserDto.class
 com/increff/pos/service/flow/OrderTableItemFlowService.class
 com/increff/pos/pojo/OrderItemPojo.class
 com/increff/pos/model/BrandForm.class
@@ -38,6 +40,7 @@ com/increff/pos/dao/AbstractDao.class
 com/increff/pos/model/MessageData.class
 com/increff/pos/model/OrderData.class
 com/increff/pos/service/ApiException.class
+com/increff/pos/model/DaySalesData.class
 com/increff/pos/dto/OrderItemDto.class
 com/increff/pos/model/OrderForm.class
 com/increff/pos/model/ErrorBrandData.class

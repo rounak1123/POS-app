@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.dao.ProductDao;
+import com.increff.pos.model.ProductForm;
 import com.increff.pos.pojo.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
 
 	@Autowired
@@ -24,17 +26,15 @@ public class ProductService {
 
 	}
 
-	@Transactional
-	public void delete(int id) {
-		dao.delete(id);
-	}
-
 	@Transactional(rollbackOn = ApiException.class)
 	public ProductPojo get(int id) throws ApiException {
 		return getCheck(id);
 	}
 
-	@Transactional
+	public ProductPojo getProductByBarcode(String barcode){
+		return  dao.getProductByBarcode(barcode);
+	}
+
 	public List<ProductPojo> getAll() {
 		return dao.selectAll();
 	}
@@ -57,7 +57,10 @@ public class ProductService {
 		return "";
 	}
 
-	@Transactional
+	public List<Object[]> search(String brand, String category, String name, String barcode) {
+		return dao.search(brand, category, name, barcode);
+	}
+
 	public ProductPojo getCheck(int id) throws ApiException {
 		ProductPojo p = dao.select(id);
 		if (p == null) {

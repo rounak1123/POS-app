@@ -10,7 +10,7 @@
 
 <div class="container">
 
-    <h3 class="inventory-header mt-2">Inventory Report
+    <h3 class="daily-sales-report-header mt-2">Daily Sales Report
     </h3>
 
     <!-- Blank Row -->
@@ -21,14 +21,13 @@
 
         <!-- Table -->
         <div class="col-12">
-            <table class="table table-striped" id="inventory-table">
+            <table class="table table-striped" id="daily-sales-report-table">
                 <thead>
                 <tr>
-                    <th scope="col">Sl No.</th>
-                    <th scope="col">Barcode</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Total Orders</th>
+                    <th scope="col">Total Items</th>
+                    <th scope="col">Revenue Generated</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,7 +41,7 @@
 
 <footer th:replace="snippets.html :: name_footer"></footer>
 
-<script th:src="@{/static/inventory-report.js}"/></script>
+<script th:src="@{/static/daily-sales-report.js}"/></script>
 <script src="bootstrap-notify.js"></script>
 
 

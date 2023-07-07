@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class BrandService {
 
 	@Autowired
@@ -23,20 +24,23 @@ public class BrandService {
 	}
 
 	@Transactional
-	public void delete(int id)  throws ApiException{
-		if(dao.select(id) == null)
-			throw  new ApiException("Brand doesn't exists");
-		dao.delete(id);
-	}
-
-	@Transactional(rollbackOn = ApiException.class)
 	public BrandPojo get(int id) throws ApiException {
 		return getCheck(id);
 	}
 
 	@Transactional
+	public BrandPojo get(String  brand, String category) throws ApiException {
+		return dao.select(brand,category);
+	}
+
+
+
 	public List<BrandPojo> getAll() {
 		return dao.selectAll();
+	}
+
+	public List<BrandPojo> search(String brand, String category) {
+		return dao.search(brand,category);
 	}
 
 	@Transactional(rollbackOn  = ApiException.class)
@@ -48,7 +52,6 @@ public class BrandService {
 		dao.update(ex);
 	}
 
-	@Transactional
 	public BrandPojo getCheck(int id) throws ApiException {
 		BrandPojo p = dao.select(id);
 		if (p == null) {

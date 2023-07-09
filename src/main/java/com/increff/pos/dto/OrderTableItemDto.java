@@ -81,15 +81,19 @@ public class OrderTableItemDto {
         d.setBarcode(barcode);
         return d;
     }
-    // @TODO me
+
     private  OrderTableItemPojo convert(OrderTableItemForm f) throws ApiException{
         normalize(f);
         OrderTableItemPojo p = new OrderTableItemPojo();
-        int productId = flowService.getProductByBarcode(f.getBarcode()).getId();
+        ProductPojo productPojo = flowService.getProductByBarcode(f.getBarcode());
+        int productId = productPojo.getId();
         InventoryPojo invPojo = flowService.getInventoryByProductId(productId);
 
         if(f.getQuantity() > invPojo.getQuantity())
             throw new ApiException("Ordered quantity is more than available quantity of the product.");
+
+        if(f.getSellingPrice() > productPojo.getMrp())
+            throw new ApiException("Selling price is more than mrp of the product");
 
         p.setProduct_id(productId);
         p.setQuantity(f.getQuantity());
@@ -100,7 +104,6 @@ public class OrderTableItemDto {
     }
 
     public static void normalize(OrderTableItemForm f){
-
         f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim());
     }
 
@@ -108,7 +111,7 @@ public class OrderTableItemDto {
         if(StringUtil.isEmpty(f.getBarcode()))
             throw  new ApiException("Barcode cannot be empty.");
         if(f.getQuantity() <= 0)
-            throw  new ApiException("Invalid Quantity be empty");
+            throw  new ApiException("Invalid Quantity");
         if(f.getSellingPrice() <= 0)
             throw new ApiException("Invalid Selling Price");
     }

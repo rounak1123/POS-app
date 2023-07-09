@@ -32,8 +32,8 @@ public class BrandApiController {
 
 	@ApiOperation(value = "Adds an brand")
 	@PostMapping
-	public void add(@RequestBody BrandForm form) throws ApiException {
-		dto.add(form);
+	public int add(@RequestBody BrandForm form) throws ApiException {
+		return dto.add(form);
 	}
 
 	@ApiOperation(value = "Gets an brand by ID")
@@ -62,7 +62,7 @@ public class BrandApiController {
 
 	@ApiOperation(value = "Search based on brand and category.")
 	@PostMapping("/search")
-	public List<BrandPojo> search(@RequestBody BrandForm f) throws ApiException{
+	public List<BrandData> search(@RequestBody BrandForm f) throws ApiException{
 		return dto.search(f);
 	}
 

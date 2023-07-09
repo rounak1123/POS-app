@@ -28,6 +28,7 @@ function displayDaySalesReport(data){
                    paging: false,
                    scrollY: '450px',
                    scrollColapse: 'true',
+                   order: [[0,'desc']]
                    });
 	table.clear().draw();
    console.log(table);
@@ -37,9 +38,8 @@ function displayDaySalesReport(data){
             e.date,
             e.invoicedOrdersCount,
             e.invoicedItemsCount,
-            e.totalRevenue
+            e.totalRevenue.toFixed(2)
           ]).draw();
-          console.log(e.date,e.invoiced_items_count, e.invoiced_orders_count, e.total_revenue)
 	}
 }
 

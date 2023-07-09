@@ -39,7 +39,7 @@ function displaySalesReports(data){
             e.brand,
             e.category,
             e.quantity,
-            e.revenue
+            e.revenue.toFixed(2)
           ]).draw();
 	}
 }

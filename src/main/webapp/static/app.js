@@ -56,10 +56,6 @@ function writeFileData(data){
 
 
 function init(){
-
-  if(user_role == 'standard'){
-  $(".access-supervisor").hide();
-  }
 }
 
 $(document).ready(init);

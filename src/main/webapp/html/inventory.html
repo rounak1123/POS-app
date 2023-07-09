@@ -11,10 +11,10 @@
 <div class="container">
 
     <h3 class="inventory-header mt-2">Inventory Details
-
-                <button type="button" class="btn btn-primary inventory-header-child access-supervisor" id="refresh-data">Refresh</button>
                 &nbsp;
-                <button type="button" class="btn btn-primary inventory-header-child access-supervisor" id="upload-data">Upload</button>
+                <button th:if="${info.getRole() == 'admin'}" type="button" class="btn btn-info inventory-header-child" id="upload-data">Upload <span class="material-symbols-outlined">
+upload_file
+</span></button>
 
     </h3>
 
@@ -22,6 +22,58 @@
     <div class="row">
         &nbsp;
     </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <form class="form-inline" id="inventory-search-form">
+                <div class="form-group">
+                    <label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand</label>
+                    <div class="col-sm-10">
+
+                        <select id="inputBrandSearch" class="form-control" name="brand">
+                            <option value="">Select an option</option>
+                        </select>
+                        <!--						<input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter brand">-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputCategorySearch" class="col-sm-2 col-form-label">Category</label>
+                    <div class="col-sm-10">
+                        <select id="inputCategorySearch" class="form-control"  name="category">
+                            <option value="">Select an option</option>
+                        </select>
+                        <!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="inputProductNameSearch" class="col-sm-2 col-form-label">Product Name</label>
+                    <div class="col-sm-10">
+                        <select id="inputProductNameSearch" class="form-control"  name="productName">
+                            <option value="">Select an option</option>
+                        </select>
+                        <!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="inputBarcodeSearch" class="col-sm-2 col-form-label">Barcode</label>
+                    <div class="col-sm-10">
+                        <select id="inputBarcodeSearch" class="form-control"  name="barcode">
+                            <option value="">Select an option</option>
+                        </select>
+                        <!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+                    </div>
+
+                </div>
+                &nbsp;
+                <button type="button" class="btn btn-primary" id="search-inventory"><span class="material-symbols-outlined">
+tune
+</span> Filter </button>
+            </form>
+        </div>
+    </div>
+
     <div class="row">
 
         <!-- Table -->
@@ -31,6 +83,9 @@
                 <tr>
                     <th scope="col">Sl No.</th>
                     <th scope="col">Barcode</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Name</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Actions</th>
                 </tr>

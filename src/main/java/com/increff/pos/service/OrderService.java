@@ -71,6 +71,8 @@ public class OrderService {
         return p;
     }
 
+    // DOWNLOAD INVOICE METHODS
+
     @Transactional
     public ResponseEntity<Resource> downloadInvoice(InvoiceData invoiceData) throws IOException {
 

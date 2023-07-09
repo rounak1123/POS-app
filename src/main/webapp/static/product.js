@@ -275,14 +275,14 @@ function displayProductList(data){
 	table.clear().draw();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditProduct(' + e.id + ')" ><i class="fa fa-edit fa-sm text-white" ></i></button>' ;
+		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditProduct(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
           table.row.add([
             e.id,
             e.barcode,
             e.brand,
             e.category,
             e.name,
-            e.mrp,
+            e.mrp.toFixed(2),
             buttonHtml
           ]).draw();
 	}
@@ -348,7 +348,7 @@ function displayProduct(data){
     table = $('#product-table').DataTable(
                     {dom: 'lrtip',
                     paging: false,
-                    scrollY: '450px',
+                    scrollY: '400px',
                     scrollColapse: 'true',
                     }
     );

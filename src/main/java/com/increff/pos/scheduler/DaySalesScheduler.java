@@ -17,13 +17,13 @@ public class DaySalesScheduler {
     @Autowired
     private DaySalesSchedulerDao daySalesDao;
 
-    @Scheduled(cron="0 0 0 * * *")
+    @Scheduled(cron="0 0 * * * *")
     public void createDaySales()
     {
         LocalDate date = LocalDate.now();
        long invoiceCount =  daySalesDao.getInvoiceCount(date);
-       double revenue =  daySalesDao.getRevenue(date);
-       long itemsCount =  daySalesDao.getItemsCount(date);
+       long itemsCount =  invoiceCount == 0 ? 0: daySalesDao.getItemsCount(date);
+       double revenue =  invoiceCount == 0 ? 0: daySalesDao.getRevenue(date);
 
         DaySalesPojo salesPojo = new DaySalesPojo();
         salesPojo.setDate(LocalDate.now());

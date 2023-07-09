@@ -1,7 +1,7 @@
 <html>
 <head th:replace="snippets.html :: name_head_login"></head>
 <head>
-    <link th:href="@{/static/login_main.css}" rel="stylesheet">
+    <link th:href="@{/static/login-main.css}" rel="stylesheet">
 </head>
 <body>
 <section>
@@ -14,9 +14,9 @@
                     <input type="text" name="email" id= "email" placeholder="Email" />
                     <input type="password" name="password" id="password" placeholder="Password" />
                     <button type="submit" class="btn btn-primary" name="" value="login" > Login </button>
-                    <div class="card-footer text-danger">
-                        [[${info.getMessage()}]]
-                    </div>
+<!--                    <div class="card-footer text-danger">-->
+<!--                        [[${info.getMessage()}]]-->
+<!--                    </div>-->
                     <p class="signup">
                         Don't have an account ?
                         <a onclick="toggleForm();">Sign Up.</a>
@@ -43,6 +43,6 @@
     </div>
 </section>
 <footer th:replace="snippets.html :: name_footer"></footer>
-<script th:src="@{/static/login_main.js}"></script>
+<script th:src="@{/static/login-main.js}"></script>
 </body>
 </html>

@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-12">
             <form class="form-inline" id="item-form">
-                <button type="button" class="btn btn-success " id="create-new-order"  ><a th:href="@{/ui/order/new}" class="text-white">Create New Order</a></button>
+                <a th:href="@{/ui/order/new}" class="text-white"><button type="button" class="btn btn-success " id="create-new-order"  >Create New Order</button></a>
             </form>
         </div>
     </div>
@@ -84,6 +84,37 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" id="update-item">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Item View Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="order-item-view-modal" aria-labelledby="addBrandLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View Order Items</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped" id="order-item-view-table">
+                        <thead>
+                        <tr>
+                            <th scope="col" name="barcode">Barcode</th>
+                            <th scope="col" name="name">Name</th>
+                            <th scope="col" name="quantity">Quantity</th>
+                            <th scope="col" name="sellingPrice">Selling Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

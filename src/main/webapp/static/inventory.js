@@ -5,60 +5,12 @@ function getInventoryUrl(){
 }
 
 //BUTTON ACTIONS
-function addInventory(event){
-	//Set the values to update
-		$('#add-inventory-modal').modal('toggle');
-	var $form = $("#inventory-add-form");
-	var json = toJson($form);
-	var url = getInventoryUrl();
-     url+='/add';
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	   		getInventoryList();
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
-}
-
 function updateInventory(event){
+    console.log('in update')
 	$('#edit-inventory-modal').modal('toggle');
 	//Get the ID
 	var id = $("#inventory-edit-form input[name=id]").val();
 	var url = getInventoryUrl() + "/" + id;
-	//Set the values to update
-	var $form = $("#inventory-edit-form");
-	var json = toJson($form);
-
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	   		getInventoryList();
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
-}
-
-function addToInventory(event){
-	$('#edit-inventory-modal').modal('toggle');
-	//Get the ID
-	var id = $("#inventory-edit-form input[name=id]").val();
-	var url = getInventoryUrl() + "/" + id;
-	    url += "/add";
 	//Set the values to update
 	var $form = $("#inventory-edit-form");
 	var json = toJson($form);
@@ -87,9 +39,84 @@ function getInventoryList(){
 	   success: function(data) {
 	        console.log('inventory list', data);
 	   		displayInventoryList(data);
+	   		updateSearchList(data);
 	   },
 	   error: handleAjaxError
 	});
+}
+
+function updateSearchList(data){
+    brandData = [];
+    categoryData = [];
+    productNameData = [];
+    barcodeData = [];
+
+	for(var i in data){
+		var e = data[i];
+		brandData.push(e.brand);
+		categoryData.push(e.category);
+		productNameData.push(e.name);
+		barcodeData.push(e.barcode);
+	}
+    console.log(productNameData);
+
+	brandData = [...new Set(brandData)];
+	categoryData = [...new Set(categoryData)];
+	productNameData = [...new Set(productNameData)]
+
+	  var brandDropdown = $('#inputBrandSearch');
+      brandDropdown.empty();
+      brandDropdown.append($('<option></option>').val('').html('Select an option'));
+      $.each(brandData, function (i, brand){
+          brandDropdown.append($('<option></option>').val(brand).html(brand));
+      })
+        var categoryDropdown = $('#inputCategorySearch');
+        categoryDropdown.empty();
+        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+        $.each(categoryData, function (i, category){
+            categoryDropdown.append($('<option></option>').val(category).html(category));
+        })
+
+        var productDropdown = $('#inputProductNameSearch');
+              productDropdown.empty();
+              productDropdown.append($('<option></option>').val('').html('Select an option'));
+              $.each(productNameData, function (i, product){
+                  productDropdown.append($('<option></option>').val(product).html(product));
+              })
+        var barcodeDropdown = $('#inputBarcodeSearch');
+                barcodeDropdown.empty();
+                barcodeDropdown.append($('<option></option>').val('').html('Select an option'));
+                $.each(barcodeData, function (i, barcode){
+                    barcodeDropdown.append($('<option></option>').val(barcode).html(barcode));
+                })
+}
+
+
+function searchInventory() {
+  console.log($("#inputBrandSearch").val(), $("#inputCategorySearch").val());
+    var brand = $("#inputBrandSearch").val();
+    var category = $("#inputCategorySearch").val();
+    var name = $("#inputProductNameSearch").val();
+    var barcode = $("#inputBarcodeSearch").val();
+
+    var obj = {brand, category, name, barcode};
+
+    var url = getInventoryUrl();
+    url+='/search';
+
+  	$.ajax({
+  	   url: url,
+  	   type: 'POST',
+  	   data: JSON.stringify(obj),
+  	   headers: {
+         	'Content-Type': 'application/json'
+         },
+  	   success: function(response) {
+  	   		displayInventoryList(response);
+  	   		$("#inventory-search-form")[0].reset();
+  	   },
+  	   error: handleAjaxError
+  	});
 }
 
 // FILE UPLOAD METHODS
@@ -151,11 +178,14 @@ function displayInventoryList(data){
 
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditInventory(' + e.id + ')" ><i class="fa fa-edit fa-sm text-white" ></i></button>' ;
+		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditInventory(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
 
           table.row.add([
             e.id,
             e.barcode,
+            e.brand,
+            e.category,
+            e.name,
             e.quantity,
             buttonHtml
           ]).draw();
@@ -226,7 +256,7 @@ function displayInventoryEditModal(data){
     table = $('#inventory-table').DataTable(
                   {dom: 'lrtip',
                    paging: false,
-                   scrollY: '450px',
+                   scrollY: '400px',
                    scrollColapse: 'true',
                    });
 
@@ -238,8 +268,8 @@ function displayInventoryEditModal(data){
 
 function init(){
     initDatatable();
-	$('#add-inventory').click(addInventory);
 	$('#update-inventory').click(updateInventory);
+    $('#search-inventory').click(searchInventory);
 	$('#refresh-data').click(getInventoryList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);

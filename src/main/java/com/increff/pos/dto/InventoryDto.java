@@ -43,6 +43,7 @@ public class InventoryDto {
     }
 
     public void update(@PathVariable int id, @RequestBody InventoryForm f) throws ApiException {
+        validateDataCheck(f);
         InventoryPojo p = convert(f,"update");
         service.update(id, p);
     }
@@ -61,16 +62,84 @@ public class InventoryDto {
         return list;
     }
 
-
-    public String validate(InventoryForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
-            return "invalid or empty fields";
-        if(checkProductExistsUpload(f) == false)
-            return "Product with given barcode doesn't exists";
-        return "";
+    public List<InventoryData> search(InventorySearchForm f) throws ApiException {
+        List<InventoryPojo> list =  service.search(f.getBarcode(),f.getName(),f.getBrand(), f.getCategory());
+        List<InventoryData> list2 = new ArrayList<InventoryData>();
+        for (InventoryPojo p : list) {
+            list2.add(convert(p));
+        }
+        return list2;
     }
 
+
     public void upload( MultipartFile file) throws ApiException{
+       processUpload(file);
+    }
+
+
+    // CONVERSION METHODS
+
+    private InventoryReportData convertInventoryToReportForm(InventoryPojo inv) throws ApiException {
+        BrandPojo p = flowService.getBrandByProductId(inv.getId());
+        String productBarcode = flowService.getProductById(inv.getId()).getBarcode();
+        InventoryReportData f = new InventoryReportData();
+        f.setQuantity(inv.getQuantity());
+        f.setBrand(p.getBrand());
+        f.setCategory(p.getCategory());
+        f.setId(inv.getId());
+        f.setBarcode(productBarcode);
+        return f;
+    }
+    private  InventoryData convert(InventoryPojo p) throws ApiException {
+        InventoryData d = new InventoryData();
+        ProductPojo prodPojo  = flowService.getProductById(p.getId());
+        BrandPojo brandPojo = flowService.getBrandByProductId(p.getId());
+        String barcode = prodPojo.getBarcode();
+        String name = prodPojo.getName();
+        String brand = brandPojo.getBrand();
+        String category = brandPojo.getCategory();
+        d.setBarcode(barcode);
+        d.setQuantity(p.getQuantity());
+        d.setName(name);
+        d.setBrand(brand);
+        d.setCategory(category);
+        d.setId(p.getId());
+        return d;
+    }
+
+
+    private  InventoryPojo convert(InventoryForm f,String method) throws ApiException {
+        normalize(f);
+        int id = flowService.getProductByBarcode(f.getBarcode()).getId();
+        int quantity = 0;
+        InventoryPojo invPojo = service.get(id);
+
+
+        if(method == "add")
+            quantity = invPojo.getQuantity();
+
+        quantity += f.getQuantity();
+
+        invPojo.setQuantity(quantity);
+        System.out.println(invPojo.getQuantity());
+        return invPojo;
+    }
+
+
+   // NORMALIZATION AND EMPTY CHECKS
+    public static void normalize(InventoryForm f){
+        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
+    }
+
+    public static void validateDataCheck(InventoryForm f) throws ApiException{
+        if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
+            throw  new ApiException("Invalid data entered.");
+    }
+
+
+    // FILE UPLOAD METHODS
+
+    private void processUpload(MultipartFile file) throws ApiException {
         List<InventoryForm> inventoryList = convertTsvToForm(file);
         List<ErrorInventoryData> errorBrandDataList = new ArrayList<>();
         int errorCount=0;
@@ -97,8 +166,22 @@ public class InventoryDto {
         for(int i=0; i< inventoryList.size();i++){
             updateByBarcode(inventoryList.get(i));
         }
-
     }
+
+    private boolean checkProductExistsUpload(InventoryForm f){
+        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
+        if(p == null) return false;
+        return true;
+    }
+
+    public String validate(InventoryForm f) throws ApiException{
+        if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
+            return "invalid or empty fields";
+        if(checkProductExistsUpload(f) == false)
+            return "Product with given barcode doesn't exists";
+        return "";
+    }
+
 
     private List<InventoryForm> convertTsvToForm(MultipartFile file) throws ApiException{
         List<InventoryForm> myObjects = new ArrayList<>();
@@ -151,62 +234,5 @@ public class InventoryDto {
         }
     }
 
-    private InventoryReportData convertInventoryToReportForm(InventoryPojo inv) throws ApiException {
-        BrandPojo p = flowService.getBrandByProductId(inv.getId());
-        String productBarcode = flowService.getProductById(inv.getId()).getBarcode();
-        InventoryReportData f = new InventoryReportData();
-        f.setQuantity(inv.getQuantity());
-        f.setBrand(p.getBrand());
-        f.setCategory(p.getCategory());
-        f.setId(inv.getId());
-        f.setBarcode(productBarcode);
-        return f;
-    }
-    private  InventoryData convert(InventoryPojo p) throws ApiException {
-        InventoryData d = new InventoryData();
-        String barcode = flowService.getProductById(p.getId()).getBarcode();
-        d.setBarcode(barcode);
-        d.setQuantity(p.getQuantity());
-        d.setId(p.getId());
-        return d;
-    }
-
-    private boolean checkProductExistsUpload(InventoryForm f){
-        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
-        if(p == null) return false;
-        return true;
-    }
-    private void checkProductExists(InventoryForm f) throws ApiException {
-        ProductPojo p  = flowService.getProductByBarcode(f.getBarcode());
-        if(p == null)
-            throw new ApiException("Product barcode is not valid");
-    }
-
-    private  InventoryPojo convert(InventoryForm f,String method) throws ApiException {
-        normalize(f);
-        int id = flowService.getProductByBarcode(f.getBarcode()).getId();
-        int quantity = 0;
-        InventoryPojo invPojo = service.get(id);
-
-
-        if(method == "add")
-            quantity = invPojo.getQuantity();
-
-        quantity += f.getQuantity();
-
-        invPojo.setQuantity(quantity);
-        System.out.println(invPojo.getQuantity());
-        return invPojo;
-    }
-
-
-    public static void normalize(InventoryForm f){
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
-    }
-
-    public static void emptyCheck(InventoryForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
-            throw  new ApiException("Invalid data entered.");
-    }
 
 }

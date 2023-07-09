@@ -29,6 +29,11 @@ public class InventoryService {
         return dao.selectAll();
     }
 
+    @Transactional
+    public List<InventoryPojo>  search(String barcode, String name, String brand, String category) {
+        return dao.search(barcode, name, brand, category);
+    }
+
     @Transactional(rollbackOn  = ApiException.class)
     public void update(int id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);

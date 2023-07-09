@@ -40,7 +40,7 @@ public class OrderItemApiController {
 
     @ApiOperation(value = "Gets list of all order-items")
     @GetMapping("/order/{orderId}")
-    public List<OrderItemData> getAll(@PathVariable int orderId) {
+    public List<OrderItemData> getAll(@PathVariable int orderId) throws ApiException {
         return dto.getAll(orderId);
     }
 
@@ -50,26 +50,10 @@ public class OrderItemApiController {
         dto.update(id,f);
     }
 
-    @ApiOperation(value = "Valdiates an order-item")
-    @PostMapping("/validate")
-    public void validate( @RequestBody OrderItemForm f) throws ApiException {
-        dto.validate(f);
-    }
-
-    @ApiOperation(value = "Valdiates an order-item on updating")
-    @PostMapping("/validate-update")
-    @RequestMapping(path = "/api/order-item/validate-update", method = RequestMethod.POST)
-    public void validateUpdate( @RequestBody OrderItemForm f) throws ApiException {
-        dto.validateUpdate(f);
-    }
-
     @ApiOperation(value = "Adds all order-items")
     @PostMapping("/all")
     public void addAll(@RequestBody List<OrderItemForm> list) throws ApiException {
         dto.addAll(list);
     }
-
-
-
 }
 

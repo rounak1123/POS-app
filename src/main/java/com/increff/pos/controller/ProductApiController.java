@@ -24,8 +24,8 @@ public class ProductApiController {
 
 	@ApiOperation(value = "Adds a product")
 	@PostMapping
-	public void add(@RequestBody ProductForm f) throws ApiException {
-		dto.add(f);
+	public int add(@RequestBody ProductForm f) throws ApiException {
+		return dto.add(f);
 	}
 
 	@ApiOperation(value = "Gets an product by ID")

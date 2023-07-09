@@ -90,8 +90,6 @@ var url = getBrandUrl()+'/upload';
             $.ajax({
                 url: url,
                 data:formData,
-                type:"post",
-
                 cache: false,
                 contentType: false,
                 processData: false,
@@ -132,7 +130,7 @@ function displayBrandList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = '<button class="btn btn-primary mr-2 " onclick="displayEditBrand(' + e.id + ')" ><i class="fa fa-edit fa-sm text-white" ></i></button>' ;
+		var buttonHtml = '<button class="btn btn-primary mr-2 " onclick="displayEditBrand(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
 
 
           table.row.add([
@@ -285,71 +283,7 @@ function initDatatable(){
         table.column(3).visible(false);
         }
 
-        // Custom range filtering function
-        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-            var brand = $('#inputBrandSearch').val().toLowerCase().trim();
-            var category= $('#inputCategorySearch').val().toLowerCase().trim();
-
-            var brandCheck = data[1]; // use data for the age column
-            var categoryCheck = data[2];
-            console.log('in searching');
-            if (
-                (brand=="" && category=="") ||
-                (brandCheck.includes(brand) && category=="") ||
-                (categoryCheck.includes(category) && brand=="") ||
-                (brandCheck.includes(brand) && categoryCheck.includes(category))
-
-            ) {
-                return true;
-            }
-
-            return false;
-        });
-//$('table'). dataTable({dom: 'lrtip'});
-
 }
-
-//$(document).ready(function() {
-//  // When the first dropdown changes
-//  var brandDropdown = $('#inputBrandSearch');
-//  brandDropdown.empty();
-//  brandDropdown.append($('<option></option>').val('').html('Select an option'));
-//  $.each(brandData, function (i, brand){
-//      brandDropdown.append($('<option></option>').val(brand).html(brand));
-//  })
-//
-//    var categoryDropdown = $('#inputCategorySearch');
-//    categoryDropdown.empty();
-//    categoryDropdown.append($('<option></option>').val('').html('Select an option'));
-//    $.each(categoryData, function (i, brand){
-//        brandDropdown.append($('<option></option>').val(brand).html(brand));
-//    })
-//
-
-
-//  $('#inputBrandSearch').change(function() {
-//    var selectedValue = $(this).val();
-//    var categoryDropdown = $('#inputCategory');
-//
-//    if (selectedValue != '' && selectedValue != null) {
-//      // Enable the second dropdown and make an AJAX call to fetch data
-//      categoryDropdown.prop('disabled', false);
-//      var categoryList = brandCategoryList.filter(function(data){
-//      return data.brand == selectedValue;
-//      });
-//      console.log(categoryList);
-//      categoryDropdown.empty();
-//      categoryDropdown.append($('<option></option>').val('').html('Select an option'));
-//
-//      $.each(categoryList, function(key,value){
-//      categoryDropdown.append($('<option></option>').val(value.category).html(value.category));
-//      })
-//
-//    } else {
-//      categoryDropdown.prop('disabled', true);
-//    }
-//  });
-//});
 
 
 function init(){

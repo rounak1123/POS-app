@@ -12,8 +12,6 @@
 
     <h3 class="brand-header mt-2">
         Brands Details
-        <button type="button" class="btn btn-primary brand-header-child" id="filter-data" >Filter <i class="fa fa-filter"></i></button>
-
     </h3>
 
 
@@ -21,6 +19,38 @@
     <div class="row">
         &nbsp;
     </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <form class="form-inline" id="brand-search-form">
+                <div class="form-group">
+                    <label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand</label>
+                    <div class="col-sm-10">
+
+                        <select id="inputBrandSearch" class="form-control" name="brand">
+                            <option value="">Select an option</option>
+                        </select>
+                        <!--						<input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter brand">-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputCategorySearch" class="col-sm-2 col-form-label">Category</label>
+                    <div class="col-sm-10">
+                        <select id="inputCategorySearch" class="form-control"  name="category">
+                            <option value="">Select an option</option>
+                        </select>
+                        <!--						<input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category">-->
+                    </div>
+
+                </div>
+                &nbsp;
+                <button type="button" class="btn btn-primary" id="search-brand-category"><span class="material-symbols-outlined">
+tune
+</span> Filter </button>
+            </form>
+        </div>
+    </div>
+
     <div class="row">
 
         <!-- Table -->
@@ -39,57 +69,6 @@
 
         </div>
     </div>
-
-<!--	Brand Search Modal -->
-<!-- Modal -->
-<div class="modal fade" id="searchBrand" tabindex="-1" aria-labelledby="searchBrandLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchBrandLabel">Search</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="form-inline" id="brand-search-form">
-                    <div class="form-group">
-                        <label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter name">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputCategorySearch" class="col-sm-2 col-form-label">Category Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="category" id="inputCategorySearch" placeholder="enter category name">
-                        </div>
-                    </div>
-                    <!--					<div class="form-group">-->
-                    <!--						<label for="inputBrandName" class="col-sm-2 col-form-label">Brand Name</label>-->
-                    <!--						<div class="col-sm-10">-->
-                    <!--							<select class="brand-select" multiple="multiple" style="width:50%;"></select>-->
-                    <!--						</div>-->
-                    <!--					</div>-->
-
-                    <!--					<div class="form-group">-->
-                    <!--						<label for="inputCategoryName" class="col-sm-2 col-form-label">Category Name</label>-->
-                    <!--						<div class="col-sm-10">-->
-                    <!--							<select class="brand-select" multiple="multiple" style="width:50%;"></select>-->
-                    <!--						</div>-->
-                    <!--					</div>-->
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="search-brand-category">Filter</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-</div>
 
 
 

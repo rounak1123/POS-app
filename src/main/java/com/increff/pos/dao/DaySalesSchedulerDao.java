@@ -15,7 +15,7 @@ import java.util.List;
 
 @Repository
 public class DaySalesSchedulerDao extends AbstractDao {
-    private static String select_all = "select p from DaySalesPojo p";
+    private static String select_all = "select p from DaySalesPojo p order by Date(p.date) desc";
     private static String invoice_count =
             "select count(id) " +
             "from OrderPojo " +
@@ -58,7 +58,7 @@ public class DaySalesSchedulerDao extends AbstractDao {
         return query.getSingleResult().intValue();
     }
 
-    public Double getRevenue(LocalDate date){
+    public double getRevenue(LocalDate date){
         Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
         TypedQuery<Double> query = getQuery(total_revenue, Double.class);
         query.setParameter("date", convertedDate);

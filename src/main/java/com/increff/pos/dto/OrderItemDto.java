@@ -29,7 +29,7 @@ public class OrderItemDto {
     public void add(@RequestBody OrderItemForm form) throws ApiException {
         emptyCheck(form);
         validateCheck(form);
-        int productId = flowService.getProductIdByBarcode(form.getBarcode());
+        int productId = flowService.getProductByBarcode(form.getBarcode()).getId();
         OrderItemPojo oPojo = service.getOrderItemByProductId(productId,form.getOrderId());
 
         OrderItemPojo p = convert(form);
@@ -55,7 +55,7 @@ public class OrderItemDto {
         return convert(p);
     }
 
-    public List<OrderItemData> getAll(int orderId)  {
+    public List<OrderItemData> getAll(int orderId) throws ApiException {
         List<OrderItemPojo> list = service.getAll(orderId);
         List<OrderItemData> list2 = new ArrayList<OrderItemData>();
         for (OrderItemPojo p : list) {
@@ -91,7 +91,7 @@ public class OrderItemDto {
 
     public void validateUpdate(@RequestBody OrderItemForm f) throws ApiException {
         emptyCheck(f);
-        validateUpdateCheck(f);
+        validateCheck(f);
     }
 
     public void addAll(@RequestBody List<OrderItemForm> list) throws ApiException {
@@ -100,32 +100,23 @@ public class OrderItemDto {
         }
     }
 
-    public void validateUpdateCheck(OrderItemForm f) throws ApiException {
-        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
-        int productId = flowService.getProductIdByBarcode(f.getBarcode());
-        int quantity = flowService.getInventoryByProductId(productId);
 
-        if(quantity < f.getQuantity())
-            throw new ApiException("Ordered quantity is more than existing inventory");
-        double sellPrice = f.getSellingPrice();
-        if(p.getMrp() < sellPrice)
-            throw new ApiException("Selling Price is more than MRP of Product.");
-    }
-
-    private  OrderItemData convert(OrderItemPojo p) {
+    private  OrderItemData convert(OrderItemPojo p) throws ApiException {
         OrderItemData d = new OrderItemData();
-        String barcode = flowService.getBarcodeByProductId(p.getProduct_id());
+        ProductPojo productPojo = flowService.getProductByProductId(p.getProduct_id());
+
         d.setQuantity(p.getQuantity());
         d.setSellingPrice(p.getSelling_price());
         d.setId(p.getId());
-        d.setBarcode(barcode);
+        d.setBarcode(productPojo.getBarcode());
+        d.setName(productPojo.getName());
         return d;
     }
     // @TODO Change the convert function to handle already exists using barcode and order_id
     private  OrderItemPojo convert(OrderItemForm f) throws ApiException{
         normalize(f);
         OrderItemPojo p = new OrderItemPojo();
-        int productId = flowService.getProductIdByBarcode(f.getBarcode());
+        int productId = flowService.getProductByBarcode(f.getBarcode()).getId();
         OrderItemPojo oPojo = service.getOrderItemByProductId(productId,f.getOrderId());
         int quantity = 0;
         if(oPojo != null) {
@@ -143,7 +134,7 @@ public class OrderItemDto {
     private OrderItemPojo convertEdit(OrderItemForm f, int id) throws ApiException{
         normalize(f);
         OrderItemPojo p = new OrderItemPojo();
-        int productId = flowService.getProductIdByBarcode(f.getBarcode());
+        int productId = flowService.getProductByBarcode(f.getBarcode()).getId();
         p.setProduct_id(productId);
         p.setQuantity(f.getQuantity());
         p.setSelling_price(f.getSellingPrice());
@@ -154,11 +145,9 @@ public class OrderItemDto {
 
     private void validateCheck(OrderItemForm f) throws ApiException {
         ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
-        int productId = flowService.getProductIdByBarcode(f.getBarcode());
+        int productId = p.getId();
         int quantity = flowService.getInventoryByProductId(productId);
-//        if(itemPojo != null) {
-//            throw new ApiException("Barcode already exist");
-//        }
+
         if(quantity < f.getQuantity())
             throw new ApiException("Ordered quantity is more than existing inventory");
         double sellPrice = f.getSellingPrice();
@@ -167,7 +156,7 @@ public class OrderItemDto {
     }
 
     public static void normalize(OrderItemForm f){
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()));
+        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim());
     }
 
     public static void emptyCheck(OrderItemForm f) throws ApiException{

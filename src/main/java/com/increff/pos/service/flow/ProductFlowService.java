@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProductFlowService {
-    private static Logger logger = Logger.getLogger(SecurityConfig.class);
-
     @Autowired
     public BrandService brandService;
 
@@ -21,7 +19,7 @@ public class ProductFlowService {
     InventoryService inventoryService;
 
 
-    public BrandPojo get(String brand, String category) throws ApiException {
+    public BrandPojo getBrandCategory(String brand, String category) throws ApiException {
         return brandService.get(brand, category);
     }
 

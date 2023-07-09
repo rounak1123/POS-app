@@ -13,44 +13,46 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping(path = "/api/order-table-item")
+
 public class OrderTableItemApiController {
 
     @Autowired
     private OrderTableItemDto dto;
 
     @ApiOperation(value = "Adds an order-table-item")
-    @RequestMapping(path = "/api/order-table-item", method = RequestMethod.POST)
+    @PostMapping
     public void add(@RequestBody OrderTableItemForm form) throws ApiException {
         dto.add(form);
     }
 
 
     @ApiOperation(value = "Deletes and order-table-item")
-    @RequestMapping(path = "/api/order-table-item/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws ApiException {
         dto.delete(id);
     }
 
     @ApiOperation(value = "Deletes entire order-table-item based on user id")
-    @RequestMapping(path = "/api/order-table-item/all/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/all/{id}")
     public void deleteAll(@PathVariable int id) throws ApiException {
         dto.deleteAll(id);
     }
 
     @ApiOperation(value = "Gets an order-table-item by ID")
-    @RequestMapping(path = "/api/order-table-item/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public OrderTableItemData get(@PathVariable int id) throws ApiException {
         return dto.get(id);
     }
 
     @ApiOperation(value = "Gets list of all order-table-items based on user id")
-    @RequestMapping(path = "/api/order-table-item/all/{id}", method = RequestMethod.GET)
+    @GetMapping("/all/{id}")
     public List<OrderTableItemData> getAll(@PathVariable int id) throws ApiException {
         return dto.getAll(id);
     }
 
     @ApiOperation(value = "Updates an order-table-item")
-    @RequestMapping(path = "/api/order-table-item/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public void update(@PathVariable int id, @RequestBody OrderTableItemForm f) throws ApiException {
         dto.update(id,f);
     }

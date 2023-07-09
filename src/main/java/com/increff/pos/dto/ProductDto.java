@@ -28,12 +28,14 @@ public class ProductDto {
     @Autowired
     private ProductFlowService flowService;
 
-    public void add(@RequestBody ProductForm form) throws ApiException {
+    public int add(@RequestBody ProductForm form) throws ApiException {
         normalize(form);
         emptyCheck(form);
+        validCharacterCheck(form);
         ProductPojo p = convert(form);
         int id = service.add(p);
         flowService.addInventory(id);
+        return id;
     }
 
     public ProductData get(@PathVariable int id) throws ApiException {
@@ -51,28 +53,104 @@ public class ProductDto {
     }
 
     public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
-        emptyCheck(f);
         normalize(f);
+        emptyCheck(f);
+        validCharacterCheck(f);
         ProductPojo p = convert(f);
         service.update(id, p);
     }
 
-    public String validate(@RequestBody ProductForm f) throws ApiException {
-        normalize(f);
-        System.out.println(" "+f.getMrp());
-        if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
-                StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0.0)
-            return "Missing or Invalid Fields";
-        ProductPojo p = convertForUpload(f);
-        if(p == null)
-            return "Brand Category doesn't exists";
+    public void upload( MultipartFile file) throws ApiException{
+        processUpload(file);
+    }
 
-        System.out.println("converted successfully");
-        return service.validate(p);
+    public List<ProductData> search(ProductForm f) {
+        List<Object[]> list = service.search(f.getBrand(), f.getCategory(), f.getName(), f.getBarcode());
+        return convert(list);
     }
 
 
-    public void upload( MultipartFile file) throws ApiException{
+    // CONVERSION METHODS FROM ONE FORM TO ANOTHER
+
+    private List<ProductData>  convert(List<Object[]> objList){
+        System.out.println("object list length"+objList.toArray().length);
+        List<ProductData> list = new ArrayList<>();
+        for(Object[] obj : objList){
+            ProductData data = new ProductData();
+            data.setId((int) obj[0]);
+            data.setBarcode((String) obj[1]);
+            data.setBrand((String) obj[2]);
+            data.setCategory((String) obj[3]);
+            data.setName((String) obj[4]);
+            data.setMrp((double) obj[5]);
+            list.add(data);
+        }
+        return list;
+    }
+
+    public ProductData convert(ProductPojo p) throws ApiException {
+        ProductData d = new ProductData();
+        BrandPojo brandPojo = flowService.getBrandCategory(p.getBrand_category_id());
+        String brand = brandPojo.getBrand();
+        String category = brandPojo.getCategory();
+        d.setBarcode(p.getBarcode());
+        d.setBrand(brand);
+        d.setCategory(category);
+        d.setId(p.getId());
+        d.setMrp(p.getMrp());
+        d.setName(p.getName());
+
+        return d;
+    }
+
+    public ProductPojo convert(ProductForm f) throws ApiException{
+        normalize(f);
+        ProductPojo p = new ProductPojo();
+        BrandPojo b = flowService.getBrandCategory(f.getBrand(), f.getCategory());
+        if(b==null)
+            throw new ApiException("Brand Category doesn't exists");
+        p.setBarcode(f.getBarcode());
+        p.setBrand_category_id(b.getId());
+        p.setName(f.getName());
+        p.setMrp(f.getMrp());
+
+        return p;
+    }
+
+    // CHECKS FOR EMPTY AND VALID CHARACTERS , NORMALIZATION
+
+    public void normalize(ProductForm f) throws ApiException {
+        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
+        f.setName(StringUtil.toLowerCase(f.getName()).trim().replaceAll(" +", " "));
+        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim().replaceAll(" +", " "));
+        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim().replaceAll(" +", " "));
+
+
+    }
+
+    public void validCharacterCheck(ProductForm f) throws ApiException {
+        if(hasSpecialCharacter(f.getName())
+                || hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
+            throw new ApiException("form contains invalid character.");
+    }
+
+    public void emptyCheck(ProductForm f) throws ApiException{
+        if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
+           StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0)
+            throw new ApiException("Invalid or missing fields");
+    }
+
+    public static boolean hasSpecialCharacter(String input) {
+        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
+        String patternString = "[^" + allowedCharacters + "]";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(input);
+        return matcher.find();
+    }
+
+    // FILE UPLOAD METHODS
+
+    public void processUpload(MultipartFile file) throws ApiException {
         System.out.println("in upload");
         List<ProductForm> productList = convertTsvToForm(file);
         System.out.println("converted to form success");
@@ -104,30 +182,39 @@ public class ProductDto {
         for(int i=0; i< productList.size();i++){
             add(productList.get(i));
         }
-
     }
 
-    public List<ProductData> search(ProductForm f) {
-        List<Object[]> list = service.search(f.getBrand(), f.getCategory(), f.getName(), f.getBarcode());
-        return convert(list);
+    public String validate( ProductForm f) throws ApiException {
+        normalize(f);
+        System.out.println(" "+f.getMrp());
+        if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
+                StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0.0)
+            return "Missing or Invalid Fields";
+        ProductPojo p = convertForUpload(f);
+        if(p == null)
+            return "Brand Category doesn't exists";
+
+        if(hasSpecialCharacter(f.getName())
+                || hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
+            return "Data contains invalid character.";
+
+        return service.validate(p);
     }
 
-    // CONVERSION METHODS FROM ONE FORM TO ANOTHER
-    private List<ProductData>  convert(List<Object[]> objList){
-        System.out.println("object list length"+objList.toArray().length);
-        List<ProductData> list = new ArrayList<>();
-        for(Object[] obj : objList){
-            ProductData data = new ProductData();
-            data.setId((int) obj[0]);
-            data.setBarcode((String) obj[1]);
-            data.setBrand((String) obj[2]);
-            data.setCategory((String) obj[3]);
-            data.setName((String) obj[4]);
-            data.setMrp((double) obj[5]);
-            list.add(data);
-        }
-        return list;
+    public ProductPojo convertForUpload(ProductForm f) throws ApiException{
+        normalize(f);
+        ProductPojo p = new ProductPojo();
+        BrandPojo b = flowService.getBrandCategory(f.getBrand(), f.getCategory());
+        if(b == null)
+            return null;
+        p.setBarcode(f.getBarcode());
+        p.setBrand_category_id(b.getId());
+        p.setName(f.getName());
+        p.setMrp(f.getMrp());
+
+        return p;
     }
+
 
     private List<ProductForm> convertTsvToForm(MultipartFile file) throws ApiException{
         List<ProductForm> myObjects = new ArrayList<>();
@@ -184,74 +271,5 @@ public class ProductDto {
         }
     }
 
-    public ProductData convert(ProductPojo p) throws ApiException {
-        ProductData d = new ProductData();
-        BrandPojo brandPojo = flowService.getBrandCategory(p.getBrand_category_id());
-        String brand = brandPojo.getBrand();
-        String category = brandPojo.getCategory();
-        d.setBarcode(p.getBarcode());
-        d.setBrand(brand);
-        d.setCategory(category);
-        d.setId(p.getId());
-        d.setMrp(p.getMrp());
-        d.setName(p.getName());
 
-        return d;
-    }
-
-
-    public ProductPojo convert(ProductForm f) throws ApiException{
-        normalize(f);
-        ProductPojo p = new ProductPojo();
-        BrandPojo b = flowService.get(f.getBrand(), f.getCategory());
-        if(b==null)
-            throw new ApiException("Brand Category doesn't exists");
-        p.setBarcode(f.getBarcode());
-        p.setBrand_category_id(b.getId());
-        p.setName(f.getName());
-        p.setMrp(f.getMrp());
-
-        return p;
-    }
-
-    public ProductPojo convertForUpload(ProductForm f) throws ApiException{
-        normalize(f);
-        ProductPojo p = new ProductPojo();
-        BrandPojo b = flowService.get(f.getBrand(), f.getCategory());
-        if(b == null)
-            return null;
-        p.setBarcode(f.getBarcode());
-        p.setBrand_category_id(b.getId());
-        p.setName(f.getName());
-        p.setMrp(f.getMrp());
-
-        return p;
-    }
-
-    // CHECKS FOR EMPTY AND NORMALIZATION
-
-    public void normalize(ProductForm f) throws ApiException {
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
-        f.setName(StringUtil.toLowerCase(f.getName()).trim().replaceAll(" +", " "));
-        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim().replaceAll(" +", " "));
-        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim().replaceAll(" +", " "));
-
-        if(hasSpecialCharacter(f.getName())
-           || hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
-            throw new ApiException("form contains invalid character.");
-    }
-
-    public void emptyCheck(ProductForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
-           StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0)
-            throw new ApiException("Invalid or missing fields");
-    }
-
-    public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
-    }
 }

@@ -1,6 +1,4 @@
 var table;
-var counter=0;
-var barcodeList = [];
 
 function getOrderItemUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -43,7 +41,7 @@ function addOrderTableItem(event){
   	   },
   	   error: handleAjaxError
   	});
-        $("input[name='barcode']").val('');
+        $("select[name='barcode']").val('');
         $("input[name='quantity']").val('');
         $("input[name='sellingPrice']").val('');
 	return false;
@@ -109,8 +107,6 @@ function setBarcodeDropdown(){
    error: handleAjaxError
  })
 }
-
-//@TODO createOrder
 
 function addOrderItems(orderId){
  var data = [];
@@ -204,6 +200,22 @@ console.log('inPlace order')
 
 }
 
+function clearOrder(){
+
+	var url = getOrderTableItemUrl();
+	url+='/all/'+user_id;
+    console.log('in clear order');
+	$.ajax({
+	   url: url,
+	   type: 'DELETE',
+	   success: function(data) {
+	        console.log('Order Item list', data);
+	   		displayOrderItemList(data);
+	   },
+	   error: handleAjaxError
+	});
+}
+
 
 
 //UI DISPLAY METHODS
@@ -214,7 +226,7 @@ function displayOrderItemList(data){
     table.clear().draw();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayEditItem(' + e.id + ')" class="btn btn-primary"><i class="fas fa-edit fa-sm"></i></button>';
+		var buttonHtml = ' <button onclick="displayEditItem(' + e.id + ')" class="btn btn-primary"><span class="material-symbols-outlined">border_color</span></button>';
 		 buttonHtml += ' <button onclick="deleteTableItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
 
 //		var row = '<tr>'
@@ -227,7 +239,7 @@ function displayOrderItemList(data){
           table.row.add([
             e.barcode,
             e.quantity,
-            e.sellingPrice,
+            e.sellingPrice.toFixed(2),
             buttonHtml
           ]).draw();
 	}
@@ -265,138 +277,6 @@ function displayItem(data){
 	$('#edit-item-modal').modal('toggle');
 }
 
-
-//function initDatatable(){
-//            table = $('#order-table').DataTable(
-//              {dom: 'lrtip'}
-//            );
-//
-//}
-
-// Create Order Dynamic Table
-
-function addOrderItemToTable(){
-        var barcode = $("select[name='barcode']").val();
-        var quantity = $("input[name='quantity']").val();
-        var sellingPrice = $("input[name='sellingPrice']").val();
-       console.log(barcode,quantity,sellingPrice);
-        $("#order-table tbody").append("<tr data-barcode='"+barcode+"' data-quantity='"+quantity+"' data-sellingPrice='"+sellingPrice+"'><td>"+barcode+"</td><td>"+quantity+"</td><td>"+sellingPrice+"</td><td><button class='btn btn-info btn-xs mr-2 btn-edit'>Edit</button><button class='btn btn-danger btn-xs mr-2 btn-delete'>Delete</button></td></tr>");
-       console.log($('#order-table'));
-        $("input[name='barcode']").val('');
-        $("input[name='quantity']").val('');
-        $("input[name='sellingPrice']").val('');
-}
-function addOrderItem() {
-    addOrderTableItem();
-    var $form = $("#item-form");
-	var json = toJson($form);
-	var url = getOrderItemUrl();
-     url+='/validate';
-console.log('in add order item');
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	   		addOrderItemToTable();
-	   },
-	   error: handleAjaxError
-	});
-}
-
-   $("body").on("click", ".btn-delete", function(){
-        $(this).parents("tr").remove();
-    });
-
-    $("body").on("click", ".btn-edit", function(){
-        var barcode = $(this).parents("tr").attr('data-barcode');
-        var quantity = $(this).parents("tr").attr('data-quantity');
-        var sellingPrice = $(this).parents("tr").attr('data-sellingPrice');
-
-
-        $(this).parents("tr").find("td:eq(0)").html('<input name="edit_barcode" value="'+barcode+'">');
-        $(this).parents("tr").find("td:eq(1)").html('<input name="edit_quantity" value="'+quantity+'">');
-        $(this).parents("tr").find("td:eq(2)").html('<input name="edit_selling_price" value="'+sellingPrice+'">');
-
-        $(this).parents("tr").find("td:eq(3)").prepend("<button class='btn btn-info btn-xs btn-update mr-2 '>Update</button><button class='btn btn-warning btn-xs btn-cancel mr-2'>Cancel</button>")
-        $(this).hide();
-    });
-
-    $("body").on("click", ".btn-cancel", function(){
-        var barcode = $(this).parents("tr").attr('data-barcode');
-        var quantity = $(this).parents("tr").attr('data-quantity');
-        var sellingPrice = $(this).parents("tr").attr('data-sellingPrice');
-
-
-        $(this).parents("tr").find("td:eq(0)").text(barcode);
-        $(this).parents("tr").find("td:eq(1)").text(quantity);
-        $(this).parents("tr").find("td:eq(2)").text(sellingPrice);
-
-        $(this).parents("tr").find(".btn-edit").show();
-        $(this).parents("tr").find(".btn-update").remove();
-        $(this).parents("tr").find(".btn-cancel").remove();
-    });
-
-    $("body").on("click", ".btn-update", function(){
-        var barcode = $(this).parents("tr").find("input[name='edit_barcode']").val();
-        var quantity = $(this).parents("tr").find("input[name='edit_quantity']").val();
-        var sellingPrice = $(this).parents("tr").find("input[name='edit_selling_price']").val();
-        var obj = {
-        sellingPrice,
-        barcode,
-        quantity
-        };
-
-	        var url = getOrderItemUrl();
-
-             url+='/validate';
-
-        	$.ajax({
-        	   url: url,
-        	   type: 'POST',
-        	   data: JSON.stringify(obj),
-        	   headers: {
-               	'Content-Type': 'application/json'
-               },
-        	   success: function(response) {
-        	     $.notify("updated the item successfully.", "success" );
-
-        	   },
-        	   error: function(response){
-        	   handleAjaxError(response);
-         barcode = $(this).parents("tr").attr('data-barcode');
-         quantity = $(this).parents("tr").attr('data-quantity');
-         sellingPrice = $(this).parents("tr").attr('data-sellingPrice');
-        	   }
-        	});
-        $(this).parents("tr").find("td:eq(0)").text(barcode);
-        $(this).parents("tr").find("td:eq(1)").text(quantity);
-        $(this).parents("tr").find("td:eq(2)").text(sellingPrice);
-
-        $(this).parents("tr").find(".btn-edit").show();
-        $(this).parents("tr").find(".btn-cancel").remove();
-        $(this).parents("tr").find(".btn-update").remove();
-    });
-
-
-function clearOrder(){
-
-	var url = getOrderTableItemUrl();
-	url+='/all/'+user_id;
-    console.log('in clear order');
-	$.ajax({
-	   url: url,
-	   type: 'DELETE',
-	   success: function(data) {
-	        console.log('Order Item list', data);
-	   		displayOrderItemList(data);
-	   },
-	   error: handleAjaxError
-	});
-}
 
 //INITIALIZATION CODE
 

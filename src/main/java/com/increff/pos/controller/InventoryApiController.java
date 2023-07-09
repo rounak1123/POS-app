@@ -4,6 +4,7 @@ import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryForm;
 import com.increff.pos.model.InventoryReportData;
+import com.increff.pos.model.InventorySearchForm;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,12 +42,6 @@ public class InventoryApiController {
         dto.update(id,f);
     }
 
-    @ApiOperation(value = "Adds to existing inventory using barcode")
-    @PutMapping("/add")
-    public void updateByBarcode( @RequestBody InventoryForm f) throws ApiException{
-        dto.updateByBarcode(f);
-    }
-
     @ApiOperation(value = "upload tsv from UI")
     @PostMapping("/upload")
     public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
@@ -57,6 +52,12 @@ public class InventoryApiController {
     @GetMapping("/report")
     public List<InventoryReportData> getReports() throws ApiException {
         return dto.getReports();
+    }
+
+    @ApiOperation(value= "search inventory data")
+    @PostMapping("/search")
+    public List<InventoryData> search(@RequestBody InventorySearchForm f) throws ApiException {
+        return dto.search(f);
     }
 
 

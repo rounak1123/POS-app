@@ -27,11 +27,11 @@ public class BrandDto {
     private BrandService service;
 
 
-    public void add(@RequestBody BrandForm form) throws ApiException {
+    public int add(@RequestBody BrandForm form) throws ApiException {
         emptyCheck(form);
         normalize(form);
         BrandPojo p = convert(form);
-        service.add(p);
+        return service.add(p);
     }
     public BrandData get(@PathVariable int id) throws ApiException {
         BrandPojo p = service.get(id);
@@ -60,6 +60,80 @@ public class BrandDto {
 
 
     public void upload( MultipartFile file) throws ApiException{
+        processUpload(file);
+    }
+
+    public List<BrandData> search(BrandForm f){
+          List<BrandPojo> list =  service.search(f.getBrand(), f.getCategory());
+        List<BrandData> list2 = new ArrayList<BrandData>();
+        for (BrandPojo p : list) {
+            list2.add(convert(p));
+        }
+        list2.sort((o1, o2) -> {
+            if (o1.getId() > o2.getId()) return -1;
+            else return 1;
+        });
+        return list2;
+    }
+
+    // CONVERSION METHODS
+
+    private  BrandData convert(BrandPojo p) {
+        BrandData d = new BrandData();
+        d.setCategory(p.getCategory());
+        d.setBrand(p.getBrand());
+        d.setId(p.getId());
+        return d;
+    }
+
+
+    private  BrandPojo convert(BrandForm f) throws ApiException {
+        BrandPojo p = new BrandPojo();
+        p.setBrand(f.getBrand());
+        p.setCategory(f.getCategory());
+        return p;
+    }
+
+    // CHECKS AND NORMALIZATION FOR THE FORM.
+
+    public static void normalize(BrandForm f) throws ApiException{
+        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim());
+        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim());
+        if(hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
+            throw new ApiException("invalid character in brand or category.");
+        if(f.getBrand().length() > 30 || f.getCategory().length() > 30)
+            throw new ApiException("brand or category length is more than 30");
+    }
+
+    public String validate(@RequestBody BrandForm f) throws ApiException {
+        normalize(f);
+        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))
+            return "Brand or Category empty";
+
+        BrandPojo p = convert(f);
+        return service.validate(p);
+    }
+
+    public static void emptyCheck(BrandForm f) throws ApiException{
+        if(StringUtil.isEmpty(f.getBrand()))
+            throw  new ApiException("Brand field cannot be empty.");
+        if(StringUtil.isEmpty(f.getCategory()))
+            throw  new ApiException("Category cannot be empty");
+    }
+
+    public static boolean hasSpecialCharacter(String input) {
+        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
+        String patternString = "[^" + allowedCharacters + "]";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(input);
+        return matcher.find();
+    }
+
+
+
+    // FILE UPLOAD METHODS
+
+    public void processUpload(MultipartFile file) throws ApiException {
         List<BrandForm> brandList = convertTsvToForm(file);
         List<ErrorBrandData> errorBrandDataList = new ArrayList<>();
         int errorCount=0;
@@ -87,19 +161,8 @@ public class BrandDto {
 
     }
 
-    public List<BrandPojo> search(BrandForm f){
-          return service.search(f.getBrand(), f.getCategory());
-    }
-
-    private  BrandData convert(BrandPojo p) {
-        BrandData d = new BrandData();
-        d.setCategory(p.getCategory());
-        d.setBrand(p.getBrand());
-        d.setId(p.getId());
-        return d;
-    }
     private List<BrandForm> convertTsvToForm(MultipartFile file) throws ApiException{
-        		List<BrandForm> myObjects = new ArrayList<>();
+        List<BrandForm> myObjects = new ArrayList<>();
         try {
             InputStream inputStream = file.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -149,43 +212,4 @@ public class BrandDto {
         }
     }
 
-    private  BrandPojo convert(BrandForm f) throws ApiException {
-        BrandPojo p = new BrandPojo();
-        p.setBrand(f.getBrand());
-        p.setCategory(f.getCategory());
-        return p;
-    }
-
-    // CHECKS AND NORMALIZATION FOR THE FORM.
-
-    public static void normalize(BrandForm f) throws ApiException{
-        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim());
-        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim());
-        if(hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
-            throw new ApiException("invalid character in brand or category.");
-    }
-
-    public String validate(@RequestBody BrandForm f) throws ApiException {
-        normalize(f);
-        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))
-            return "Brand or Category empty";
-
-        BrandPojo p = convert(f);
-        return service.validate(p);
-    }
-
-    public static void emptyCheck(BrandForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBrand()))
-            throw  new ApiException("Brand field cannot be empty.");
-        if(StringUtil.isEmpty(f.getCategory()))
-            throw  new ApiException("Category cannot be empty");
-    }
-
-    public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
-    }
 }

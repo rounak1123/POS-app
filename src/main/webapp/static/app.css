@@ -327,3 +327,7 @@ width: 35px;
 .navbar-logo-name {
 color: white;
 }
+.material-symbols-outlined {
+vertical-align: top;
+    font-size: 20px;
+}

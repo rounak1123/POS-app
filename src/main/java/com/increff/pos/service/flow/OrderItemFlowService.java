@@ -18,17 +18,6 @@ public class OrderItemFlowService {
     InventoryDao inventoryDao;
     @Autowired
     InventoryService inventoryService;
-    public int getProductIdByBarcode(String barcode) throws ApiException{
-        ProductPojo p = productDao.getProductByBarcode(barcode);
-        if(p == null)
-            throw new ApiException("Barcode doesn't exists.");
-        return p.getId();
-    }
-
-    public String getBarcodeByProductId(int id){
-        ProductPojo p =productDao.select(id);
-        return p.getBarcode();
-    }
 
     public ProductPojo getProductByBarcode(String barcode) throws ApiException{
         return productDao.getProductByBarcode(barcode);

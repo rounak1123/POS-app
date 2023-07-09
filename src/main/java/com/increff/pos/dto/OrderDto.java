@@ -1,6 +1,5 @@
 package com.increff.pos.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.increff.pos.model.InvoiceData;
 import com.increff.pos.model.InvoiceItem;
 import com.increff.pos.model.OrderData;
@@ -9,7 +8,6 @@ import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.flow.OrderFlowService;
-import com.increff.pos.service.flow.OrderItemFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +29,6 @@ public class OrderDto {
 
     @Autowired
     private OrderFlowService flowService;
-
-
-
 
     public OrderPojo add() throws ApiException {
         OrderPojo p = new OrderPojo();
@@ -77,6 +72,8 @@ public class OrderDto {
         return service.downloadInvoice(inv);
 
     }
+
+    // CONVERSION METHODS
 
     public InvoiceData convertInvoice(OrderPojo p) throws ApiException {
 

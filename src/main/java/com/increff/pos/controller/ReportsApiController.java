@@ -26,7 +26,7 @@ public class ReportsApiController {
         return dto.salesReport(f);
     }
 
-    @ApiOperation(value = "Gets Sales Report")
+    @ApiOperation(value = "Gets Daily Sales Report")
     @RequestMapping(path = "/api/reports/day-sales", method = RequestMethod.GET)
     public List<DaySalesData> daySalesReport()  {
         return dto.daySalesReport();

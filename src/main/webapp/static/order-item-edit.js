@@ -1,7 +1,13 @@
 var orderId;
+
 function getOrderItemUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/order-item";
+}
+
+function getProductUrl() {
+   	var baseUrl = $("meta[name=baseUrl]").attr("content")
+   	return baseUrl + "/api/product";
 }
 
 //BUTTON ACTIONS
@@ -32,6 +38,9 @@ function addOrderItem(event){
 	   },
 	   error: handleAjaxError
 	});
+	        $("select[name='barcode']").val('');
+            $("input[name='quantity']").val('');
+            $("input[name='sellingPrice']").val('');
 
 	return false;
 }
@@ -97,12 +106,13 @@ function displayOrderItemList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')" class="btn btn-primary"><i class="fas fa-edit fa-sm"></i></button>'
+		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')" class="btn btn-primary"><span class="material-symbols-outlined">border_color</span></button>'
             buttonHtml += ' <button onclick="deleteOrderItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
           table.row.add([
             e.barcode,
+            e.name,
             e.quantity,
-            e.sellingPrice,
+            e.sellingPrice.toFixed(2),
             buttonHtml
           ]).draw();
 	}
@@ -147,6 +157,25 @@ function displayOrderItem(data){
 	$("#order-item-edit-form input[name=id]").val(data.id);
 	$('#order-item-edit-modal').modal('toggle');
 }
+
+function setBarcodeDropdown(){
+   var url = getProductUrl();
+   var barcodeDropdown = $('#inputBarcode');
+   barcodeDropdown.empty();
+ $.ajax({
+   url: url,
+   type: 'GET',
+   success: function(data){
+   barcodeDropdown.append($('<option></option>').val('').html('Select an option'));
+   $.each(data, function (i, product){
+       console.log(product);
+       barcodeDropdown.append($('<option></option>').val(product.barcode).html(product.barcode));
+   })
+
+   },
+   error: handleAjaxError
+ })
+}
 //INITIALIZATION CODE
 var table;
 
@@ -163,6 +192,7 @@ function initDatatable(){
 
 function init(){
     initDatatable();
+    setBarcodeDropdown();
 	$('#add-order-item').click(addOrderItem);
 	$('#update-order-item').click(updateOrderItem);
 	$('#refresh-data').click(getOrderItemList);

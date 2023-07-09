@@ -11,10 +11,13 @@
 <div class="container">
 
 <h3 class="product-header mt-2">Product Details
-	<button type="button" id = "add-product-header" class="btn btn-primary product-header-child access-supervisor" data-toggle="modal" data-target="#addProduct">	Add	<i class="fa fa-plus " ></i></button>
-	<button type="button" class="btn btn-primary product-header-child access-supervisor" id="upload-data">	Upload    <i class="fa fa-upload" ></i>
+	<button th:if="${info.getRole() == 'admin'}" type="button" id = "add-product-header" class="btn btn-primary product-header-child" data-toggle="modal" data-target="#addProduct">	Add	<span class="material-symbols-outlined">
+add
+</span></button>
+	<button th:if="${info.getRole() == 'admin'}"  type="button" class="btn btn-info product-header-child " id="upload-data">	Upload    <span class="material-symbols-outlined">
+upload_file
+</span>
 	</button>
-	<button type="button" class="btn btn-primary product-header-child access-supervisor" id="refresh-data">Refresh <i class="fa fa-refresh"></i></button>
 </h3>
 
  <!-- Top row with form-->
@@ -114,7 +117,9 @@
 
 				</div>
 				&nbsp;
-				<button type="button" class="btn btn-primary" id="search-product">Search</button>
+				<button type="button" class="btn btn-primary" id="search-product"><span class="material-symbols-outlined">
+tune
+</span> Filter </button>
 			</form>
 		</div>
 	</div>

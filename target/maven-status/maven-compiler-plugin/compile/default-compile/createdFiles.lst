@@ -94,3 +94,4 @@ com/increff/pos/controller/SiteUiController.class
 com/increff/pos/util/CookieUtil.class
 com/increff/pos/controller/SampleController.class
 com/increff/pos/service/ProductService.class
+com/increff/pos/model/InventorySearchForm.class

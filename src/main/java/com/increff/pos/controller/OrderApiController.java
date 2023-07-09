@@ -18,51 +18,53 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping(path = "/api/order")
+
 public class OrderApiController {
 
     @Autowired
     private OrderDto dto;
 
     @ApiOperation(value = "Adds an order")
-    @RequestMapping(path = "/api/order", method = RequestMethod.POST)
+    @PostMapping
     public OrderPojo add() throws ApiException {
         return dto.add();
     }
 
 
-    @ApiOperation(value = "Deletes and order")
-    @RequestMapping(path = "/api/order/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Deletes an order")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws ApiException {
         dto.delete(id);
     }
 
     @ApiOperation(value = "Gets an order by ID")
-    @RequestMapping(path = "/api/order/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public OrderData get(@PathVariable int id) throws ApiException {
         return dto.get(id);
     }
 
     @ApiOperation(value = "Gets list of all orders")
-    @RequestMapping(path = "/api/order", method = RequestMethod.GET)
+    @GetMapping
     public List<OrderData> getAll() {
         return dto.getAll();
     }
 
     @ApiOperation(value = "Updates an order")
-    @RequestMapping(path = "/api/order/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public void update(@PathVariable int id, @RequestBody OrderForm f) throws ApiException {
         dto.update(id,f);
     }
 
     @ApiOperation(value = "Makes an order Invoiced")
-    @RequestMapping(path = "/api/order/place/{id}", method = RequestMethod.PUT)
+    @PutMapping("/place/{id}")
     public void placeOrder(@PathVariable int id) throws ApiException {
         dto.placeOrder(id);
     }
 
     @ApiOperation(value = "Downloads invoice for the order.")
-    @RequestMapping(path = "api/order/download/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Resource>  downloadInvoice(@PathVariable int id, HttpServletResponse response) throws ApiException, IOException {
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource>  downloadInvoice(@PathVariable int id) throws ApiException, IOException {
         return dto.downloadInvoice(id);
     }
 }

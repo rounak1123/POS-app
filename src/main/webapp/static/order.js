@@ -22,6 +22,13 @@ function getProductUrl() {
 
 //BUTTON ACTIONS
 function addOrderTableItem(event){
+
+    var isValid = $("#item-form")[0].checkValidity();
+
+    if(!isValid){
+    $("#item-form")[0].reportValidity();
+    return;
+    }
   var barcode = $("select[name='barcode']").val();
   var quantity = $("input[name='quantity']").val();
   var sellingPrice = $("input[name='sellingPrice']").val();
@@ -38,18 +45,28 @@ function addOrderTableItem(event){
   	   success: function(response) {
   	   		getOrderItemList();
             console.log(response);
+            $("select[name='barcode']").val('');
+            $("input[name='quantity']").val('');
+            $("input[name='sellingPrice']").val('');
   	   },
   	   error: handleAjaxError
   	});
-        $("select[name='barcode']").val('');
-        $("input[name='quantity']").val('');
-        $("input[name='sellingPrice']").val('');
+
 	return false;
 }
 
 function updateOrderItemDetails(event){
-	$('#edit-item-modal').modal('toggle');
+
 	//Get the ID
+
+	    var isValid = $("#item-edit-form")[0].checkValidity();
+
+        if(!isValid){
+        $("#item-form")[0].reportValidity();
+        return;
+        }
+
+        	$('#edit-item-modal').modal('toggle');
 	var id = $("#item-edit-form input[name=id]").val();
 	var url = getOrderTableItemUrl() + "/" + id;
 
@@ -138,9 +155,7 @@ $.ajax({
 }
 
 function saveOrder(){
-var rowCount = $('#order-table tbody tr').length;
-console.log(rowCount);
-if(rowCount <= 0){
+if(table.data().count() <= 0){
 $.notify("No items in the order , cannot save order");
 return;
 };
@@ -170,7 +185,7 @@ var url = getOrderUrl() + '/place/'+id;
      type: 'PUT',
      success: function(response) {
      console.log("Order Status Set to Invoice Successfully");
-      window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order-item/view?orderId='+id;
+      window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
      },
      error: handleAjaxError
  });
@@ -178,9 +193,8 @@ var url = getOrderUrl() + '/place/'+id;
 }
 
 function placeOrder(){
-var rowCount = $('#order-table tbody tr').length;
-if(rowCount <= 0){
-$.notify("No items in the order, cannot place order.");
+if(table.data().count() <= 0){
+$.notify("No items in the order , cannot place order");
 return;
 };
  var orderUrl = getOrderUrl();
@@ -271,7 +285,7 @@ function deleteTableItem(id){
 
 function displayItem(data){
 	$("#item-edit-form input[name=quantity]").val(data.quantity);
-	$("#item-edit-form input[name=mrp]").val(data.mrp);
+	$("#item-edit-form input[name=sellingPrice]").val(data.sellingPrice);
 	$("#item-edit-form input[name=barcode]").val(data.barcode);
 	$("#item-edit-form input[name=id]").val(data.id);
 	$('#edit-item-modal').modal('toggle');

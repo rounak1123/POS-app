@@ -130,7 +130,6 @@ tune
 	<table class="table table-striped" id="product-table">
 	  <thead>
 	    <tr>
-	      <th scope="col">Sl No.</th>
 	      <th scope="col">Barcode</th>
 			<th scope="col">Brand</th>
 	      <th scope="col">Category</th>
@@ -158,35 +157,42 @@ tune
         </button>
       </div>
       <div class="modal-body">
-			<form class="form-inline" id="product-edit-form">
-			  <div class="form-group">
+			<form class="form" id="product-edit-form">
+			  <div class="form-group row">
 			    <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
 			    <div class="col-sm-10">
 			      <input type="text" class="form-control" name="barcode" placeholder="enter barcode" readonly>
 			    </div>
 			  </div>
-			  <div class="form-group">
-			    <label for="inputBrand" class="col-sm-2 col-form-label">brand</label>
-			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="brand" placeholder="enter brand name">
-			    </div>
-			  </div>
-				<div class="form-group">
-					<label for="inputCategory" class="col-sm-2 col-form-label">category</label>
+				<div class="form-group row">
+					<label for="inputBrandEdit" class="col-sm-2 col-form-label">Brand</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" name="category" placeholder="enter category">
+						<select id="inputBrandEdit" class="form-control" name="brand">
+							<option value="">Select an option</option>
+						</select>
+						<!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group row">
+					<label for="inputCategoryEdit" class="col-sm-2 col-form-label">Category</label>
+					<div class="col-sm-10">
+						<select id="inputCategoryEdit" class="form-control"  name="category">
+							<option value="">Select an option</option>
+						</select>
+						<!--								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->
+					</div>
+
+				</div>
+				<div class="form-group row">
 					<label for="inputName" class="col-sm-2 col-form-label">Product Name</label>
 					<div class="col-sm-10">
 						<input type="text" class="form-control" name="name" placeholder="Product name">
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group row">
 					<label for="inputMrp" class="col-sm-2 col-form-label">Price (INR)</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" name="mrp" placeholder="0.0">
+						<input type="number" min="0.01" step="any" class="form-control" name="mrp" placeholder="0.0">
 					</div>
 				</div>
  	        <input type="hidden" name="id" >
@@ -250,15 +256,15 @@ tune
 					</button>
 				</div>
 				<div class="modal-body">
-					<form class="form-inline" id="product-form">
-						<div class="form-group">
+					<form class="form" id="product-form">
+						<div class="form-group row">
 							<label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" name="barcode" id="inputBarcode" placeholder="enter barcode">
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="inputBrand" class="col-sm-2 col-form-label">Brand Name</label>
+						<div class="form-group row">
+							<label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 							<div class="col-sm-10">
 								<select id="inputBrand" class="form-control" name="brand">
 									<option value="">Select an option</option>
@@ -266,7 +272,7 @@ tune
 <!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group row">
 							<label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 							<div class="col-sm-10">
 							<select id="inputCategory" class="form-control"  name="category" disabled>
@@ -276,16 +282,16 @@ tune
 							</div>
 
 						</div>
-						<div class="form-group">
+						<div class="form-group row">
 							<label for="inputName" class="col-sm-2 col-form-label"> Product Name</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" name="name" id="inputName" placeholder="enter product name">
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group row">
 							<label for="inputMrp" class="col-sm-2 col-form-label">Price (INR) </label>
 							<div class="col-sm-10">
-								<input type="number" class="form-control" name="mrp" id="inputMrp" placeholder="0.0">
+								<input type="number" min="0.01" step="any" class="form-control" name="mrp" id="inputMrp" placeholder="0.0">
 							</div>
 						</div>
 					</form>

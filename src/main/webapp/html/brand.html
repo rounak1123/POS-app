@@ -52,7 +52,9 @@ upload_file
 
 				</div>
 				&nbsp;
-				<button type="button" class="btn btn-primary" id="search-brand-category">Search</button>
+				<button type="button" class="btn btn-primary" id="search-brand-category"><span class="material-symbols-outlined">
+tune
+</span> Filter </button>
 			</form>
 		</div>
 	</div>
@@ -82,23 +84,23 @@ upload_file
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Brand Details</h5>
+        <h5 class="modal-title">Edit Brand Category </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-			<form class="form-inline" id="brand-edit-form">
-			  <div class="form-group">
-			    <label for="inputBrandName" class="col-sm-2 col-form-label">Brand Name</label>
+			<form class="form" id="brand-edit-form">
+			  <div class="form-group row">
+			    <label for="inputBrandName" class="col-sm-2 col-form-label">Brand</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="brand" placeholder="enter brand">
+			      <input type="text" class="form-control" name="brand" placeholder="enter brand" required>
 			    </div>
 			  </div>
-			  <div class="form-group">
+			  <div class="form-group row">
 			    <label for="inputCategoryName" class="col-sm-2 col-form-label">Category</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="category" placeholder="enter category">
+			      <input type="text" class="form-control" name="category" placeholder="enter category" required>
 			    </div>
 			  </div>
  	        <input type="hidden" name="id" >
@@ -119,7 +121,7 @@ upload_file
     <div class="modal-content">
       
       <div class="modal-header">
-        <h5 class="modal-title">Upload Brand and Category</h5>
+        <h5 class="modal-title">Upload Brand Category in TSV</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -157,23 +159,23 @@ upload_file
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="addBrandLabel">Add Brand-Category</h4>
+					<h4 class="modal-title" id="addBrandLabel">Add Brand Category Combination</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<form class="form-inline" id="brand-form">
-						<div class="form-group">
-							<label for="inputBrandName" class="col-sm-2 col-form-label">Brand Name</label>
+					<form class="form" id="brand-form">
+						<div class="form-group row">
+							<label for="inputBrandName" class="col-sm-2 col-form-label">Brand</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="brand" id="inputBrandName" placeholder="enter name">
+								<input type="text" class="form-control" name="brand" id="inputBrandName" placeholder="enter brand" required>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="inputCategoryName" class="col-sm-2 col-form-label">Category Name</label>
+						<div class="form-group row">
+							<label for="inputCategoryName" class="col-sm-2 col-form-label">Category</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="category" id="inputCategoryName" placeholder="enter category name">
+								<input type="text" class="form-control" name="category" id="inputCategoryName" placeholder="enter category" required>
 							</div>
 						</div>
 					</form>

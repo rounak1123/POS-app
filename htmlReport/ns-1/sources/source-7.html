@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ReportsDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: ReportsDto (com.increff.pos.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReportsDto</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.9%
+  </span>
+  <span class="absValue">
+    (1/34)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
+&nbsp;
+&nbsp;import com.increff.pos.model.DaySalesData;
+&nbsp;import com.increff.pos.model.SalesReportData;
+&nbsp;import com.increff.pos.model.SalesReportForm;
+&nbsp;import com.increff.pos.pojo.DaySalesPojo;
+&nbsp;import com.increff.pos.service.ReportsService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class ReportsDto {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    ReportsService service;
+&nbsp;    public List&lt;SalesReportData&gt; salesReport(SalesReportForm f){
+<b class="nc">&nbsp;        if(f.getStartDate() == &quot;&quot;)</b>
+<b class="nc">&nbsp;            f.setStartDate(&quot;1900-01-01&quot;);</b>
+<b class="nc">&nbsp;        if(f.getEndDate() == &quot;&quot;)</b>
+<b class="nc">&nbsp;            f.setEndDate(LocalDate.now().toString());</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate startDate = LocalDate.parse(f.getStartDate());</b>
+<b class="nc">&nbsp;        LocalDate endDate = LocalDate.parse(f.getEndDate());</b>
+<b class="nc">&nbsp;        String brand = f.getBrand();</b>
+<b class="nc">&nbsp;        String category = f.getCategory();</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Object[]&gt; obj =  service.getSalesReport(startDate,endDate,brand,category);</b>
+<b class="nc">&nbsp;        return convert(obj);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;DaySalesData&gt; daySalesReport(){
+<b class="nc">&nbsp;        List&lt;DaySalesPojo&gt; list =  service.daySalesReport();</b>
+<b class="nc">&nbsp;        return convertToDaySalesData(list);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;DaySalesData&gt; convertToDaySalesData(List&lt;DaySalesPojo&gt; list){
+<b class="nc">&nbsp;        List&lt;DaySalesData&gt; listData = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(DaySalesPojo p: list){</b>
+<b class="nc">&nbsp;            DaySalesData data = new DaySalesData();</b>
+<b class="nc">&nbsp;            data.setTotalRevenue(p.getTotal_revenue());</b>
+<b class="nc">&nbsp;            data.setInvoicedItemsCount(p.getInvoiced_items_count());</b>
+<b class="nc">&nbsp;            data.setInvoicedOrdersCount(p.getInvoiced_items_count());</b>
+<b class="nc">&nbsp;            data.setDate(p.getDate().toString());</b>
+<b class="nc">&nbsp;            listData.add(data);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return listData;</b>
+&nbsp;    }
+&nbsp;    public List&lt;SalesReportData&gt;  convert(List&lt;Object[]&gt; objList){
+<b class="nc">&nbsp;        System.out.println(&quot;object list length&quot;+objList.toArray().length);</b>
+<b class="nc">&nbsp;        List&lt;SalesReportData&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(Object[] obj : objList){</b>
+<b class="nc">&nbsp;            SalesReportData data = new SalesReportData();</b>
+<b class="nc">&nbsp;            data.setBrand((String) obj[0]);</b>
+<b class="nc">&nbsp;            data.setCategory((String) obj[1]);</b>
+<b class="nc">&nbsp;            data.setQuantity((Long) obj[2]);</b>
+<b class="nc">&nbsp;            data.setRevenue((Double) obj[3]);</b>
+<b class="nc">&nbsp;            list.add(data);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return list;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-10 13:32</div>
+</div>
+</body>
+</html>

@@ -180,6 +180,7 @@ function updateFileName(){
 	var $file = $('#brandFile');
 var fileName = $file.val().split('\\').pop();
 	$('#brandFileName').html(fileName);
+    $('#download-errors').prop("disabled", true);
 }
 
 function displayUploadData(){
@@ -293,7 +294,7 @@ function init(){
 	$('#refresh-data').click(getBrandList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
-	$('#download-errors').click(downloadErrors);
+//	$('#download-errors').click(downloadErrors);
     $('#brandFile').on('change', updateFileName);
     $('#search-brand-category').click(searchBrandCategoryDropdown);
     $('#filter-data').click(openFilterModal);

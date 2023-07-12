@@ -11,6 +11,36 @@ function getBrandUrl(){
 	return baseUrl + "/api/brand";
 }
 
+function addDropdownForEditProduct(data){
+
+console.log("in add product header click");
+var brandDropdown = $('#inputBrandEdit');
+brandDropdown.empty();
+brandDropdown.append($('<option></option>').val('').html('Select an option'));
+$.each(brandList, function (i, brand){
+    brandDropdown.append($('<option></option>').val(brand).html(brand));
+})
+
+ brandDropdown.val(data.brand);
+
+    var selectedValue = data.brand;
+    var categoryDropdown = $('#inputCategoryEdit');
+
+      // Enable the second dropdown and make an AJAX call to fetch data
+      categoryDropdown.prop('disabled', false);
+      var categoryList = brandCategoryList.filter(function(data){
+      return data.brand == selectedValue;
+      });
+      console.log(categoryList);
+      categoryDropdown.empty();
+      categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+
+      $.each(categoryList, function(key,value){
+      categoryDropdown.append($('<option></option>').val(value.category).html(value.category));
+      })
+     categoryDropdown.val(data.category);
+
+}
 
 function addProductHeaderClick(){
 console.log("in add product header click");
@@ -49,10 +79,41 @@ $(document).ready(function() {
   });
 });
 
+$(document).ready(function() {
+  // When the first dropdown changes
+  $('#inputBrandEdit').change(function() {
+    var selectedValue = $(this).val();
+    var categoryDropdown = $('#inputCategoryEdit');
+
+    if (selectedValue != '' && selectedValue != null) {
+      // Enable the second dropdown and make an AJAX call to fetch data
+      categoryDropdown.prop('disabled', false);
+      var categoryList = brandCategoryList.filter(function(data){
+      return data.brand == selectedValue;
+      });
+      console.log(categoryList);
+      categoryDropdown.empty();
+      categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+
+      $.each(categoryList, function(key,value){
+      categoryDropdown.append($('<option></option>').val(value.category).html(value.category));
+      })
+
+    } else {
+      categoryDropdown.prop('disabled', true);
+    }
+  });
+});
+
 
 //BUTTON ACTIONS
 function addProduct(event){
 	//Set the values to update
+	    var isValid = $("#product-form")[0].checkValidity();
+        if(!isValid){
+        $("#product-form")[0].reportValidity();
+        return;
+        }
 	var $form = $("#product-form");
 	var json = toJson($form);
 	var url = getProductUrl();
@@ -76,6 +137,13 @@ function addProduct(event){
 }
 
 function updateProductDetails(event){
+
+	    var isValid = $("#product-edit-form")[0].checkValidity();
+        if(!isValid){
+        $("#product-edit-form")[0].reportValidity();
+        return;
+        }
+
 	$('#edit-product-modal').modal('toggle');
 	//Get the ID
 	var id = $("#product-edit-form input[name=id]").val();
@@ -84,7 +152,7 @@ function updateProductDetails(event){
 	//Set the values to update
 	var $form = $("#product-edit-form");
 	var json = toJson($form);
-
+console.log(json);
 	$.ajax({
 	   url: url,
 	   type: 'PUT',
@@ -246,7 +314,7 @@ function processData(){
 
                 success:function(data){
                     console.log(data);
-                    $.notify("Successfully Uploaded the file",{type:"success"});
+                    $.notify("Successfully Uploaded the file","success");
                     getProductList();
 
                 },
@@ -277,7 +345,6 @@ function displayProductList(data){
 		var e = data[i];
 		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditProduct(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
           table.row.add([
-            e.id,
             e.barcode,
             e.brand,
             e.category,
@@ -324,6 +391,8 @@ function updateFileName(){
 var fileName = $file.val().split('\\').pop();
 
 	$('#productFileName').html(fileName);
+    $('#download-errors').prop("disabled", true);
+
 }
 
 function displayUploadData(){
@@ -331,11 +400,13 @@ function displayUploadData(){
 	$('#upload-product-modal').modal('toggle');
 }
 
+
 function displayProduct(data){
+    addDropdownForEditProduct(data);
 	$("#product-edit-form input[name=name]").val(data.name);
 	$("#product-edit-form input[name=mrp]").val(data.mrp);
-	$("#product-edit-form input[name=brand]").val(data.brand);
-	$("#product-edit-form input[name=category]").val(data.category);
+	$("#product-edit-form select[name=brand]").val(data.brand);
+	$("#product-edit-form select[name=category]").val(data.category);
 	$("#product-edit-form input[name=barcode]").val(data.barcode);
 	$("#product-edit-form input[name=id]").val(data.id);
 	$('#edit-product-modal').modal('toggle');
@@ -369,7 +440,7 @@ function init(){
 	$('#refresh-data').click(getProductList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
-	$('#download-errors').click(downloadErrors);
+//	$('#download-errors').click(downloadErrors);
     $('#productFile').on('change', updateFileName)
 }
 

@@ -14,11 +14,11 @@ public class BrandService {
 
 	@Autowired
 	private BrandDao dao;
-
+// @
 	@Transactional(rollbackOn = ApiException.class)
-	public int  add(BrandPojo p) throws ApiException {
-		brandCategoryCombinationCheck(p);
-		return dao.insert(p);
+	public int  add(BrandPojo brandPojo) throws ApiException {
+		brandCategoryCombinationCheck(brandPojo);
+		return dao.insert(brandPojo);
 	}
 
 	public BrandPojo get(int id) throws ApiException {
@@ -33,36 +33,36 @@ public class BrandService {
 		return dao.selectAll();
 	}
 
-	public List<BrandPojo> search(String brand, String category) {
+	public List<BrandPojo> filterBrandCategory(String brand, String category) {
 		return dao.search(brand,category);
 	}
 
 	@Transactional(rollbackOn  = ApiException.class)
-	public void update(int id, BrandPojo p) throws ApiException {
-		brandCategoryCombinationCheck(p);
-		BrandPojo ex = getCheck(id);
-		ex.setCategory(p.getCategory());
-		ex.setBrand(p.getBrand());
-		dao.update(ex);
+	public void update(int id, BrandPojo brandPojo) throws ApiException {
+		brandCategoryCombinationCheck(brandPojo);
+		BrandPojo oldBrandPojo = getCheck(id);
+		oldBrandPojo.setCategory(brandPojo.getCategory());
+		oldBrandPojo.setBrand(brandPojo.getBrand());
+		dao.update(oldBrandPojo);
 	}
 
 	public BrandPojo getCheck(int id) throws ApiException {
-		BrandPojo p = dao.select(id);
-		if (p == null) {
+		BrandPojo brandPojo = dao.select(id);
+		if (brandPojo == null) {
 			throw new ApiException("Brand with given ID does not exit, id: " + id);
 		}
-		return p;
+		return brandPojo;
 	}
 
-	public void brandCategoryCombinationCheck(BrandPojo p) throws ApiException{
-		BrandPojo brandP = dao.select(p.getBrand(), p.getCategory());
+	public void brandCategoryCombinationCheck(BrandPojo brandPojo) throws ApiException{
+		BrandPojo brandP = dao.select(brandPojo.getBrand(), brandPojo.getCategory());
 		if(brandP != null)
 			throw new ApiException("Brand Category combination already exists.");
 	}
 
-	public String validate(BrandPojo p) throws ApiException{
-		BrandPojo brandP = dao.select(p.getBrand(),p.getCategory());
-		if(brandP != null)
+	public String validate(BrandPojo p){
+		BrandPojo brandPojo = dao.select(p.getBrand(),p.getCategory());
+		if(brandPojo != null)
 			return "Brand Category already exists";
 		return "";
 	}

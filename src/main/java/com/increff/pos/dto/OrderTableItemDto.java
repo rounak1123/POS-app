@@ -27,7 +27,7 @@ public class OrderTableItemDto {
     private OrderTableItemFlowService flowService;
 
 
-    public void add(@RequestBody OrderTableItemForm form) throws ApiException {
+    public void add(OrderTableItemForm form) throws ApiException {
         emptyCheck(form);
         ProductPojo productPojo = flowService.getProductByBarcode(form.getBarcode());
         OrderTableItemPojo oldPojo = service.get(form.getUserId(), productPojo.getId());
@@ -36,21 +36,19 @@ public class OrderTableItemDto {
             service.add(p);
         }
         else {
-            form.setQuantity(form.getQuantity() + oldPojo.getQuantity());
-            OrderTableItemPojo p =  convert(form);
-            service.update(oldPojo.getId(),p);
+                throw new ApiException("Item already exists in the table, edit the order item.");
         }
 
     }
-    public void delete(@PathVariable int id) throws ApiException {
+    public void delete(int id) throws ApiException {
         service.delete(id);
     }
 
-    public void deleteAll(@PathVariable int id) throws ApiException {
+    public void deleteAll(int id) throws ApiException {
         service.deleteAll(id);
     }
 
-    public OrderTableItemData get(@PathVariable int id) throws ApiException {
+    public OrderTableItemData get(int id) throws ApiException {
         OrderTableItemPojo p = service.get(id);
         return convert(p);
     }
@@ -64,7 +62,7 @@ public class OrderTableItemDto {
         return list2;
     }
 
-    public void update(@PathVariable int id, @RequestBody OrderTableItemForm f) throws ApiException {
+    public void update(int id, OrderTableItemForm f) throws ApiException {
         normalize(f);
         emptyCheck(f);
         OrderTableItemPojo p = convert(f);

@@ -28,8 +28,8 @@ public class InventoryDao extends AbstractDao {
     private EntityManager em;
 
     @Transactional
-    public void add(InventoryPojo p) {
-        em.persist(p);
+    public void add(InventoryPojo inventoryPojo) {
+        em.persist(inventoryPojo);
     }
 
     public int delete(int id) {

@@ -25,8 +25,8 @@ public class InventoryFlowService {
     }
 
     public  BrandPojo getBrandByProductId(int id) throws ApiException {
-        ProductPojo p = productService.get(id);
-        BrandPojo brandPojo = brandService.get(p.getBrand_category_id());
+        ProductPojo productPojo = productService.get(id);
+        BrandPojo brandPojo = brandService.get(productPojo.getBrand_category_id());
         return brandPojo;
     }
 

@@ -1,6 +1,4 @@
 package com.increff.pos.dto;
-
-import com.google.protobuf.Api;
 import com.increff.pos.model.*;
 import com.increff.pos.model.ProductForm;
 import com.increff.pos.pojo.BrandPojo;
@@ -11,12 +9,12 @@ import com.increff.pos.service.flow.ProductFlowService;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,119 +22,144 @@ import java.util.regex.Pattern;
 @Component
 public class ProductDto {
     @Autowired
-    private ProductService service;
+    private ProductService productService;
     @Autowired
-    private ProductFlowService flowService;
+    private ProductFlowService productFlowService;
 
-    public int add(@RequestBody ProductForm form) throws ApiException {
-        normalize(form);
-        emptyCheck(form);
-        validCharacterCheck(form);
-        ProductPojo p = convert(form);
-        int id = service.add(p);
-        flowService.addInventory(id);
-        return id;
+    private boolean hasErrorOnUpload = false;
+
+    HashMap<Integer,String> mapColumn=new HashMap<Integer,String>();
+
+    HashMap<String,Integer> mapBarcodeCount=new HashMap<String,Integer>();
+
+    List<String> errorProductFormList = new ArrayList<>();
+
+    public int add(ProductForm productForm) throws ApiException {
+        normalizeProductForm(productForm);
+        emptyCheck(productForm);
+        validCharacterCheck(productForm);
+        ProductPojo productPojo = convertProductFormToProductPojo(productForm);
+        int productId = productService.add(productPojo);
+        productFlowService.addInventory(productId);
+        return productId;
     }
 
-    public ProductData get(@PathVariable int id) throws ApiException {
-        ProductPojo p = service.get(id);
-        return convert(p);
+    public ProductData get(int productId) throws ApiException {
+        ProductPojo productPojo = productService.get(productId);
+        return convertProductPojoToProductData(productPojo);
     }
 
     public List<ProductData> getAll() throws ApiException {
-        List<ProductPojo> list = service.getAll();
-        List<ProductData> list2 = new ArrayList<ProductData>();
-        for (ProductPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
+        List<ProductPojo> productPojoList = productService.getAll();
+        return convertProductPojoListToProductDataList(productPojoList);
     }
 
-    public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
-        normalize(f);
-        emptyCheck(f);
-        validCharacterCheck(f);
-        ProductPojo p = convert(f);
-        service.update(id, p);
+    public void update(int id, ProductForm productForm) throws ApiException {
+        normalizeProductForm(productForm);
+        emptyCheck(productForm);
+        validCharacterCheck(productForm);
+        ProductPojo productPojo = convertProductFormToProductPojo(productForm);
+        productService.update(id, productPojo);
     }
 
     public void upload( MultipartFile file) throws ApiException{
-        processUpload(file);
+        List<ProductForm> productFormList = convertTsvToProductFormList(file);
+        checkDuplicateBarcode(productFormList);
+
+        if(productFormList.isEmpty())
+            throw new ApiException("Cannot Upload, no product data in the table");
+
+        processProductFormList(productFormList);
     }
 
-    public List<ProductData> search(ProductForm f) {
-        List<Object[]> list = service.search(f.getBrand(), f.getCategory(), f.getName(), f.getBarcode());
-        return convert(list);
+    public List<ProductData> search(ProductForm productForm) {
+        List<Object[]> filteredProductList = productService.search(productForm.getBrand(), productForm.getCategory(), productForm.getName(), productForm.getBarcode());
+        return convertObjectListToProductDataList(filteredProductList);
     }
 
 
     // CONVERSION METHODS FROM ONE FORM TO ANOTHER
 
-    private List<ProductData>  convert(List<Object[]> objList){
+    private List<ProductData> convertObjectListToProductDataList(List<Object[]> objList){
         System.out.println("object list length"+objList.toArray().length);
-        List<ProductData> list = new ArrayList<>();
+        List<ProductData> productDataList = new ArrayList<>();
         for(Object[] obj : objList){
-            ProductData data = new ProductData();
-            data.setId((int) obj[0]);
-            data.setBarcode((String) obj[1]);
-            data.setBrand((String) obj[2]);
-            data.setCategory((String) obj[3]);
-            data.setName((String) obj[4]);
-            data.setMrp((double) obj[5]);
-            list.add(data);
+            productDataList.add(convertObjectToProductData(obj));
         }
-        return list;
+        return productDataList;
     }
 
-    public ProductData convert(ProductPojo p) throws ApiException {
-        ProductData d = new ProductData();
-        BrandPojo brandPojo = flowService.getBrandCategory(p.getBrand_category_id());
+    private ProductData convertObjectToProductData(Object[] obj){
+        ProductData productData = new ProductData();
+        productData.setId((int) obj[0]);
+        productData.setBarcode((String) obj[1]);
+        productData.setBrand((String) obj[2]);
+        productData.setCategory((String) obj[3]);
+        productData.setName((String) obj[4]);
+        productData.setMrp((double) obj[5]);
+        return productData;
+    }
+
+    public ProductData convertProductPojoToProductData(ProductPojo productPojo) throws ApiException {
+        ProductData productData = new ProductData();
+        BrandPojo brandPojo = productFlowService.getBrandCategory(productPojo.getBrand_category_id());
         String brand = brandPojo.getBrand();
         String category = brandPojo.getCategory();
-        d.setBarcode(p.getBarcode());
-        d.setBrand(brand);
-        d.setCategory(category);
-        d.setId(p.getId());
-        d.setMrp(p.getMrp());
-        d.setName(p.getName());
+        productData.setBarcode(productPojo.getBarcode());
+        productData.setBrand(brand);
+        productData.setCategory(category);
+        productData.setId(productPojo.getId());
+        productData.setMrp(productPojo.getMrp());
+        productData.setName(productPojo.getName());
 
-        return d;
+        return productData;
     }
 
-    public ProductPojo convert(ProductForm f) throws ApiException{
-        normalize(f);
-        ProductPojo p = new ProductPojo();
-        BrandPojo b = flowService.getBrandCategory(f.getBrand(), f.getCategory());
-        if(b==null)
+    public ProductPojo convertProductFormToProductPojo(ProductForm productForm) throws ApiException{
+        normalizeProductForm(productForm);
+        ProductPojo productPojo = new ProductPojo();
+        BrandPojo brandPojo = productFlowService.getBrandCategory(productForm.getBrand(), productForm.getCategory());
+        if(brandPojo==null)
             throw new ApiException("Brand Category doesn't exists");
-        p.setBarcode(f.getBarcode());
-        p.setBrand_category_id(b.getId());
-        p.setName(f.getName());
-        p.setMrp(f.getMrp());
+        productPojo.setBarcode(productForm.getBarcode());
+        productPojo.setBrand_category_id(brandPojo.getId());
+        productPojo.setName(productForm.getName());
+        productPojo.setMrp(productForm.getMrp());
 
-        return p;
+        return productPojo;
+    }
+
+    private List<ProductData> convertProductPojoListToProductDataList(List<ProductPojo> productPojoList) throws ApiException {
+        List<ProductData> productDataList = new ArrayList<>();
+        for (ProductPojo p : productPojoList) {
+            productDataList.add(convertProductPojoToProductData(p));
+        }
+        return productDataList;
     }
 
     // CHECKS FOR EMPTY AND VALID CHARACTERS , NORMALIZATION
 
-    public void normalize(ProductForm f) throws ApiException {
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
-        f.setName(StringUtil.toLowerCase(f.getName()).trim().replaceAll(" +", " "));
-        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim().replaceAll(" +", " "));
-        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim().replaceAll(" +", " "));
+    public void normalizeProductForm(ProductForm productForm) throws ApiException {
+        DecimalFormat df=new DecimalFormat("#.##");
 
-
+        productForm.setBarcode(StringUtil.toLowerCase(productForm.getBarcode()).trim());
+        productForm.setName(StringUtil.toLowerCase(productForm.getName()).trim());
+        productForm.setBrand(StringUtil.toLowerCase(productForm.getBrand()).trim());
+        productForm.setCategory(StringUtil.toLowerCase(productForm.getCategory()).trim());
+        productForm.setMrp(Double.valueOf(df.format(productForm.getMrp())));
     }
 
-    public void validCharacterCheck(ProductForm f) throws ApiException {
-        if(hasSpecialCharacter(f.getName())
-                || hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
+    public void validCharacterCheck(ProductForm productForm) throws ApiException {
+        if(productForm.getBarcode().length() > 30 || productForm.getName().length() >30)
+            throw new ApiException("Length of barcode or product name exceeds 30.");
+        if(hasSpecialCharacter(productForm.getName())
+                || hasSpecialCharacter(productForm.getBrand()) || hasSpecialCharacter(productForm.getCategory()))
             throw new ApiException("form contains invalid character.");
     }
 
-    public void emptyCheck(ProductForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
-           StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0)
+    public void emptyCheck(ProductForm productForm) throws ApiException{
+        if(StringUtil.isEmpty(productForm.getBarcode()) || StringUtil.isEmpty(productForm.getName()) ||
+           StringUtil.isEmpty(productForm.getBrand()) || StringUtil.isEmpty(productForm.getCategory()) || productForm.getMrp() <= 0)
             throw new ApiException("Invalid or missing fields");
     }
 
@@ -150,125 +173,156 @@ public class ProductDto {
 
     // FILE UPLOAD METHODS
 
-    public void processUpload(MultipartFile file) throws ApiException {
-        System.out.println("in upload");
-        List<ProductForm> productList = convertTsvToForm(file);
-        System.out.println("converted to form success");
-        List<ErrorProductData> errorBrandDataList = new ArrayList<>();
-        int errorCount=0;
-
-        for(int i=0; i< productList.size();i++){
-            normalize(productList.get(i));
-            String error = validate(productList.get(i));
-            if(StringUtil.isEmpty(error) == false)
-                errorCount++;
-            ErrorProductData data = new ErrorProductData();
-            data.setBrand(productList.get(i).getBrand());
-            data.setCategory(productList.get(i).getCategory());
-            data.setBarcode(productList.get(i).getBarcode());
-            data.setName(productList.get(i).getName());
-            data.setMrp(productList.get(i).getMrp());
-            data.setError(error);
-            errorBrandDataList.add(data);
-        }
-
-        System.out.println("errror"+" "+errorCount);
-
-        if(errorCount > 0){
-            convertFormToTsv(errorBrandDataList);
-            throw new ApiException("Unable to upload due to invalid data");
-        }
-
-        for(int i=0; i< productList.size();i++){
-            add(productList.get(i));
-        }
-    }
-
     public String validate( ProductForm f) throws ApiException {
-        normalize(f);
-        System.out.println(" "+f.getMrp());
+        normalizeProductForm(f);
         if(StringUtil.isEmpty(f.getBarcode()) || StringUtil.isEmpty(f.getName()) ||
                 StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()) || f.getMrp() <= 0.0)
             return "Missing or Invalid Fields";
-        ProductPojo p = convertForUpload(f);
-        if(p == null)
-            return "Brand Category doesn't exists";
-
         if(hasSpecialCharacter(f.getName())
                 || hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
             return "Data contains invalid character.";
-
-        return service.validate(p);
+        BrandPojo brandPojo = productFlowService.getBrandCategory(f.getBrand(), f.getCategory());
+        if(brandPojo == null)
+            return "Brand Category combination doesn't exists.";
+        ProductPojo p = convertProductFormToProductPojo(f);
+        return productService.validate(p);
     }
 
-    public ProductPojo convertForUpload(ProductForm f) throws ApiException{
-        normalize(f);
-        ProductPojo p = new ProductPojo();
-        BrandPojo b = flowService.getBrandCategory(f.getBrand(), f.getCategory());
-        if(b == null)
-            return null;
-        p.setBarcode(f.getBarcode());
-        p.setBrand_category_id(b.getId());
-        p.setName(f.getName());
-        p.setMrp(f.getMrp());
-
-        return p;
-    }
-
-
-    private List<ProductForm> convertTsvToForm(MultipartFile file) throws ApiException{
-        List<ProductForm> myObjects = new ArrayList<>();
+    private List<ProductForm> convertTsvToProductFormList(MultipartFile file) throws ApiException{
         try {
             InputStream inputStream = file.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            int rowCount=0;
+            List<ProductForm> productFormList = new ArrayList<>();
+            boolean headerFlag = true;
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] columns = line.split("\t");
-                if(rowCount == 0) {
-                    rowCount++;
+                if(headerFlag) {
+                    checkValidTsv(columns);
+                    headerFlag = false;
                     continue;
                 }
                 if (columns.length >= 5) {
-                    ProductForm myObject = new ProductForm();
-                    myObject.setBarcode(columns[0]);
-                    myObject.setBrand(columns[1]);
-                    myObject.setCategory(columns[2]);
-                    myObject.setName(columns[3]);
-                    myObject.setMrp(Double.parseDouble(columns[4]));
-                    myObjects.add(myObject);
+                    ProductForm productForm = createProductFormFromEachRow(columns);
+                    if(productForm == null)
+                        continue;
+                    productFormList.add(productForm);
                 }
             }
-
             reader.close();
+            return productFormList;
         } catch (IOException e) {
-            System.out.println("Unable to convert tsvData to ProductForm");
+            throw new ApiException("Unable to convert tsvData to BrandForm List");
+
         }
-        return myObjects;
 
 
     }
 
-    private void convertFormToTsv(List<ErrorProductData> errorList){
+    private void convertFormToErrorFileTsv(List<ProductForm> productFormList){
         String filePath = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv"; // Output file path
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,false))) {
-            // Write the header row
+
             writer.write("Barcode\tBrand\tCategory\tName\tMrp\tError\n");
 
-            // Write each object as a new row
-            for (Object obj : errorList) {
-                if (obj instanceof ErrorProductData) {
-                    ErrorProductData productData = (ErrorProductData) obj;
-                    writer.write(productData.getBarcode()+"\t"+productData.getBrand() + "\t" + productData.getCategory()
-                            + "\t"+ productData.getName()+"\t"+productData.getMrp()+"\t"+productData.getError()+"\n");
-                }
+            for(int i=0; i< productFormList.size();i++){
+                writer.write(productFormList.get(i).getBarcode()+"\t"+productFormList.get(i).getBrand() + "\t" + productFormList.get(i).getCategory()
+                        + "\t"+ productFormList.get(i).getName()+"\t"+productFormList.get(i).getMrp()+"\t"+errorProductFormList.get(i)+"\n");
             }
-
-            System.out.println("TSV file generated successfully.");
         } catch (IOException e) {
             System.err.println("Error writing TSV file: " + e.getMessage());
         }
+    }
+
+    private void processProductFormList(List<ProductForm> productFormList) throws ApiException{
+        getErrorList(productFormList);
+
+        if(hasErrorOnUpload){
+            convertFormToErrorFileTsv(productFormList);
+            hasErrorOnUpload = false;
+            errorProductFormList.clear();
+            mapColumn.clear();
+            mapBarcodeCount.clear();
+            throw new ApiException("Error while uploading tsv.");
+        }else {
+
+            addProductFormList(productFormList);
+            errorProductFormList.clear();
+            mapBarcodeCount.clear();
+            mapColumn.clear();
+        }
+    }
+
+    private void getErrorList(List<ProductForm> productFormList) throws ApiException {
+        for(ProductForm productForm: productFormList){
+            String error = validate(productForm);
+            if(error == ""){
+                if(mapBarcodeCount.get(productForm.getBarcode()) > 1){
+                    error = "Duplicate barcode";
+                }
+            }
+            if(error != "")
+                hasErrorOnUpload = true;
+            errorProductFormList.add(error);
+        }
+    }
+
+
+    private void addProductFormList(List<ProductForm> productFormList) throws ApiException{
+        for(ProductForm productForm: productFormList)
+            add(productForm);
+    }
+
+    private void checkValidTsv(String[] columns) throws ApiException{
+
+        for(int i=0;i<columns.length;i++){
+            String columnName = columns[i].toLowerCase().trim();
+
+            if(columnName.equals("brand") || columnName.equals("category") ||
+                    columnName.equals("name") || columnName.equals("mrp") || columnName.equals("barcode")){
+                mapColumn.put(i,columnName);
+            }else if (columns[i] != ""){
+                throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+            }
+        }
+        if(mapColumn.size() != 5)
+            throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+    }
+
+    private void checkDuplicateBarcode(List<ProductForm> productFormList){
+        for(ProductForm productForm: productFormList){
+            String barcode = productForm.getBarcode().toLowerCase().trim();
+            Integer countBarcode = mapBarcodeCount.get(barcode);
+
+            if(countBarcode == null)
+            mapBarcodeCount.put(barcode,1);
+            else mapBarcodeCount.put(barcode,countBarcode+1);
+        }
+    }
+
+    private ProductForm createProductFormFromEachRow(String columns[]){
+
+        ProductForm productForm = new ProductForm();
+        int nullValues = 0;
+        for(int i=0;i<columns.length;i++){
+            if(columns[i] == "") nullValues++;
+
+            if(mapColumn.get(i).equals("brand") ){
+                productForm.setBrand(columns[i]);
+            }else if(mapColumn.get(i).equals("category"))
+                productForm.setCategory(columns[i]);
+            else if(mapColumn.get(i).equals("barcode"))
+                productForm.setBarcode(columns[i]);
+            else if(mapColumn.get(i).equals("mrp"))
+                productForm.setMrp(Double.parseDouble(columns[4]));
+            else if(mapColumn.get(i).equals("name"))
+                productForm.setName(columns[i]);
+        }
+        if(nullValues == columns.length)
+            return null;
+
+        return productForm;
     }
 
 

@@ -23,9 +23,9 @@ public class BrandDao extends AbstractDao {
 	private EntityManager em;
 
 	@Transactional
-	public int insert(BrandPojo p) {
-		em.persist(p);
-		return p.getId();
+	public int insert(BrandPojo brandPojo) {
+		em.persist(brandPojo);
+		return brandPojo.getId();
 	}
 
 	public int delete(int id) {
@@ -45,7 +45,7 @@ public class BrandDao extends AbstractDao {
 		return query.getResultList();
 	}
 
-	public void update(BrandPojo p) {
+	public void update(BrandPojo brandPojo) {
 	}
 
 	public BrandPojo select(String brand, String category){

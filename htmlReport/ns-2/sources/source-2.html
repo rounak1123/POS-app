@@ -1,0 +1,195 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BrandService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.service</a>
+</div>
+
+<h1>Coverage Summary for Class: BrandService (com.increff.pos.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BrandService</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.6%
+  </span>
+  <span class="absValue">
+    (19/23)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BrandService$$EnhancerBySpringCGLIB$$27d52eef</td>
+  </tr>
+  <tr>
+    <td class="name">BrandService$$EnhancerBySpringCGLIB$$27d52eef$$FastClassBySpringCGLIB$$b6ee93f8</td>
+  </tr>
+  <tr>
+    <td class="name">BrandService$$EnhancerBySpringCGLIB$$93af11f6</td>
+  </tr>
+  <tr>
+    <td class="name">BrandService$$EnhancerBySpringCGLIB$$93af11f6$$FastClassBySpringCGLIB$$b8109f3d</td>
+  </tr>
+  <tr>
+    <td class="name">BrandService$$FastClassBySpringCGLIB$$45e56e4b</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.6%
+  </span>
+  <span class="absValue">
+    (19/23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+&nbsp;
+&nbsp;import com.increff.pos.dao.BrandDao;
+&nbsp;import com.increff.pos.pojo.BrandPojo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Transactional
+<b class="fc">&nbsp;public class BrandService {</b>
+&nbsp;
+&nbsp;	@Autowired
+&nbsp;	private BrandDao dao;
+&nbsp;
+&nbsp;	@Transactional(rollbackOn = ApiException.class)
+&nbsp;	public int  add(BrandPojo p) throws ApiException {
+<b class="fc">&nbsp;		brandCategoryCombinationCheck(p);</b>
+<b class="fc">&nbsp;		return dao.insert(p);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public BrandPojo get(int id) throws ApiException {
+<b class="fc">&nbsp;		return getCheck(id);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public BrandPojo get(String  brand, String category) throws ApiException {
+<b class="fc">&nbsp;		return dao.select(brand,category);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public List&lt;BrandPojo&gt; getAll() {
+<b class="fc">&nbsp;		return dao.selectAll();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public List&lt;BrandPojo&gt; search(String brand, String category) {
+<b class="fc">&nbsp;		return dao.search(brand,category);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Transactional(rollbackOn  = ApiException.class)
+&nbsp;	public void update(int id, BrandPojo p) throws ApiException {
+<b class="fc">&nbsp;		brandCategoryCombinationCheck(p);</b>
+<b class="fc">&nbsp;		BrandPojo ex = getCheck(id);</b>
+<b class="fc">&nbsp;		ex.setCategory(p.getCategory());</b>
+<b class="fc">&nbsp;		ex.setBrand(p.getBrand());</b>
+<b class="fc">&nbsp;		dao.update(ex);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public BrandPojo getCheck(int id) throws ApiException {
+<b class="fc">&nbsp;		BrandPojo p = dao.select(id);</b>
+<b class="fc">&nbsp;		if (p == null) {</b>
+<b class="fc">&nbsp;			throw new ApiException(&quot;Brand with given ID does not exit, id: &quot; + id);</b>
+&nbsp;		}
+<b class="fc">&nbsp;		return p;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public void brandCategoryCombinationCheck(BrandPojo p) throws ApiException{
+<b class="fc">&nbsp;		BrandPojo brandP = dao.select(p.getBrand(), p.getCategory());</b>
+<b class="fc">&nbsp;		if(brandP != null)</b>
+<b class="fc">&nbsp;			throw new ApiException(&quot;Brand Category combination already exists.&quot;);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public String validate(BrandPojo p) throws ApiException{
+<b class="nc">&nbsp;		BrandPojo brandP = dao.select(p.getBrand(),p.getCategory());</b>
+<b class="nc">&nbsp;		if(brandP != null)</b>
+<b class="nc">&nbsp;			return &quot;Brand Category already exists&quot;;</b>
+<b class="nc">&nbsp;		return &quot;&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-10 13:32</div>
+</div>
+</body>
+</html>

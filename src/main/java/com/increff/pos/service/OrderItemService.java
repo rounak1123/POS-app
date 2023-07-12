@@ -10,41 +10,36 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 @Service
 public class OrderItemService {
 
     @Autowired
     private OrderItemDao dao;
 
-    @Transactional(rollbackOn = ApiException.class)
     public void add(OrderItemPojo p) throws ApiException {
         if(dao.select(p.getId()) != null)
             throw new ApiException("The Order Item already exists in the table.");
         dao.insert(p);
     }
 
-    @Transactional
     public void delete(int id)  throws ApiException{
         getCheck(id);
         dao.delete(id);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public OrderItemPojo get(int id) throws ApiException {
         return getCheck(id);
     }
 
-    @Transactional
     public List<OrderItemPojo> getAll(int orderId) {
         return dao.selectAll(orderId);
     }
 
-    @Transactional
     public OrderItemPojo getOrderItemByProductId(int productId, int orderId) {
         return dao.getOrderItemByProductId(productId,orderId);
     }
 
-    @Transactional(rollbackOn  = ApiException.class)
     public void update(int id, OrderItemPojo p) throws ApiException {
         OrderItemPojo ex = getCheck(id);
         ex.setSelling_price(p.getSelling_price());
@@ -53,7 +48,6 @@ public class OrderItemService {
         dao.update(ex);
     }
 
-    @Transactional
     public OrderItemPojo getCheck(int id) throws ApiException {
         OrderItemPojo p = dao.select(id);
         if (p == null) {

@@ -27,10 +27,10 @@ public class ProductFlowService {
         return brandService.get(id);
     }
     public void addInventory(int id) throws ApiException {
-        InventoryPojo invPojo = new InventoryPojo();
-        invPojo.setId(id);
-        invPojo.setQuantity(0);
-        inventoryService.add(invPojo);
+        InventoryPojo inventoryPojo = new InventoryPojo();
+        inventoryPojo.setId(id);
+        inventoryPojo.setQuantity(0);
+        inventoryService.add(inventoryPojo);
     }
 
 

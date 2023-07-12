@@ -26,11 +26,19 @@ public class OrderItemApiController {
         dto.add(form);
     }
 
-    @ApiOperation(value = "Deletes and order-item")
+    @ApiOperation(value = "Deletes an order-item")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws ApiException {
         dto.delete(id);
     }
+
+    @ApiOperation(value = "Deletes all order-item of an order")
+    @DeleteMapping("/order/{id}")
+    public void deleteAll(@PathVariable int id) throws ApiException {
+        dto.deleteAll(id);
+    }
+
+
 
     @ApiOperation(value = "Gets an order-item by ID")
     @GetMapping("/{id}")

@@ -9,32 +9,28 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class InventoryService {
 
     @Autowired
     private InventoryDao dao;
 
-    @Transactional(rollbackOn = ApiException.class)
     public void add(InventoryPojo p) throws ApiException {
         dao.add(p);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public InventoryPojo get(int id) throws ApiException {
         return getCheck(id);
     }
 
-    @Transactional
     public List<InventoryPojo> getAll() {
         return dao.selectAll();
     }
 
-    @Transactional
     public List<InventoryPojo>  search(String barcode, String name, String brand, String category) {
         return dao.search(barcode, name, brand, category);
     }
 
-    @Transactional(rollbackOn  = ApiException.class)
     public void update(int id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
         if(ex==null)
@@ -43,7 +39,6 @@ public class InventoryService {
         dao.update(ex);
     }
 
-    @Transactional
     public InventoryPojo getCheck(int id) throws ApiException {
         InventoryPojo p = dao.select(id);
         return p;

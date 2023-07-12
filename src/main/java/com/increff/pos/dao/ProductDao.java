@@ -30,9 +30,9 @@ public class ProductDao extends AbstractDao {
 	private EntityManager em;
 
 	@Transactional
-	public int insert(ProductPojo p) {
-		em.persist(p);
-		return p.getId();
+	public int insert(ProductPojo productPojo) {
+		em.persist(productPojo);
+		return productPojo.getId();
 	}
 
 	public int delete(int id) {
@@ -52,7 +52,7 @@ public class ProductDao extends AbstractDao {
 		return query.getResultList();
 	}
 
-	public void update(ProductPojo p) {
+	public void update(ProductPojo productPojo) {
 	}
 
 	public List<Object[]> search(String brand, String category, String name, String barcode){

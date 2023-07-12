@@ -10,13 +10,14 @@
 
 <div class="container">
 
-    <h3 class="mt-2">Order View</h3>
+    <h3 class="mt-2">Order View
+        <a th:href="@{/ui/order/new}" class="text-white"><button type="button" class="btn btn-success " id="create-new-order"  >Create New Order</button></a>
+    </h3>
 
     <!-- Top row with form-->
     <div class="row">
         <div class="col-12">
             <form class="form-inline" id="item-form">
-                <a th:href="@{/ui/order/new}" class="text-white"><button type="button" class="btn btn-success " id="create-new-order"  >Create New Order</button></a>
             </form>
         </div>
     </div>

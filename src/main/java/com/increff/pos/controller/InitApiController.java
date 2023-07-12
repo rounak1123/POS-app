@@ -27,29 +27,6 @@ public class InitApiController extends AbstractUiController {
 	@Value(("${app.supervisorEmail}"))
 	private String supervisorEmail;
 
-//	@ApiOperation(value = "Initializes application")
-//	@RequestMapping(path = "/site/init", method = RequestMethod.GET)
-//	public ModelAndView showPage(UserForm form) throws ApiException {
-//		info.setMessage("");
-//		return mav("init.html");
-//	}
-//
-//	@ApiOperation(value = "Initializes application")
-//	@RequestMapping(path = "/site/init", method = RequestMethod.POST)
-//	public ModelAndView initSite(@RequestBody UserForm form) throws ApiException {
-//		List<UserPojo> list = service.getAll();
-//		if (list.size() > 0) {
-//			info.setMessage("Application already initialized. Please use existing credentials");
-//		} else {
-//			form.setRole("admin");
-//			UserPojo p = convert(form);
-//			service.add(p);
-//			info.setMessage("Application initialized");
-//		}
-//		return mav("init.html");
-//
-//	}
-
 	@ApiOperation(value = "Signing  up to the application")
 	@RequestMapping(path = "/site/user/new", method = RequestMethod.POST)
 	public void signUp(@RequestBody UserForm form) throws ApiException {

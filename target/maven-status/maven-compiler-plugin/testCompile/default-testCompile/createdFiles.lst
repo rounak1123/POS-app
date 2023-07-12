@@ -1,4 +1,5 @@
-com/increff/pos/service/QaConfig.class
-com/increff/pos/service/AbstractUnitTest.class
-com/increff/pos/service/constructorUtil/FormConstructor.class
-com/increff/pos/service/BrandDtoTest.class
+com/increff/pos/dto/BrandDtoTest.class
+com/increff/pos/dto/QaConfig.class
+com/increff/pos/dto/AbstractUnitTest.class
+com/increff/pos/dto/constructorUtil/FormConstructor.class
+com/increff/pos/dto/ProductDtoTest.class

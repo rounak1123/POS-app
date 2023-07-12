@@ -13,14 +13,14 @@ import java.util.List;
 public class ProductService {
 
 	@Autowired
-	private ProductDao dao;
+	private ProductDao productDao;
 
 	@Transactional(rollbackOn = ApiException.class)
-	public int add(ProductPojo p) throws ApiException {
-		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());
-		if(pojo!=null)
+	public int add(ProductPojo productPojo) throws ApiException {
+		ProductPojo oldProductPojo = productDao.getProductByBarcode(productPojo.getBarcode());
+		if(oldProductPojo!=null)
 			throw  new ApiException("The product already exists in the database.");
-		int id =  dao.insert(p);
+		int id =  productDao.insert(productPojo);
 		return id;
 
 	}
@@ -31,41 +31,41 @@ public class ProductService {
 	}
 
 	public ProductPojo getProductByBarcode(String barcode){
-		return  dao.getProductByBarcode(barcode);
+		return  productDao.getProductByBarcode(barcode);
 	}
 
 	public List<ProductPojo> getAll() {
-		return dao.selectAll();
+		return productDao.selectAll();
 	}
 
 	@Transactional(rollbackOn  = ApiException.class)
-	public void update(int id, ProductPojo p) throws ApiException {
+	public void update(int id, ProductPojo productPojo) throws ApiException {
 		ProductPojo ex = getCheck(id);
-		ex.setBarcode(p.getBarcode());
-		ex.setBrand_category_id(p.getBrand_category_id());
-		ex.setName(p.getName());
-		ex.setMrp(p.getMrp());
-		dao.update(ex);
+		ex.setBarcode(productPojo.getBarcode());
+		ex.setBrand_category_id(productPojo.getBrand_category_id());
+		ex.setName(productPojo.getName());
+		ex.setMrp(productPojo.getMrp());
+		productDao.update(ex);
 	}
 
-	public String validate(ProductPojo p) throws ApiException {
-		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());
-		if(pojo != null){
+	public String validate(ProductPojo productPojo) throws ApiException {
+		ProductPojo oldProductPojo = productDao.getProductByBarcode(productPojo.getBarcode());
+		if(oldProductPojo != null){
 			return  "Already Exists with same barcode.";
 		}
 		return "";
 	}
 
 	public List<Object[]> search(String brand, String category, String name, String barcode) {
-		return dao.search(brand, category, name, barcode);
+		return productDao.search(brand, category, name, barcode);
 	}
 
 	public ProductPojo getCheck(int id) throws ApiException {
-		ProductPojo p = dao.select(id);
-		if (p == null) {
+		ProductPojo productPojo = productDao.select(id);
+		if (productPojo == null) {
 			throw new ApiException("Product with given ID does not exit, id: " + id);
 		}
-		return p;
+		return productPojo;
 	}
 
 }

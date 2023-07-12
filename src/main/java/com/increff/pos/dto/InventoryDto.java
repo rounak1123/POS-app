@@ -11,228 +11,266 @@ import com.increff.pos.service.flow.InventoryFlowService;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Component
 public class InventoryDto {
 
     @Autowired
-    private InventoryService service;
+    private InventoryService inventoryService;
 
     @Autowired
-    private InventoryFlowService flowService;
+    private InventoryFlowService inventoryFlowService;
 
-    public InventoryData get(@PathVariable int id) throws ApiException {
-        InventoryPojo p = service.get(id);
-        return convert(p);
+    private String outputErrorFilePath = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv";
+
+    private boolean hasErrorOnUpload = false;
+
+    private HashMap<Integer,String> mapColumn=new HashMap<Integer,String>();
+
+    private List<String> errorInventoryFormList = new ArrayList<>();
+
+    public InventoryData get(int id) throws ApiException {
+        InventoryPojo inventoryPojo = inventoryService.get(id);
+        return convertInventoryPojoToInventoryData(inventoryPojo);
     }
 
     public List<InventoryData> getAll() throws ApiException {
-        List<InventoryPojo> list = service.getAll();
-        List<InventoryData> list2 = new ArrayList<InventoryData>();
-        for (InventoryPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
+        List<InventoryPojo> inventoryPojoList = inventoryService.getAll();
+        return convertInventoryPojoListToInventoryDataList(inventoryPojoList);
     }
 
-    public void update(@PathVariable int id, @RequestBody InventoryForm f) throws ApiException {
-        validateDataCheck(f);
-        InventoryPojo p = convert(f,"update");
-        service.update(id, p);
+    public void update(int id, InventoryForm inventoryForm) throws ApiException {
+        validateDataCheck(inventoryForm);
+        InventoryPojo inventoryPojo = convertInventoryFormToInventoryPojo(inventoryForm,"update");
+        inventoryService.update(id, inventoryPojo);
     }
 
-    public void updateByBarcode(InventoryForm f) throws ApiException{
-       InventoryPojo p = convert(f,"add");
-       service.update(p.getId(),p);
+    public void addToExistingInventory(InventoryForm inventoryForm) throws ApiException{
+       InventoryPojo inventoryPojo = convertInventoryFormToInventoryPojo(inventoryForm,"add");
+       inventoryService.update(inventoryPojo.getId(),inventoryPojo);
     }
 
     public List<InventoryReportData> getReports() throws ApiException {
-        List<InventoryReportData> list = new ArrayList<>();
-        List<InventoryPojo> list2 = service.getAll();
-        for (InventoryPojo p : list2) {
-            list.add(convertInventoryToReportForm(p));
+        List<InventoryReportData> inventoryReportDataList = new ArrayList<>();
+        List<InventoryPojo> inventoryPojoList = inventoryService.getAll();
+        for (InventoryPojo p : inventoryPojoList) {
+            inventoryReportDataList.add(convertInventoryToReportForm(p));
         }
-        return list;
+        return inventoryReportDataList;
     }
 
-    public List<InventoryData> search(InventorySearchForm f) throws ApiException {
-        List<InventoryPojo> list =  service.search(f.getBarcode(),f.getName(),f.getBrand(), f.getCategory());
-        List<InventoryData> list2 = new ArrayList<InventoryData>();
-        for (InventoryPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
+    public List<InventoryData> search(InventorySearchForm inventorySearchForm) throws ApiException {
+        List<InventoryPojo> inventoryPojoList =  inventoryService.search(inventorySearchForm.getBarcode(),inventorySearchForm.getName(),inventorySearchForm.getBrand(), inventorySearchForm.getCategory());
+        return convertInventoryPojoListToInventoryDataList(inventoryPojoList);
     }
 
 
     public void upload( MultipartFile file) throws ApiException{
-       processUpload(file);
+        List<InventoryForm> inventoryFormList = convertTsvToInventoryFormList(file);
+
+        if(inventoryFormList.isEmpty())
+            throw new ApiException("Cannot upload, no inventory data in the table.");
+
+        processInventoryFormList(inventoryFormList);
     }
 
 
     // CONVERSION METHODS
 
-    private InventoryReportData convertInventoryToReportForm(InventoryPojo inv) throws ApiException {
-        BrandPojo p = flowService.getBrandByProductId(inv.getId());
-        String productBarcode = flowService.getProductById(inv.getId()).getBarcode();
+    private List<InventoryData> convertInventoryPojoListToInventoryDataList(List<InventoryPojo> inventoryPojoList) throws ApiException {
+        List<InventoryData> inventoryDataList = new ArrayList<InventoryData>();
+        for (InventoryPojo inventoryPojo : inventoryPojoList) {
+            inventoryDataList.add(convertInventoryPojoToInventoryData(inventoryPojo));
+        }
+        return inventoryDataList;
+    }
+
+    private InventoryReportData convertInventoryToReportForm(InventoryPojo inventoryPojo) throws ApiException {
+        BrandPojo brandPojo = inventoryFlowService.getBrandByProductId(inventoryPojo.getId());
+        String productBarcode = inventoryFlowService.getProductById(inventoryPojo.getId()).getBarcode();
         InventoryReportData f = new InventoryReportData();
-        f.setQuantity(inv.getQuantity());
-        f.setBrand(p.getBrand());
-        f.setCategory(p.getCategory());
-        f.setId(inv.getId());
+        f.setQuantity(inventoryPojo.getQuantity());
+        f.setBrand(brandPojo.getBrand());
+        f.setCategory(brandPojo.getCategory());
+        f.setId(inventoryPojo.getId());
         f.setBarcode(productBarcode);
         return f;
     }
-    private  InventoryData convert(InventoryPojo p) throws ApiException {
+
+    private  InventoryData convertInventoryPojoToInventoryData(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData d = new InventoryData();
-        ProductPojo prodPojo  = flowService.getProductById(p.getId());
-        BrandPojo brandPojo = flowService.getBrandByProductId(p.getId());
-        String barcode = prodPojo.getBarcode();
-        String name = prodPojo.getName();
+        ProductPojo productPojo  = inventoryFlowService.getProductById(inventoryPojo.getId());
+        BrandPojo brandPojo = inventoryFlowService.getBrandByProductId(inventoryPojo.getId());
+        String barcode = productPojo.getBarcode();
+        String name = productPojo.getName();
         String brand = brandPojo.getBrand();
         String category = brandPojo.getCategory();
         d.setBarcode(barcode);
-        d.setQuantity(p.getQuantity());
+        d.setQuantity(inventoryPojo.getQuantity());
         d.setName(name);
         d.setBrand(brand);
         d.setCategory(category);
-        d.setId(p.getId());
+        d.setId(inventoryPojo.getId());
         return d;
     }
 
-
-    private  InventoryPojo convert(InventoryForm f,String method) throws ApiException {
-        normalize(f);
-        int id = flowService.getProductByBarcode(f.getBarcode()).getId();
+    private  InventoryPojo convertInventoryFormToInventoryPojo(InventoryForm inventoryForm,String method) throws ApiException {
+        normalize(inventoryForm);
+        int id = inventoryFlowService.getProductByBarcode(inventoryForm.getBarcode()).getId();
         int quantity = 0;
-        InventoryPojo invPojo = service.get(id);
-
+        InventoryPojo inventoryPojo = inventoryService.get(id);
 
         if(method == "add")
-            quantity = invPojo.getQuantity();
+            quantity = inventoryPojo.getQuantity();
 
-        quantity += f.getQuantity();
+        quantity += inventoryForm.getQuantity();
 
-        invPojo.setQuantity(quantity);
-        System.out.println(invPojo.getQuantity());
-        return invPojo;
+        inventoryPojo.setQuantity(quantity);
+        return inventoryPojo;
     }
-
 
    // NORMALIZATION AND EMPTY CHECKS
-    public static void normalize(InventoryForm f){
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim().replaceAll(" +", " "));
+
+    public static void normalize(InventoryForm inventoryForm){
+        inventoryForm.setBarcode(StringUtil.toLowerCase(inventoryForm.getBarcode()).trim());
     }
 
-    public static void validateDataCheck(InventoryForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
+    public static void validateDataCheck(InventoryForm inventoryForm) throws ApiException{
+        if(StringUtil.isEmpty(inventoryForm.getBarcode()) || inventoryForm.getQuantity() < 0 )
             throw  new ApiException("Invalid data entered.");
-    }
 
+        if(inventoryForm.getBarcode().length() > 30 )
+            throw new ApiException("Length of barcode can't be more than 30.");
+    }
 
     // FILE UPLOAD METHODS
 
-    private void processUpload(MultipartFile file) throws ApiException {
-        List<InventoryForm> inventoryList = convertTsvToForm(file);
-        List<ErrorInventoryData> errorBrandDataList = new ArrayList<>();
-        int errorCount=0;
-
-        for(int i=0; i< inventoryList.size();i++){
-            normalize(inventoryList.get(i));
-            String error = validate(inventoryList.get(i));
-            if(StringUtil.isEmpty(error) == false)
-                errorCount++;
-            ErrorInventoryData data = new ErrorInventoryData();
-            data.setQuantity(inventoryList.get(i).getQuantity());
-            data.setBarcode(inventoryList.get(i).getBarcode());
-            data.setError(error);
-            errorBrandDataList.add(data);
-        }
-
-        System.out.println("errror"+" "+errorCount);
-
-        if(errorCount > 0){
-            convertFormToTsv(errorBrandDataList);
-            throw new ApiException("Unable to upload due to invalid data");
-        }
-
-        for(int i=0; i< inventoryList.size();i++){
-            updateByBarcode(inventoryList.get(i));
-        }
-    }
-
-    private boolean checkProductExistsUpload(InventoryForm f){
-        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
-        if(p == null) return false;
+    private boolean checkProductExistsUpload(InventoryForm inventoryForm){
+        ProductPojo productPojo = inventoryFlowService.getProductByBarcode(inventoryForm.getBarcode());
+        if(productPojo == null) return false;
         return true;
     }
 
-    public String validate(InventoryForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()) || f.getQuantity() < 0)
+    public String validate(InventoryForm inventoryForm) {
+        normalize(inventoryForm);
+        if(StringUtil.isEmpty(inventoryForm.getBarcode()) || inventoryForm.getQuantity() < 0)
             return "invalid or empty fields";
-        if(checkProductExistsUpload(f) == false)
+
+        if(checkProductExistsUpload(inventoryForm) == false)
             return "Product with given barcode doesn't exists";
+
         return "";
     }
 
-
-    private List<InventoryForm> convertTsvToForm(MultipartFile file) throws ApiException{
-        List<InventoryForm> myObjects = new ArrayList<>();
+    private List<InventoryForm> convertTsvToInventoryFormList(MultipartFile file) throws ApiException{
         try {
+            List<InventoryForm> inventoryFormList = new ArrayList<>();
             InputStream inputStream = file.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            int rowCount=0;
+            boolean headerFlag = true;
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] columns = line.split("\t");
-                if(rowCount == 0) {
-                    rowCount++;
+                if(headerFlag) {
+                    checkValidTsv(columns);
+                    headerFlag = false;
                     continue;
                 }
                 if (columns.length >= 2) {
-                    InventoryForm myObject = new InventoryForm();
-                    myObject.setBarcode(columns[0]);
-                    myObject.setQuantity(Integer.parseInt(columns[1]));
-                    myObjects.add(myObject);
+                    InventoryForm inventoryForm = createInventoryFormFromEachRow(columns);
+                    if(inventoryForm == null)
+                        continue;
+                    inventoryFormList.add(inventoryForm);
                 }
             }
-
             reader.close();
+            return inventoryFormList;
+
         } catch (IOException e) {
-            System.out.println("Unable to convert tsvData to InventoryForm");
+            throw new ApiException("Unable to convert tsvData to InventoryForm");
         }
-        return myObjects;
-
-
     }
 
-    private void convertFormToTsv(List<ErrorInventoryData> errorList){
-        String filePath = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv"; // Output file path
+    private void checkValidTsv(String[] columns) throws ApiException{
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,false))) {
-            // Write the header row
-            writer.write("Barcode\tBrand\tCategory\tName\tMrp\tError\n");
+        for(int i=0;i<columns.length;i++){
+            String columnName = columns[i].toLowerCase().trim();
 
-            // Write each object as a new row
-            for (Object obj : errorList) {
-                if (obj instanceof ErrorInventoryData) {
-                    ErrorInventoryData inventoryData = (ErrorInventoryData) obj;
-                    writer.write(inventoryData.getBarcode()+"\t"+inventoryData.getQuantity() +"\t"+inventoryData.getError()+"\n");
-                }
+            if(columnName.equals("barcode") || columnName.equals("quantity")){
+                mapColumn.put(i,columnName);
+            }else if (columns[i] != ""){
+                throw new ApiException("Invalid tsv format for upload, check the sample file once.");
             }
+        }
+        if(mapColumn.size() != 2)
+            throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+    }
 
-            System.out.println("TSV file generated successfully.");
+    private void convertFormToErrorFileTsv(List<InventoryForm> inventoryFormList){
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFilePath,false))) {
+            // Write the header row
+            writer.write("Barcode\tQuantity\tError\n");
+            for(int i=0;i<inventoryFormList.size();i++){
+                writer.write(inventoryFormList.get(i).getBarcode() + "\t" + inventoryFormList.get(i).getQuantity() + "\t"+ errorInventoryFormList.get(i)+"\n");
+            }
         } catch (IOException e) {
             System.err.println("Error writing TSV file: " + e.getMessage());
         }
     }
 
+    private void getErrorList(List<InventoryForm> inventoryFormList){
+        for(InventoryForm inventoryForm: inventoryFormList){
+            String error = validate(inventoryForm);
+            if(error != "")
+                hasErrorOnUpload = true;
+            errorInventoryFormList.add(error.toLowerCase().trim());
+        }
+    }
+
+    private void addInventoryFormList(List<InventoryForm> inventoryFormList) throws ApiException{
+        for(InventoryForm inventoryForm: inventoryFormList)
+            addToExistingInventory(inventoryForm);
+    }
+
+    private void processInventoryFormList(List<InventoryForm> inventoryFormList) throws ApiException{
+        getErrorList(inventoryFormList);
+
+        if(hasErrorOnUpload){
+            convertFormToErrorFileTsv(inventoryFormList);
+            hasErrorOnUpload = false;
+            errorInventoryFormList.clear();
+            mapColumn.clear();
+            throw new ApiException("Error while uploading tsv.");
+        }else {
+            addInventoryFormList(inventoryFormList);
+            errorInventoryFormList.clear();
+            mapColumn.clear();
+        }
+    }
+
+    private InventoryForm createInventoryFormFromEachRow(String columns[]){
+
+        InventoryForm inventoryForm = new InventoryForm();
+        int nullValues = 0;
+        for(int i=0;i<columns.length;i++){
+            if(columns[i] == "") nullValues++;
+
+            if(mapColumn.get(i).equals("barcode") ){
+                inventoryForm.setBarcode(columns[i]);
+            }else if(mapColumn.get(i).equals("quantity"))
+                inventoryForm.setQuantity(Integer.parseInt(columns[i]));
+        }
+        if(nullValues == columns.length)
+            return null;
+
+        return inventoryForm;
+    }
 
 }

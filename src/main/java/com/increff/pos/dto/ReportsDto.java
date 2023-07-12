@@ -60,6 +60,7 @@ public class ReportsDto {
             data.setRevenue((Double) obj[3]);
             list.add(data);
         }
+
         return list;
     }
 }

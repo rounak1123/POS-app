@@ -10,7 +10,12 @@
 
 <div class="container">
 
-    <h3 class="mt-2">Order Details</h3>
+    <h3 class="mt-2">Order Details
+
+        <button type="button" class="btn btn-primary mr-2" id="save-order">Save Order</button>
+        <button type="button" class="btn btn-primary mr-2" id="place-order">Place Order</button>
+        <button type="button" class="btn btn-danger mr-2" id="clear-order">Clear</button>
+    </h3>
 
     <!-- Top row with form-->
     <div class="row">
@@ -26,21 +31,18 @@
                 <div class="form-group">
                     <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="quantity" id="inputQuantity" placeholder="enter quantity">
+                        <input type="number" min="1" step="1" class="form-control" name="quantity" id="inputQuantity" placeholder="enter quantity" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputSellingPrice" class="col-sm-2 col-form-label">Selling Price (Per pc.) </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="sellingPrice" id="inputSellingPrice" placeholder="enter selling price">
+                        <input type="number" min="0.01" step="any" class="form-control" name="sellingPrice" id="inputSellingPrice" placeholder="enter selling price" required>
                     </div>
                 </div>
 
                 <button type="button" class="btn btn-success mr-2" id="add-item">Add</button>
 
-                <button type="button" class="btn btn-primary mr-2" id="save-order">Save Order</button>
-                <button type="button" class="btn btn-primary mr-2" id="place-order">Place Order</button>
-                <button type="button" class="btn btn-danger mr-2" id="clear-order">Clear</button>
 
             </form>
         </div>
@@ -93,14 +95,13 @@
                         <div class="form-group">
                             <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control" name="quantity" placeholder="enter quantity"
-                                step="1">
+                                <input type="number" min="1" step="1" class="form-control" name="quantity" placeholder="enter quantity" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputSellingPrice" class="col-sm-2 col-form-label" readonly>Selling Price (Per pc.)</label>
+                            <label for="inputSellingPrice" class="col-sm-2 col-form-label">Selling Price (Per pc.)</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="sellingPrice" placeholder="0.0">
+                                <input type="number" min="0.01" step="any" class="form-control" name="sellingPrice" placeholder="0.0" required>
                             </div>
                         </div>
                         <input type="hidden" name="id" >

@@ -18,8 +18,8 @@ public class UserDao extends AbstractDao {
 
 	
 	@Transactional
-	public void insert(UserPojo p) {
-		em().persist(p);
+	public void insert(UserPojo userPojo) {
+		em().persist(userPojo);
 	}
 
 	public int delete(int id) {
@@ -45,7 +45,7 @@ public class UserDao extends AbstractDao {
 		return query.getResultList();
 	}
 
-	public void update(UserPojo p) {
+	public void update(UserPojo userPojo) {
 	}
 
 

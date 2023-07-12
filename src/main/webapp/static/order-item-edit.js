@@ -4,6 +4,10 @@ function getOrderItemUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/order-item";
 }
+function getOrderUrl(){
+   	var baseUrl = $("meta[name=baseUrl]").attr("content")
+   	return baseUrl + "/api/order";
+}
 
 function getProductUrl() {
    	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -11,8 +15,39 @@ function getProductUrl() {
 }
 
 //BUTTON ACTIONS
+function deleteOrder(){
+   var orderUrl = getOrderUrl()+"/"+orderId;
+
+	$.ajax({
+	   url: orderUrl,
+	   type: 'DELETE',
+	   success: function(response) {
+      window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
+
+	   },
+	   error: handleAjaxError
+	});
+}
+
+function deleteOrderItems(){
+    var deleteOrderItemsUrl = getOrderItemUrl() + "/order/" + orderId;
+	$.ajax({
+	   url: deleteOrderItemsUrl,
+	   type: 'DELETE',
+	   success: function(response) {
+	   		deleteOrder();
+	   },
+	   error: handleAjaxError
+	});
+
+}
 function addOrderItem(event){
 	//Set the values to update
+	    var isValid = $("#order-item-form")[0].checkValidity();
+        if(!isValid){
+        $("#order-item-form")[0].reportValidity();
+        return;
+        }
 	var $form = $("#order-item-form");
 	var json = toJson($form);
 	var url = getOrderItemUrl();
@@ -34,13 +69,12 @@ function addOrderItem(event){
        },
 	   success: function(response) {
 	   		getOrderItemList();
-	   		$("#order-item-form")[0].reset();
+	   	    $("select[name='barcode']").val('');
+            $("input[name='quantity']").val('');
+            $("input[name='sellingPrice']").val('');
 	   },
 	   error: handleAjaxError
 	});
-	        $("select[name='barcode']").val('');
-            $("input[name='quantity']").val('');
-            $("input[name='sellingPrice']").val('');
 
 	return false;
 }
@@ -96,6 +130,29 @@ function getOrderItemList(){
 	});
 }
 
+function setStatusInvoiced(id){
+var url = getOrderUrl() + '/place/'+id;
+ $.ajax({
+     url: url,
+     type: 'PUT',
+     success: function(response) {
+     console.log("Order Status Set to Invoice Successfully");
+      window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
+     },
+     error: handleAjaxError
+ });
+
+}
+
+function placeOrder(){
+if(table.data().count() <= 0){
+$.notify("No items in the order , cannot place order");
+return;
+};
+
+setStatusInvoiced(orderId);
+
+}
 
 //UI DISPLAY METHODS
 
@@ -195,7 +252,10 @@ function init(){
     setBarcodeDropdown();
 	$('#add-order-item').click(addOrderItem);
 	$('#update-order-item').click(updateOrderItem);
+	$('#place-order').click(placeOrder);
+	$('#delete-order').click(deleteOrderItems);
 	$('#refresh-data').click(getOrderItemList);
+
 }
 
 $(document).ready(init);

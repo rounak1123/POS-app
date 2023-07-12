@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class OrderItemDto {
     @Autowired
     private OrderItemFlowService flowService;
 
-    public void add(@RequestBody OrderItemForm form) throws ApiException {
+    public void add(OrderItemForm form) throws ApiException {
         emptyCheck(form);
         validateCheck(form);
         int productId = flowService.getProductByBarcode(form.getBarcode()).getId();
@@ -34,6 +35,10 @@ public class OrderItemDto {
 
         OrderItemPojo p = convert(form);
         if(oPojo != null){
+            if(oPojo.getSelling_price() != form.getSellingPrice()){
+                throw new ApiException("Item already exists in the table, edit the order item.");
+            }
+
             p.setQuantity(form.getQuantity()+oPojo.getQuantity());
             service.update(oPojo.getId(),p);
         } else{
@@ -43,14 +48,21 @@ public class OrderItemDto {
         flowService.reduceInventory(productId, form.getQuantity());
 
     }
-    public void delete(@PathVariable int id) throws ApiException {
+    public void delete(int id) throws ApiException {
         OrderItemPojo oPojo = service.get(id);
         flowService.reduceInventory(oPojo.getProduct_id(),-oPojo.getQuantity());
         service.delete(id);
 
     }
 
-    public OrderItemData get(@PathVariable int id) throws ApiException {
+    public void deleteAll(int orderId) throws ApiException {
+        List<OrderItemPojo> orderItemPojoList = service.getAll(orderId);
+        for(OrderItemPojo orderItemPojo: orderItemPojoList){
+            delete(orderItemPojo.getId());
+        }
+    }
+
+    public OrderItemData get(int id) throws ApiException {
         OrderItemPojo p = service.get(id);
         return convert(p);
     }
@@ -64,7 +76,7 @@ public class OrderItemDto {
         return list2;
     }
 
-    public void update(@PathVariable int id, @RequestBody OrderItemForm f) throws ApiException {
+    public void update(int id, OrderItemForm f) throws ApiException {
         normalize(f);
         emptyCheck(f);
 
@@ -84,17 +96,17 @@ public class OrderItemDto {
         flowService.reduceInventory(p.getProduct_id(),q);
     }
 
-    public void validate(@RequestBody OrderItemForm form) throws ApiException {
+    public void validate(OrderItemForm form) throws ApiException {
         emptyCheck(form);
         validateCheck(form);
     }
 
-    public void validateUpdate(@RequestBody OrderItemForm f) throws ApiException {
+    public void validateUpdate(OrderItemForm f) throws ApiException {
         emptyCheck(f);
         validateCheck(f);
     }
 
-    public void addAll(@RequestBody List<OrderItemForm> list) throws ApiException {
+    public void addAll(List<OrderItemForm> list) throws ApiException {
         for(OrderItemForm f: list){
             add(f);
         }
@@ -156,7 +168,10 @@ public class OrderItemDto {
     }
 
     public static void normalize(OrderItemForm f){
+        DecimalFormat df=new DecimalFormat("#.##");
+
         f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim());
+        f.setSellingPrice(Double.parseDouble(df.format(f.getSellingPrice())));
     }
 
     public static void emptyCheck(OrderItemForm f) throws ApiException{

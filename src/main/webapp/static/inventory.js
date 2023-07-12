@@ -181,7 +181,6 @@ function displayInventoryList(data){
 		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditInventory(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
 
           table.row.add([
-            e.id,
             e.barcode,
             e.brand,
             e.category,
@@ -229,6 +228,7 @@ function updateFileName(){
 	var $file = $('#inventoryFile');
 var fileName = $file.val().split('\\').pop();
 	$('#inventoryFileName').html(fileName);
+    $('#download-errors').prop("disabled", true);
 }
 
 function displayUploadData(){
@@ -273,7 +273,7 @@ function init(){
 	$('#refresh-data').click(getInventoryList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
-	$('#download-errors').click(downloadErrors);
+//	$('#download-errors').click(downloadErrors);
     $('#inventoryFile').on('change', updateFileName)
 }
 

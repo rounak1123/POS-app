@@ -2,21 +2,16 @@ package com.increff.pos.dto;
 
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
-import com.increff.pos.model.ErrorBrandData;
-import com.increff.pos.model.MessageData;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,103 +19,109 @@ import java.util.regex.Pattern;
 public class BrandDto {
 
     @Autowired
-    private BrandService service;
+    private BrandService brandService;
+
+    private boolean hasErrorOnUpload = false;
+
+    private HashMap<Integer,String> mapColumn=new HashMap<Integer,String>();
+
+    private List<String> errorBrandFormList = new ArrayList<>();
+
+    private String outputErrorFilePath = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv";
 
 
-    public int add(@RequestBody BrandForm form) throws ApiException {
-        emptyCheck(form);
-        normalize(form);
-        BrandPojo p = convert(form);
-        return service.add(p);
+    public int add( BrandForm brandForm) throws ApiException {
+        normalizeBrandForm(brandForm);
+        emptyCheck(brandForm);
+        invalidCharacterAndLengthCheck(brandForm);
+        BrandPojo brandPojo = convertBrandFormToBrandPojo(brandForm);
+        return brandService.add(brandPojo);
     }
-    public BrandData get(@PathVariable int id) throws ApiException {
-        BrandPojo p = service.get(id);
-        return convert(p);
+    public BrandData get( int id) throws ApiException {
+        BrandPojo brandPojo = brandService.get(id);
+        return convertBrandPojoToBrandData(brandPojo);
     }
 
     public List<BrandData> getAll() {
-        List<BrandPojo> list = service.getAll();
-        List<BrandData> list2 = new ArrayList<BrandData>();
-        for (BrandPojo p : list) {
-            list2.add(convert(p));
-        }
-        list2.sort((o1, o2) -> {
-            if (o1.getId() > o2.getId()) return -1;
-            else return 1;
-        });
-        return list2;
+        List<BrandPojo> brandPojoList = brandService.getAll();
+        return convertBrandPojoListToBrandDataList(brandPojoList);
     }
 
-    public void update(@PathVariable int id, @RequestBody BrandForm f) throws ApiException {
-        normalize(f);
-        emptyCheck(f);
-        BrandPojo p = convert(f);
-        service.update(id, p);
+    public void update(int id, BrandForm brandForm) throws ApiException {
+        normalizeBrandForm(brandForm);
+        emptyCheck(brandForm);
+        invalidCharacterAndLengthCheck(brandForm);
+        BrandPojo p = convertBrandFormToBrandPojo(brandForm);
+        brandService.update(id, p);
     }
 
 
     public void upload( MultipartFile file) throws ApiException{
-        processUpload(file);
+
+        List<BrandForm> brandFormList = convertTsvToBrandFormList(file);
+        brandFormList = removeDuplicateEntryFromBrandFormList(brandFormList);
+
+        if(brandFormList.isEmpty())
+            throw new ApiException("Cannot upload, no brand-category data in the table.");
+
+        processBrandFormList(brandFormList);
+
     }
 
-    public List<BrandData> search(BrandForm f){
-          List<BrandPojo> list =  service.search(f.getBrand(), f.getCategory());
-        List<BrandData> list2 = new ArrayList<BrandData>();
-        for (BrandPojo p : list) {
-            list2.add(convert(p));
-        }
-        list2.sort((o1, o2) -> {
-            if (o1.getId() > o2.getId()) return -1;
-            else return 1;
-        });
-        return list2;
+    public List<BrandData> filterBrandCategory(BrandForm brandForm) throws ApiException {
+          normalizeBrandForm(brandForm);
+          List<BrandPojo> brandPojoList =  brandService.filterBrandCategory(brandForm.getBrand(), brandForm.getCategory());
+          return convertBrandPojoListToBrandDataList(brandPojoList);
     }
 
     // CONVERSION METHODS
 
-    private  BrandData convert(BrandPojo p) {
-        BrandData d = new BrandData();
-        d.setCategory(p.getCategory());
-        d.setBrand(p.getBrand());
-        d.setId(p.getId());
-        return d;
+    private  BrandData convertBrandPojoToBrandData(BrandPojo brandPojo) {
+        BrandData brandData = new BrandData();
+        brandData.setCategory(brandPojo.getCategory());
+        brandData.setBrand(brandPojo.getBrand());
+        brandData.setId(brandPojo.getId());
+        return brandData;
     }
 
 
-    private  BrandPojo convert(BrandForm f) throws ApiException {
+    private  BrandPojo convertBrandFormToBrandPojo(BrandForm brandForm)  {
         BrandPojo p = new BrandPojo();
-        p.setBrand(f.getBrand());
-        p.setCategory(f.getCategory());
+        p.setBrand(brandForm.getBrand());
+        p.setCategory(brandForm.getCategory());
         return p;
     }
 
-    // CHECKS AND NORMALIZATION FOR THE FORM.
+    private List<BrandData> convertBrandPojoListToBrandDataList(List<BrandPojo> brandPojoList){
+        brandPojoList.sort((o1, o2) -> o2.getId() - o1.getId());
 
-    public static void normalize(BrandForm f) throws ApiException{
-        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim());
-        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim());
-        if(hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))
-            throw new ApiException("invalid character in brand or category.");
-        if(f.getBrand().length() > 30 || f.getCategory().length() > 30)
-            throw new ApiException("brand or category length is more than 30");
+        List<BrandData> brandDataList = new ArrayList<BrandData>();
+        for (BrandPojo p : brandPojoList) {
+            brandDataList.add(convertBrandPojoToBrandData(p));
+        }
+        return brandDataList;
     }
 
-    public String validate(@RequestBody BrandForm f) throws ApiException {
-        normalize(f);
-        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))
-            return "Brand or Category empty";
+    // CHECKS AND NORMALIZATION FOR THE FORM
 
-        BrandPojo p = convert(f);
-        return service.validate(p);
+    public static void normalizeBrandForm(BrandForm brandForm){
+        brandForm.setBrand(StringUtil.toLowerCase(brandForm.getBrand()).trim());
+        brandForm.setCategory(StringUtil.toLowerCase(brandForm.getCategory()).trim());
     }
 
-    public static void emptyCheck(BrandForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBrand()))
+    public static void emptyCheck(BrandForm brandForm) throws ApiException{
+        if(StringUtil.isEmpty(brandForm.getBrand()))
             throw  new ApiException("Brand field cannot be empty.");
-        if(StringUtil.isEmpty(f.getCategory()))
+        if(StringUtil.isEmpty(brandForm.getCategory()))
             throw  new ApiException("Category cannot be empty");
     }
 
+    public static void invalidCharacterAndLengthCheck(BrandForm brandForm) throws ApiException {
+        if(hasSpecialCharacter(brandForm.getBrand()) || hasSpecialCharacter(brandForm.getCategory()))
+            throw new ApiException("invalid character in brand or category.");
+        if(brandForm.getBrand().length() > 30 || brandForm.getCategory().length() > 30)
+            throw new ApiException("brand or category length is more than 30");
+    }
     public static boolean hasSpecialCharacter(String input) {
         String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
         String patternString = "[^" + allowedCharacters + "]";
@@ -129,87 +130,130 @@ public class BrandDto {
         return matcher.find();
     }
 
-
-
     // FILE UPLOAD METHODS
 
-    public void processUpload(MultipartFile file) throws ApiException {
-        List<BrandForm> brandList = convertTsvToForm(file);
-        List<ErrorBrandData> errorBrandDataList = new ArrayList<>();
-        int errorCount=0;
+    public String validate(BrandForm brandForm)  {
+        normalizeBrandForm(brandForm);
+        if(StringUtil.isEmpty(brandForm.getBrand()) || StringUtil.isEmpty(brandForm.getCategory()))
+            return "Brand or Category empty";
+        if(hasSpecialCharacter(brandForm.getBrand()) || hasSpecialCharacter(brandForm.getCategory()))
+            return "invalid character in brand or category.";
+        if(brandForm.getBrand().length() > 30 || brandForm.getCategory().length() > 30)
+            return "brand or category length is more than 30";
 
-        for(int i=0; i< brandList.size();i++){
-            normalize(brandList.get(i));
-            String error = validate(brandList.get(i));
-            if(StringUtil.isEmpty(error) == false)
-                errorCount++;
-            ErrorBrandData data = new ErrorBrandData();
-            data.setBrand(brandList.get(i).getBrand());
-            data.setCategory(brandList.get(i).getCategory());
-            data.setError(error);
-            errorBrandDataList.add(data);
-        }
-
-        if(errorCount > 0){
-            convertFormToTsv(errorBrandDataList);
-            throw new ApiException("Unable to upload due to invalid data");
-        }
-
-        for(int i=0; i< brandList.size();i++){
-            add(brandList.get(i));
-        }
-
+        BrandPojo brandPojo = convertBrandFormToBrandPojo(brandForm);
+        return brandService.validate(brandPojo);
     }
 
-    private List<BrandForm> convertTsvToForm(MultipartFile file) throws ApiException{
-        List<BrandForm> myObjects = new ArrayList<>();
+    private void getErrorList(List<BrandForm> brandFormList){
+        for(BrandForm brandForm: brandFormList){
+            String error = validate(brandForm);
+            if(error != "")
+                hasErrorOnUpload = true;
+            errorBrandFormList.add(error);
+        }
+    }
+
+    private List<BrandForm> convertTsvToBrandFormList(MultipartFile file) throws ApiException{
         try {
             InputStream inputStream = file.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            int rowCount=0;
+            List<BrandForm> brandFormList = new ArrayList<>();
+            boolean headerFlag = true;
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] columns = line.split("\t");
-                if(rowCount == 0) {
-                    rowCount++;
+                if(headerFlag) {
+                    checkValidTsv(columns);
+                    headerFlag = false;
                     continue;
                 }
                 if (columns.length >= 2) {
-                    BrandForm myObject = new BrandForm();
-                    myObject.setBrand(columns[0]);
-                    myObject.setCategory(columns[1]);
-                    myObjects.add(myObject);
+                    BrandForm brandForm = createBrandFormFromEachRow(columns);
+                    if(brandForm == null)
+                        continue;
+                    brandFormList.add(brandForm);
                 }
             }
 
             reader.close();
+            return brandFormList;
+
         } catch (IOException e) {
-            System.out.println("Unable to convert tsvData to BrandForm");
+            throw new ApiException("Unable to convert tsvData to BrandForm List");
         }
-        return myObjects;
-
-
     }
 
-    private void convertFormToTsv(List<ErrorBrandData> errorList){
-        String filePath = "/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv"; // Output file path
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,false))) {
-            // Write the header row
+    private void convertFormToErrorFileTsv(List<BrandForm> brandFormList){
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFilePath,false))) {
             writer.write("Brand\tCategory\tError\n");
 
-            // Write each object as a new row
-            for (Object obj : errorList) {
-                if (obj instanceof ErrorBrandData) {
-                    ErrorBrandData brandData = (ErrorBrandData) obj;
-                    writer.write(brandData.getBrand() + "\t" + brandData.getCategory() + "\t"+ brandData.getError()+"\n");
-                }
+            for(int i=0;i<brandFormList.size(); i++){
+                writer.write(brandFormList.get(i).getBrand() + "\t" + brandFormList.get(i).getCategory() + "\t"+ errorBrandFormList.get(i)+"\n");
             }
-
-            System.out.println("TSV file generated successfully.");
         } catch (IOException e) {
             System.err.println("Error writing TSV file: " + e.getMessage());
         }
+    }
+
+    private void addBrandFormList(List<BrandForm> brandFormList) throws ApiException{
+        for(BrandForm brandForm: brandFormList)
+            add(brandForm);
+    }
+
+    private List<BrandForm> removeDuplicateEntryFromBrandFormList(List<BrandForm> brandFormList){
+        return new ArrayList<BrandForm>(new LinkedHashSet<BrandForm>(brandFormList));
+    }
+
+    private void checkValidTsv(String[] columns) throws ApiException{
+
+        for(int i=0;i<columns.length;i++){
+            String columnName = columns[i].toLowerCase().trim();
+
+            if(columnName.equals("brand") || columnName.equals("category")){
+                mapColumn.put(i,columnName);
+            }else if (columns[i] != ""){
+                throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+            }
+        }
+        if(mapColumn.size() != 2)
+            throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+    }
+
+    private void processBrandFormList(List<BrandForm> brandFormList) throws ApiException{
+        getErrorList(brandFormList);
+
+        if(hasErrorOnUpload){
+            convertFormToErrorFileTsv(brandFormList);
+            hasErrorOnUpload = false;
+            errorBrandFormList.clear();
+            mapColumn.clear();
+            throw new ApiException("Error while uploading tsv.");
+        }else {
+            addBrandFormList(brandFormList);
+            errorBrandFormList.clear();
+            mapColumn.clear();
+        }
+    }
+
+    private BrandForm createBrandFormFromEachRow(String columns[]){
+
+        BrandForm brandForm = new BrandForm();
+        int nullValues = 0;
+        for(int i=0;i<columns.length;i++){
+            if(columns[i] == "") nullValues++;
+
+            if(mapColumn.get(i).equals("brand") ){
+                brandForm.setBrand(columns[i]);
+            }else if(mapColumn.get(i).equals("category"))
+                brandForm.setCategory(columns[i]);
+        }
+        if(nullValues == columns.length)
+            return null;
+
+        return brandForm;
     }
 
 }

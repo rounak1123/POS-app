@@ -23,7 +23,12 @@ function getInventoryList(){
 
 function displayInventoryList(data){
 	var $tbody = $('#inventory-table').find('tbody');
-		 var table = $('#inventory-table').DataTable();
+		 var table = $('#inventory-table').DataTable(
+		               {dom: 'lrtip',
+                        paging: false,
+                        scrollY: '450px',
+                        scrollColapse: 'true',
+                        });
 	table.clear().draw();
 
 	for(var i in data){

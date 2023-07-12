@@ -23,8 +23,8 @@ public class OrderTableItemDao extends AbstractDao {
     private EntityManager em;
 
     @Transactional
-    public void insert(OrderTableItemPojo p) {
-        em.persist(p);
+    public void insert(OrderTableItemPojo orderTableItemPojo) {
+        em.persist(orderTableItemPojo);
     }
 
     public int delete(int id) {
@@ -58,6 +58,6 @@ public class OrderTableItemDao extends AbstractDao {
         return getSingle(query);
     }
 
-    public void update(OrderTableItemPojo p) {
+    public void update(OrderTableItemPojo orderTableItemPojo) {
     }
 }

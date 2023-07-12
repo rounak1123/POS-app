@@ -35,11 +35,11 @@ public class OrderDto {
         p.setTime(LocalDateTime.now());
         return service.add(p);
     }
-    public void delete(@PathVariable int id) throws ApiException {
+    public void delete(int id) throws ApiException {
         service.delete(id);
     }
 
-    public OrderData get(@PathVariable int id) throws ApiException {
+    public OrderData get(int id) throws ApiException {
         OrderPojo p = service.get(id);
         return convert(p);
     }
@@ -53,20 +53,20 @@ public class OrderDto {
         return list2;
     }
 
-    public void update(@PathVariable int id, @RequestBody OrderForm f) throws ApiException {
+    public void update(int id, @RequestBody OrderForm f) throws ApiException {
         OrderPojo p = new OrderPojo();
         p.setTime(LocalDateTime.now());
         service.update(id, p);
     }
 
-    public void placeOrder(@PathVariable int id) throws ApiException {
+    public void placeOrder(int id) throws ApiException {
         OrderPojo p = new OrderPojo();
         p.setTime(LocalDateTime.now());
         p.setStatus("invoiced");
         service.update(id, p);
     }
 
-    public ResponseEntity<Resource> downloadInvoice(@PathVariable int id) throws ApiException, IOException {
+    public ResponseEntity<Resource> downloadInvoice(int id) throws ApiException, IOException {
         OrderPojo p = service.get(id);
         InvoiceData inv= convertInvoice(p);
         return service.downloadInvoice(inv);

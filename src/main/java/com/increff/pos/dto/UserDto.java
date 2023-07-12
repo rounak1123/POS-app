@@ -28,7 +28,7 @@ public class UserDto {
     @Value(("${app.supervisorEmail}"))
     private String supervisorEmail;
 
-    public void add(@RequestBody UserForm form) throws ApiException {
+    public void add(UserForm form) throws ApiException {
         emptyCheck(form);
         normalize(form);
         UserPojo p = convert(form);

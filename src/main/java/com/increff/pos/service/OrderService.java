@@ -5,10 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.increff.pos.dao.OrderDao;
 import com.increff.pos.model.InvoiceData;
 import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.service.flow.OrderItemFlowService;
-import com.increff.pos.util.Base64ToPDFDownloader;
-import com.increff.pos.util.StringUtil;
-import jdk.nashorn.internal.objects.NativeJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -23,38 +19,31 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
-import static com.mysql.cj.MysqlType.JSON;
-
 @Service
+@Transactional
 public class OrderService {
 
     @Autowired
     private OrderDao dao;
 
-    @Transactional(rollbackOn = ApiException.class)
     public OrderPojo add(OrderPojo p) throws ApiException {
         if(dao.select(p.getId()) != null)
             throw new ApiException("The Order Item already exists in the table.");
        return dao.insert(p);
     }
 
-    @Transactional
     public void delete(int id)  throws ApiException{
         getCheck(id);
         dao.delete(id);
     }
-
-    @Transactional(rollbackOn = ApiException.class)
     public OrderPojo get(int id) throws ApiException {
         return getCheck(id);
     }
 
-    @Transactional
     public List<OrderPojo> getAll() {
         return dao.selectAll();
     }
 
-    @Transactional(rollbackOn  = ApiException.class)
     public void update(int id, OrderPojo p) throws ApiException {
         OrderPojo ex = getCheck(id);
         ex.setTime(p.getTime());
@@ -62,7 +51,6 @@ public class OrderService {
         dao.update(ex);
     }
 
-    @Transactional
     public OrderPojo getCheck(int id) throws ApiException {
         OrderPojo p = dao.select(id);
         if (p == null) {
@@ -73,7 +61,6 @@ public class OrderService {
 
     // DOWNLOAD INVOICE METHODS
 
-    @Transactional
     public ResponseEntity<Resource> downloadInvoice(InvoiceData invoiceData) throws IOException {
 
         String convertedBase64 =  getBase64String(invoiceData);

@@ -33,9 +33,9 @@ public class OrderTableItemDao extends AbstractDao {
         return query.executeUpdate();
     }
 
-    public int deleteAll(int id) {
+    public int deleteAll(int userId) {
         Query query = em.createQuery(delete_all_id);
-        query.setParameter("userId", id);
+        query.setParameter("userId", userId);
         return query.executeUpdate();
     }
 
@@ -45,9 +45,9 @@ public class OrderTableItemDao extends AbstractDao {
         return getSingle(query);
     }
 
-    public List<OrderTableItemPojo> selectAll(int id) {
+    public List<OrderTableItemPojo> selectAll(int userId) {
         TypedQuery<OrderTableItemPojo> query = getQuery(select_all, OrderTableItemPojo.class);
-        query.setParameter("userId", id);
+        query.setParameter("userId", userId);
         return query.getResultList();
     }
 

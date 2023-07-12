@@ -18,22 +18,22 @@ public class OrderTableItemFlowService {
     InventoryService inventoryService;
 
     public ProductPojo getProductByBarcode(String barcode) throws ApiException{
-        ProductPojo p = productService.getProductByBarcode(barcode);
-        if(p == null)
+        ProductPojo productPojo = productService.getProductByBarcode(barcode);
+        if(productPojo == null)
             throw new ApiException("Barcode doesn't exists.");
-        return p;
+        return productPojo;
     }
 
     public ProductPojo getProductByProductId(int id) throws ApiException {
-        ProductPojo p =productService.get(id);
-        return p;
+        ProductPojo productPojo =productService.get(id);
+        return productPojo;
     }
 
     public InventoryPojo getInventoryByProductId(int id) throws ApiException {
-        InventoryPojo p = inventoryService.get(id);
-        if(p==null){
-            System.out.println("empty pojo");
+        InventoryPojo inventoryPojo = inventoryService.get(id);
+        if(inventoryPojo==null){
+            throw new ApiException("Invalid Product Id");
         }
-        return p;
+        return inventoryPojo;
     }
 }

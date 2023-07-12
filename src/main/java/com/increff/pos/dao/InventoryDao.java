@@ -1,6 +1,5 @@
 package com.increff.pos.dao;
 
-import com.increff.pos.model.InventoryData;
 import com.increff.pos.pojo.InventoryPojo;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +57,6 @@ public class InventoryDao extends AbstractDao {
         return query.getResultList();
     }
 
-    public void update(InventoryPojo p) {
+    public void update(InventoryPojo inventoryPojo) {
     }
 }

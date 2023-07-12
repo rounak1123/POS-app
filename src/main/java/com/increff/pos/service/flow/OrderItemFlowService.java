@@ -27,20 +27,20 @@ public class OrderItemFlowService {
         return productDao.select(id);
     }
     public int getInventoryByProductId(int id){
-        InventoryPojo p = inventoryDao.select(id);
-        if(p==null){
+        InventoryPojo inventoryPojo = inventoryDao.select(id);
+        if(inventoryPojo==null){
             System.out.println("empty pojo");
         }
-        return p.getQuantity();
+        return inventoryPojo.getQuantity();
     }
 
     public void reduceInventory (int productId, int quantity) throws ApiException{
-        InventoryPojo invP = inventoryDao.select(productId);
-        if(quantity > invP.getQuantity())
+        InventoryPojo inventoryPojo = inventoryDao.select(productId);
+        if(quantity > inventoryPojo.getQuantity())
             throw new ApiException("Invalid Quantity for product"+" "+productId);
-        invP.setQuantity(invP.getQuantity()-quantity);
-        int q = invP.getQuantity();
-        inventoryService.update(productId,invP);
+        inventoryPojo.setQuantity(inventoryPojo.getQuantity()-quantity);
+        int q = inventoryPojo.getQuantity();
+        inventoryService.update(productId,inventoryPojo);
 
     }
 }

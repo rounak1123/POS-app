@@ -25,79 +25,83 @@ import java.util.List;
 public class OrderDto {
 
     @Autowired
-    private OrderService service;
+    private OrderService orderService;
 
     @Autowired
-    private OrderFlowService flowService;
+    private OrderFlowService orderFlowService;
 
     public OrderPojo add() throws ApiException {
-        OrderPojo p = new OrderPojo();
-        p.setTime(LocalDateTime.now());
-        return service.add(p);
+        OrderPojo orderPojo = new OrderPojo();
+        orderPojo.setTime(LocalDateTime.now());
+        return orderService.add(orderPojo);
     }
     public void delete(int id) throws ApiException {
-        service.delete(id);
+        orderService.delete(id);
     }
 
     public OrderData get(int id) throws ApiException {
-        OrderPojo p = service.get(id);
-        return convert(p);
+        OrderPojo orderPojo = orderService.get(id);
+        return convertOrderPojoToOrderData(orderPojo);
     }
 
     public List<OrderData> getAll()  {
-        List<OrderPojo> list = service.getAll();
-        List<OrderData> list2 = new ArrayList<OrderData>();
-        for (OrderPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
+        List<OrderPojo> orderPojoList = orderService.getAll();
+       return convertOrderPojoListToOrderDataList(orderPojoList);
     }
 
-    public void update(int id, @RequestBody OrderForm f) throws ApiException {
-        OrderPojo p = new OrderPojo();
-        p.setTime(LocalDateTime.now());
-        service.update(id, p);
+    public void update(int id, OrderForm orderForm) throws ApiException {
+        OrderPojo orderPojo = new OrderPojo();
+        orderPojo.setTime(LocalDateTime.now());
+        orderService.update(id, orderPojo);
     }
 
     public void placeOrder(int id) throws ApiException {
-        OrderPojo p = new OrderPojo();
-        p.setTime(LocalDateTime.now());
-        p.setStatus("invoiced");
-        service.update(id, p);
+        OrderPojo orderPojo = new OrderPojo();
+        orderPojo.setTime(LocalDateTime.now());
+        orderPojo.setStatus("invoiced");
+        orderService.update(id, orderPojo);
     }
 
     public ResponseEntity<Resource> downloadInvoice(int id) throws ApiException, IOException {
-        OrderPojo p = service.get(id);
-        InvoiceData inv= convertInvoice(p);
-        return service.downloadInvoice(inv);
+        OrderPojo orderPojo = orderService.get(id);
+        InvoiceData invoiceData= convertOrderPojoToInvoiceData(orderPojo);
+        return orderService.downloadInvoice(invoiceData);
 
     }
 
     // CONVERSION METHODS
 
-    public InvoiceData convertInvoice(OrderPojo p) throws ApiException {
+    public InvoiceData convertOrderPojoToInvoiceData(OrderPojo orderPojo) throws ApiException {
 
-        String invoiceNumber = "INV-"+p.getId();
+        String invoiceNumber = "INV-"+orderPojo.getId();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = p.getTime().format(dateTimeFormatter);
-        List<InvoiceItem> list = flowService.getInvoiceItemList(p.getId());
+        String formattedDateTime = orderPojo.getTime().format(dateTimeFormatter);
+        List<InvoiceItem> invoiceItemList = orderFlowService.getInvoiceItemList(orderPojo.getId());
 
-        InvoiceData invoice = new InvoiceData();
-        invoice.setNumber(invoiceNumber);
-        invoice.setDate(formattedDateTime);
-        invoice.setInvoiceItems(list);
-        return invoice;
+        InvoiceData invoiceData = new InvoiceData();
+        invoiceData.setNumber(invoiceNumber);
+        invoiceData.setDate(formattedDateTime);
+        invoiceData.setInvoiceItems(invoiceItemList);
+        return invoiceData;
     }
 
 
-    private  OrderData convert(OrderPojo p) {
-        OrderData d = new OrderData();
+    private  OrderData convertOrderPojoToOrderData(OrderPojo orderPojo) {
+        OrderData orderData = new OrderData();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = p.getTime().format(dateTimeFormatter);
-        d.setId(p.getId());
-        d.setDateTime(formattedDateTime);
-        d.setStatus(p.getStatus());
-        return d;
+        String formattedDateTime = orderPojo.getTime().format(dateTimeFormatter);
+        orderData.setId(orderPojo.getId());
+        orderData.setDateTime(formattedDateTime);
+        orderData.setStatus(orderPojo.getStatus());
+        return orderData;
+    }
+
+    private List<OrderData> convertOrderPojoListToOrderDataList(List<OrderPojo> orderPojoList){
+        List<OrderData> orderDataList = new ArrayList<OrderData>();
+        for (OrderPojo orderPojo : orderPojoList) {
+            orderDataList.add(convertOrderPojoToOrderData(orderPojo));
+        }
+        return orderDataList;
     }
 
 }

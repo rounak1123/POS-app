@@ -24,39 +24,39 @@ import java.util.List;
 public class OrderService {
 
     @Autowired
-    private OrderDao dao;
+    private OrderDao orderDao;
 
-    public OrderPojo add(OrderPojo p) throws ApiException {
-        if(dao.select(p.getId()) != null)
+    public OrderPojo add(OrderPojo orderPojo) throws ApiException {
+        if(orderDao.select(orderPojo.getId()) != null)
             throw new ApiException("The Order Item already exists in the table.");
-       return dao.insert(p);
+       return orderDao.insert(orderPojo);
     }
 
     public void delete(int id)  throws ApiException{
         getCheck(id);
-        dao.delete(id);
+        orderDao.delete(id);
     }
     public OrderPojo get(int id) throws ApiException {
         return getCheck(id);
     }
 
     public List<OrderPojo> getAll() {
-        return dao.selectAll();
+        return orderDao.selectAll();
     }
 
     public void update(int id, OrderPojo p) throws ApiException {
         OrderPojo ex = getCheck(id);
         ex.setTime(p.getTime());
         ex.setStatus(p.getStatus());
-        dao.update(ex);
+        orderDao.update(ex);
     }
 
     public OrderPojo getCheck(int id) throws ApiException {
-        OrderPojo p = dao.select(id);
-        if (p == null) {
+        OrderPojo orderPojo = orderDao.select(id);
+        if (orderPojo == null) {
             throw new ApiException("OrderItem with given ID does not exit, id: " + id);
         }
-        return p;
+        return orderPojo;
     }
 
     // DOWNLOAD INVOICE METHODS
@@ -85,7 +85,7 @@ public class OrderService {
 
     }
 
-    public String getBase64String(InvoiceData invoice) throws JsonProcessingException {
+    public String getBase64String(InvoiceData invoiceData) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "http://localhost:6969/api/generate-invoice";
@@ -94,7 +94,7 @@ public class OrderService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(invoice);
+        String requestBody = objectMapper.writeValueAsString(invoiceData);
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);

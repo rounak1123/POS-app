@@ -18,43 +18,43 @@ import java.util.List;
 public class OrderTableItemApiController {
 
     @Autowired
-    private OrderTableItemDto dto;
+    private OrderTableItemDto orderTableItemDto;
 
     @ApiOperation(value = "Adds an order-table-item")
     @PostMapping
-    public void add(@RequestBody OrderTableItemForm form) throws ApiException {
-        dto.add(form);
+    public void add(@RequestBody OrderTableItemForm orderTableItemForm) throws ApiException {
+        orderTableItemDto.add(orderTableItemForm);
     }
 
 
     @ApiOperation(value = "Deletes and order-table-item")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws ApiException {
-        dto.delete(id);
+        orderTableItemDto.delete(id);
     }
 
     @ApiOperation(value = "Deletes entire order-table-item based on user id")
     @DeleteMapping("/all/{id}")
     public void deleteAll(@PathVariable int id) throws ApiException {
-        dto.deleteAll(id);
+        orderTableItemDto.deleteAll(id);
     }
 
     @ApiOperation(value = "Gets an order-table-item by ID")
     @GetMapping("/{id}")
     public OrderTableItemData get(@PathVariable int id) throws ApiException {
-        return dto.get(id);
+        return orderTableItemDto.get(id);
     }
 
     @ApiOperation(value = "Gets list of all order-table-items based on user id")
     @GetMapping("/all/{id}")
     public List<OrderTableItemData> getAll(@PathVariable int id) throws ApiException {
-        return dto.getAll(id);
+        return orderTableItemDto.getAll(id);
     }
 
     @ApiOperation(value = "Updates an order-table-item")
     @PutMapping("/{id}")
-    public void update(@PathVariable int id, @RequestBody OrderTableItemForm f) throws ApiException {
-        dto.update(id,f);
+    public void update(@PathVariable int id, @RequestBody OrderTableItemForm orderTableItemForm) throws ApiException {
+        orderTableItemDto.update(id,orderTableItemForm);
     }
 
 }

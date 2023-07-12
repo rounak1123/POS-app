@@ -13,10 +13,10 @@ import java.util.List;
 public class InventoryService {
 
     @Autowired
-    private InventoryDao dao;
+    private InventoryDao inventoryDao;
 
-    public void add(InventoryPojo p) throws ApiException {
-        dao.add(p);
+    public void add(InventoryPojo inventoryPojo) throws ApiException {
+        inventoryDao.add(inventoryPojo);
     }
 
     public InventoryPojo get(int id) throws ApiException {
@@ -24,24 +24,24 @@ public class InventoryService {
     }
 
     public List<InventoryPojo> getAll() {
-        return dao.selectAll();
+        return inventoryDao.selectAll();
     }
 
     public List<InventoryPojo>  search(String barcode, String name, String brand, String category) {
-        return dao.search(barcode, name, brand, category);
+        return inventoryDao.search(barcode, name, brand, category);
     }
 
-    public void update(int id, InventoryPojo p) throws ApiException {
-        InventoryPojo ex = getCheck(id);
-        if(ex==null)
+    public void update(int id, InventoryPojo inventoryPojo) throws ApiException {
+        InventoryPojo oldInventoryPojo = getCheck(id);
+        if(oldInventoryPojo==null)
             throw new ApiException("Product id is invalid.");
-        ex.setQuantity(p.getQuantity());
-        dao.update(ex);
+        oldInventoryPojo.setQuantity(inventoryPojo.getQuantity());
+        inventoryDao.update(oldInventoryPojo);
     }
 
     public InventoryPojo getCheck(int id) throws ApiException {
-        InventoryPojo p = dao.select(id);
-        return p;
+        InventoryPojo inventoryPojo = inventoryDao.select(id);
+        return inventoryPojo;
     }
 
 

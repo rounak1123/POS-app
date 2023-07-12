@@ -15,17 +15,17 @@ import java.util.List;
 public class OrderItemService {
 
     @Autowired
-    private OrderItemDao dao;
+    private OrderItemDao orderItemDao;
 
-    public void add(OrderItemPojo p) throws ApiException {
-        if(dao.select(p.getId()) != null)
+    public void add(OrderItemPojo orderItemPojo) throws ApiException {
+        if(orderItemDao.select(orderItemPojo.getId()) != null)
             throw new ApiException("The Order Item already exists in the table.");
-        dao.insert(p);
+        orderItemDao.insert(orderItemPojo);
     }
 
     public void delete(int id)  throws ApiException{
         getCheck(id);
-        dao.delete(id);
+        orderItemDao.delete(id);
     }
 
     public OrderItemPojo get(int id) throws ApiException {
@@ -33,27 +33,27 @@ public class OrderItemService {
     }
 
     public List<OrderItemPojo> getAll(int orderId) {
-        return dao.selectAll(orderId);
+        return orderItemDao.selectAll(orderId);
     }
 
     public OrderItemPojo getOrderItemByProductId(int productId, int orderId) {
-        return dao.getOrderItemByProductId(productId,orderId);
+        return orderItemDao.getOrderItemByProductId(productId,orderId);
     }
 
-    public void update(int id, OrderItemPojo p) throws ApiException {
-        OrderItemPojo ex = getCheck(id);
-        ex.setSelling_price(p.getSelling_price());
-        ex.setQuantity(p.getQuantity());
-        ex.setProduct_id(p.getProduct_id());
-        dao.update(ex);
+    public void update(int id, OrderItemPojo orderItemPojo) throws ApiException {
+        OrderItemPojo oldOrderItemPojo = getCheck(id);
+        oldOrderItemPojo.setSelling_price(orderItemPojo.getSelling_price());
+        oldOrderItemPojo.setQuantity(orderItemPojo.getQuantity());
+        oldOrderItemPojo.setProduct_id(orderItemPojo.getProduct_id());
+        orderItemDao.update(oldOrderItemPojo);
     }
 
     public OrderItemPojo getCheck(int id) throws ApiException {
-        OrderItemPojo p = dao.select(id);
-        if (p == null) {
+        OrderItemPojo orderItemPojo = orderItemDao.select(id);
+        if (orderItemPojo == null) {
             throw new ApiException("OrderItem with given ID does not exit, id: " + id);
         }
-        return p;
+        return orderItemPojo;
     }
 
 }

@@ -15,23 +15,23 @@ import java.util.List;
 public class OrderFlowService {
 
     @Autowired
-    OrderItemService itemService;
+    OrderItemService orderItemService;
 
     @Autowired
     ProductService productService;
 
     public List<InvoiceItem> getInvoiceItemList(int id) throws ApiException {
-        List<OrderItemPojo> list = itemService.getAll(id);
-        List<InvoiceItem> itemList = new ArrayList<>();
-        for(OrderItemPojo p : list){
-            InvoiceItem item = new InvoiceItem();
-            item.setName(productService.get(p.getProduct_id()).getName());
-            item.setQuantity(p.getQuantity());
-            item.setPrice(p.getSelling_price());
-            item.setTotal(p.getSelling_price()*p.getQuantity());
-            itemList.add(item);
+        List<OrderItemPojo> orderItemPojoList = orderItemService.getAll(id);
+        List<InvoiceItem> invoiceItemList = new ArrayList<>();
+        for(OrderItemPojo p : orderItemPojoList){
+            InvoiceItem invoiceItem = new InvoiceItem();
+            invoiceItem.setName(productService.get(p.getProduct_id()).getName());
+            invoiceItem.setQuantity(p.getQuantity());
+            invoiceItem.setPrice(p.getSelling_price());
+            invoiceItem.setTotal(p.getSelling_price()*p.getQuantity());
+            invoiceItemList.add(invoiceItem);
         }
-        return itemList;
+        return invoiceItemList;
     }
 
 }

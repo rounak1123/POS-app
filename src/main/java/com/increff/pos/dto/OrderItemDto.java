@@ -22,164 +22,129 @@ import java.util.List;
 public class OrderItemDto {
 
     @Autowired
-    private OrderItemService service;
+    private OrderItemService orderItemService;
 
     @Autowired
-    private OrderItemFlowService flowService;
+    private OrderItemFlowService orderItemFlowService;
 
-    public void add(OrderItemForm form) throws ApiException {
-        emptyCheck(form);
-        validateCheck(form);
-        int productId = flowService.getProductByBarcode(form.getBarcode()).getId();
-        OrderItemPojo oPojo = service.getOrderItemByProductId(productId,form.getOrderId());
+    public void add(OrderItemForm orderItemForm) throws ApiException {
+        emptyCheck(orderItemForm);
+        validateCheck(orderItemForm);
+        int productId = orderItemFlowService.getProductByBarcode(orderItemForm.getBarcode()).getId();
+        OrderItemPojo orderItemPojo = orderItemService.getOrderItemByProductId(productId,orderItemForm.getOrderId());
 
-        OrderItemPojo p = convert(form);
-        if(oPojo != null){
-            if(oPojo.getSelling_price() != form.getSellingPrice()){
+        OrderItemPojo newOrderItemPojo = convert(orderItemForm);
+        if(orderItemPojo != null){
                 throw new ApiException("Item already exists in the table, edit the order item.");
-            }
-
-            p.setQuantity(form.getQuantity()+oPojo.getQuantity());
-            service.update(oPojo.getId(),p);
         } else{
-            service.add(p);
+            orderItemService.add(newOrderItemPojo);
         }
-
-        flowService.reduceInventory(productId, form.getQuantity());
-
+        orderItemFlowService.reduceInventory(productId, orderItemForm.getQuantity());
     }
-    public void delete(int id) throws ApiException {
-        OrderItemPojo oPojo = service.get(id);
-        flowService.reduceInventory(oPojo.getProduct_id(),-oPojo.getQuantity());
-        service.delete(id);
 
+
+    public void delete(int id) throws ApiException {
+        OrderItemPojo orderItemPojo = orderItemService.get(id);
+        orderItemFlowService.reduceInventory(orderItemPojo.getProduct_id(),-orderItemPojo.getQuantity());
+        orderItemService.delete(id);
     }
 
     public void deleteAll(int orderId) throws ApiException {
-        List<OrderItemPojo> orderItemPojoList = service.getAll(orderId);
+        List<OrderItemPojo> orderItemPojoList = orderItemService.getAll(orderId);
         for(OrderItemPojo orderItemPojo: orderItemPojoList){
             delete(orderItemPojo.getId());
         }
     }
 
     public OrderItemData get(int id) throws ApiException {
-        OrderItemPojo p = service.get(id);
-        return convert(p);
+        OrderItemPojo orderItemPojo = orderItemService.get(id);
+        return convert(orderItemPojo);
     }
 
     public List<OrderItemData> getAll(int orderId) throws ApiException {
-        List<OrderItemPojo> list = service.getAll(orderId);
-        List<OrderItemData> list2 = new ArrayList<OrderItemData>();
-        for (OrderItemPojo p : list) {
-            list2.add(convert(p));
+        List<OrderItemPojo> orderItemPojoList = orderItemService.getAll(orderId);
+        List<OrderItemData> orderItemDataList = new ArrayList<OrderItemData>();
+        for (OrderItemPojo orderItemPojo : orderItemPojoList) {
+            orderItemDataList.add(convert(orderItemPojo));
         }
-        return list2;
+        return orderItemDataList;
     }
 
-    public void update(int id, OrderItemForm f) throws ApiException {
-        normalize(f);
-        emptyCheck(f);
+    public void update(int id, OrderItemForm orderItemForm) throws ApiException {
+        normalize(orderItemForm);
+        emptyCheck(orderItemForm);
 
-        OrderItemPojo p = convertEdit(f,id);
-        OrderItemPojo oPojo = service.get(id);
-        int quantity = flowService.getInventoryByProductId(oPojo.getProduct_id());
-        double mrp = flowService.getProductByProductId(oPojo.getProduct_id()).getMrp();
+        OrderItemPojo newOrderItemPojo = convert(orderItemForm);
+        OrderItemPojo orderItemPojo = orderItemService.get(id);
+        int quantity = orderItemFlowService.getInventoryByProductId(orderItemPojo.getProduct_id());
+        double mrp = orderItemFlowService.getProductByProductId(orderItemPojo.getProduct_id()).getMrp();
 
-        if(f.getSellingPrice() > mrp)
+        if(orderItemForm.getSellingPrice() > mrp)
             throw new ApiException("Selling Price is more than MRP of product");
 
-        int q = f.getQuantity() - oPojo.getQuantity() ;
+        int q = orderItemForm.getQuantity() - orderItemPojo.getQuantity() ;
         if(q > quantity)
             throw new ApiException("Insufficient items");
 
-        service.update(id, p);
-        flowService.reduceInventory(p.getProduct_id(),q);
+        orderItemService.update(id, newOrderItemPojo);
+        orderItemFlowService.reduceInventory(newOrderItemPojo.getProduct_id(),q);
     }
 
-    public void validate(OrderItemForm form) throws ApiException {
-        emptyCheck(form);
-        validateCheck(form);
-    }
-
-    public void validateUpdate(OrderItemForm f) throws ApiException {
-        emptyCheck(f);
-        validateCheck(f);
-    }
-
-    public void addAll(List<OrderItemForm> list) throws ApiException {
-        for(OrderItemForm f: list){
-            add(f);
+    public void addAll(List<OrderItemForm> orderItemFormList) throws ApiException {
+        for(OrderItemForm orderItemForm: orderItemFormList){
+            add(orderItemForm);
         }
     }
 
+    private  OrderItemData convert(OrderItemPojo orderItemPojo) throws ApiException {
+        OrderItemData orderItemData = new OrderItemData();
+        ProductPojo productPojo = orderItemFlowService.getProductByProductId(orderItemPojo.getProduct_id());
 
-    private  OrderItemData convert(OrderItemPojo p) throws ApiException {
-        OrderItemData d = new OrderItemData();
-        ProductPojo productPojo = flowService.getProductByProductId(p.getProduct_id());
-
-        d.setQuantity(p.getQuantity());
-        d.setSellingPrice(p.getSelling_price());
-        d.setId(p.getId());
-        d.setBarcode(productPojo.getBarcode());
-        d.setName(productPojo.getName());
-        return d;
-    }
-    // @TODO Change the convert function to handle already exists using barcode and order_id
-    private  OrderItemPojo convert(OrderItemForm f) throws ApiException{
-        normalize(f);
-        OrderItemPojo p = new OrderItemPojo();
-        int productId = flowService.getProductByBarcode(f.getBarcode()).getId();
-        OrderItemPojo oPojo = service.getOrderItemByProductId(productId,f.getOrderId());
-        int quantity = 0;
-        if(oPojo != null) {
-            quantity = oPojo.getQuantity();
-        }
-        quantity+= f.getQuantity();
-        p.setProduct_id(productId);
-        p.setQuantity(f.getQuantity());
-        p.setSelling_price(f.getSellingPrice());
-        p.setOrder_id(f.getOrderId());
-
-        return p;
+        orderItemData.setQuantity(orderItemPojo.getQuantity());
+        orderItemData.setSellingPrice(orderItemPojo.getSelling_price());
+        orderItemData.setId(orderItemPojo.getId());
+        orderItemData.setBarcode(productPojo.getBarcode());
+        orderItemData.setName(productPojo.getName());
+        return orderItemData;
     }
 
-    private OrderItemPojo convertEdit(OrderItemForm f, int id) throws ApiException{
-        normalize(f);
-        OrderItemPojo p = new OrderItemPojo();
-        int productId = flowService.getProductByBarcode(f.getBarcode()).getId();
-        p.setProduct_id(productId);
-        p.setQuantity(f.getQuantity());
-        p.setSelling_price(f.getSellingPrice());
-        p.setOrder_id(f.getOrderId());
+    private  OrderItemPojo convert(OrderItemForm orderItemForm) throws ApiException{
+        normalize(orderItemForm);
+        OrderItemPojo orderItemPojo = new OrderItemPojo();
+        int productId = orderItemFlowService.getProductByBarcode(orderItemForm.getBarcode()).getId();
+        orderItemPojo.setProduct_id(productId);
+        orderItemPojo.setQuantity(orderItemForm.getQuantity());
+        orderItemPojo.setSelling_price(orderItemForm.getSellingPrice());
+        orderItemPojo.setOrder_id(orderItemForm.getOrderId());
 
-        return p;
+        return orderItemPojo;
     }
 
-    private void validateCheck(OrderItemForm f) throws ApiException {
-        ProductPojo p = flowService.getProductByBarcode(f.getBarcode());
-        int productId = p.getId();
-        int quantity = flowService.getInventoryByProductId(productId);
+    private void validateCheck(OrderItemForm orderItemForm) throws ApiException {
+        ProductPojo productPojo = orderItemFlowService.getProductByBarcode(orderItemForm.getBarcode());
+        int productId = productPojo.getId();
+        int quantity = orderItemFlowService.getInventoryByProductId(productId);
 
-        if(quantity < f.getQuantity())
+        if(quantity < orderItemForm.getQuantity())
             throw new ApiException("Ordered quantity is more than existing inventory");
-        double sellPrice = f.getSellingPrice();
-        if(p.getMrp() < sellPrice)
+        double sellPrice = orderItemForm.getSellingPrice();
+        if(productPojo.getMrp() < sellPrice)
             throw new ApiException("Selling Price is more than MRP of Product.");
     }
 
-    public static void normalize(OrderItemForm f){
+    public static void normalize(OrderItemForm orderItemForm){
         DecimalFormat df=new DecimalFormat("#.##");
 
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim());
-        f.setSellingPrice(Double.parseDouble(df.format(f.getSellingPrice())));
+        orderItemForm.setBarcode(StringUtil.toLowerCase(orderItemForm.getBarcode()).trim());
+        orderItemForm.setSellingPrice(Double.parseDouble(df.format(orderItemForm.getSellingPrice())));
     }
 
-    public static void emptyCheck(OrderItemForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()))
+    public static void emptyCheck(OrderItemForm orderItemForm) throws ApiException{
+        if(StringUtil.isEmpty(orderItemForm.getBarcode()))
             throw  new ApiException("Barcode cannot be empty.");
-        if(f.getQuantity() <= 0)
+        if(orderItemForm.getQuantity() <= 0)
             throw  new ApiException("Invalid Quantity be empty");
-        if(f.getSellingPrice() <= 0)
+        if(orderItemForm.getSellingPrice() <= 0)
             throw new ApiException("Invalid Selling Price");
     }
 }

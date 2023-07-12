@@ -21,19 +21,19 @@ import java.util.List;
 public class OrderTableItemDto {
 
     @Autowired
-    private OrderTableItemService service;
+    private OrderTableItemService orderTableItemService;
 
     @Autowired
-    private OrderTableItemFlowService flowService;
+    private OrderTableItemFlowService orderTableItemFlowService;
 
 
-    public void add(OrderTableItemForm form) throws ApiException {
-        emptyCheck(form);
-        ProductPojo productPojo = flowService.getProductByBarcode(form.getBarcode());
-        OrderTableItemPojo oldPojo = service.get(form.getUserId(), productPojo.getId());
-        if(oldPojo == null) {
-            OrderTableItemPojo p = convert(form);
-            service.add(p);
+    public void add(OrderTableItemForm orderTableItemForm) throws ApiException {
+        emptyCheck(orderTableItemForm);
+        ProductPojo productPojo = orderTableItemFlowService.getProductByBarcode(orderTableItemForm.getBarcode());
+        OrderTableItemPojo oldOrderTableItemPojo = orderTableItemService.get(orderTableItemForm.getUserId(), productPojo.getId());
+        if(oldOrderTableItemPojo == null) {
+            OrderTableItemPojo orderTableItemPojo = convert(orderTableItemForm);
+            orderTableItemService.add(orderTableItemPojo);
         }
         else {
                 throw new ApiException("Item already exists in the table, edit the order item.");
@@ -41,76 +41,76 @@ public class OrderTableItemDto {
 
     }
     public void delete(int id) throws ApiException {
-        service.delete(id);
+        orderTableItemService.delete(id);
     }
 
     public void deleteAll(int id) throws ApiException {
-        service.deleteAll(id);
+        orderTableItemService.deleteAll(id);
     }
 
     public OrderTableItemData get(int id) throws ApiException {
-        OrderTableItemPojo p = service.get(id);
-        return convert(p);
+        OrderTableItemPojo orderTableItemPojo = orderTableItemService.get(id);
+        return convert(orderTableItemPojo);
     }
 
     public List<OrderTableItemData> getAll(int id) throws ApiException {
-        List<OrderTableItemPojo> list = service.getAll(id);
-        List<OrderTableItemData> list2 = new ArrayList<OrderTableItemData>();
-        for (OrderTableItemPojo p : list) {
-            list2.add(convert(p));
+        List<OrderTableItemPojo> orderTableItemPojoList = orderTableItemService.getAll(id);
+        List<OrderTableItemData> orderTableItemDataList = new ArrayList<OrderTableItemData>();
+        for (OrderTableItemPojo orderTableItemPojo : orderTableItemPojoList) {
+            orderTableItemDataList.add(convert(orderTableItemPojo));
         }
-        return list2;
+        return orderTableItemDataList;
     }
 
-    public void update(int id, OrderTableItemForm f) throws ApiException {
-        normalize(f);
-        emptyCheck(f);
-        OrderTableItemPojo p = convert(f);
-        service.update(id, p);
+    public void update(int id, OrderTableItemForm orderTableItemForm) throws ApiException {
+        normalize(orderTableItemForm);
+        emptyCheck(orderTableItemForm);
+        OrderTableItemPojo orderTableItemPojo = convert(orderTableItemForm);
+        orderTableItemService.update(id, orderTableItemPojo);
     }
 
 
-    private  OrderTableItemData convert(OrderTableItemPojo p) throws ApiException {
+    private  OrderTableItemData convert(OrderTableItemPojo orderTableItemPojo) throws ApiException {
         OrderTableItemData d = new OrderTableItemData();
-        String barcode = flowService.getProductByProductId(p.getProduct_id()).getBarcode();
-        d.setQuantity(p.getQuantity());
-        d.setSellingPrice(p.getSelling_price());
-        d.setId(p.getId());
+        String barcode = orderTableItemFlowService.getProductByProductId(orderTableItemPojo.getProduct_id()).getBarcode();
+        d.setQuantity(orderTableItemPojo.getQuantity());
+        d.setSellingPrice(orderTableItemPojo.getSelling_price());
+        d.setId(orderTableItemPojo.getId());
         d.setBarcode(barcode);
         return d;
     }
 
-    private  OrderTableItemPojo convert(OrderTableItemForm f) throws ApiException{
-        normalize(f);
-        OrderTableItemPojo p = new OrderTableItemPojo();
-        ProductPojo productPojo = flowService.getProductByBarcode(f.getBarcode());
+    private  OrderTableItemPojo convert(OrderTableItemForm orderTableItemForm) throws ApiException{
+        normalize(orderTableItemForm);
+        OrderTableItemPojo orderTableItemPojo = new OrderTableItemPojo();
+        ProductPojo productPojo = orderTableItemFlowService.getProductByBarcode(orderTableItemForm.getBarcode());
         int productId = productPojo.getId();
-        InventoryPojo invPojo = flowService.getInventoryByProductId(productId);
+        InventoryPojo inventoryPojo = orderTableItemFlowService.getInventoryByProductId(productId);
 
-        if(f.getQuantity() > invPojo.getQuantity())
+        if(orderTableItemForm.getQuantity() > inventoryPojo.getQuantity())
             throw new ApiException("Ordered quantity is more than available quantity of the product.");
 
-        if(f.getSellingPrice() > productPojo.getMrp())
+        if(orderTableItemForm.getSellingPrice() > productPojo.getMrp())
             throw new ApiException("Selling price is more than mrp of the product");
 
-        p.setProduct_id(productId);
-        p.setQuantity(f.getQuantity());
-        p.setSelling_price(f.getSellingPrice());
-        p.setUser_id(f.getUserId());
+        orderTableItemPojo.setProduct_id(productId);
+        orderTableItemPojo.setQuantity(orderTableItemForm.getQuantity());
+        orderTableItemPojo.setSelling_price(orderTableItemForm.getSellingPrice());
+        orderTableItemPojo.setUser_id(orderTableItemForm.getUserId());
 
-        return p;
+        return orderTableItemPojo;
     }
 
-    public static void normalize(OrderTableItemForm f){
-        f.setBarcode(StringUtil.toLowerCase(f.getBarcode()).trim());
+    public static void normalize(OrderTableItemForm orderTableItemForm){
+        orderTableItemForm.setBarcode(StringUtil.toLowerCase(orderTableItemForm.getBarcode()).trim());
     }
 
-    public static void emptyCheck(OrderTableItemForm f) throws ApiException{
-        if(StringUtil.isEmpty(f.getBarcode()))
+    public static void emptyCheck(OrderTableItemForm orderTableItemForm) throws ApiException{
+        if(StringUtil.isEmpty(orderTableItemForm.getBarcode()))
             throw  new ApiException("Barcode cannot be empty.");
-        if(f.getQuantity() <= 0)
+        if(orderTableItemForm.getQuantity() <= 0)
             throw  new ApiException("Invalid Quantity");
-        if(f.getSellingPrice() <= 0)
+        if(orderTableItemForm.getSellingPrice() <= 0)
             throw new ApiException("Invalid Selling Price");
     }
 }

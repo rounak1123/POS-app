@@ -23,49 +23,49 @@ import java.util.List;
 public class OrderApiController {
 
     @Autowired
-    private OrderDto dto;
+    private OrderDto orderDto;
 
     @ApiOperation(value = "Adds an order")
     @PostMapping
     public OrderPojo add() throws ApiException {
-        return dto.add();
+        return orderDto.add();
     }
 
 
     @ApiOperation(value = "Deletes an order")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws ApiException {
-        dto.delete(id);
+        orderDto.delete(id);
     }
 
     @ApiOperation(value = "Gets an order by ID")
     @GetMapping("/{id}")
     public OrderData get(@PathVariable int id) throws ApiException {
-        return dto.get(id);
+        return orderDto.get(id);
     }
 
     @ApiOperation(value = "Gets list of all orders")
     @GetMapping
     public List<OrderData> getAll() {
-        return dto.getAll();
+        return orderDto.getAll();
     }
 
     @ApiOperation(value = "Updates an order")
     @PutMapping("/{id}")
-    public void update(@PathVariable int id, @RequestBody OrderForm f) throws ApiException {
-        dto.update(id,f);
+    public void update(@PathVariable int id, @RequestBody OrderForm orderForm) throws ApiException {
+        orderDto.update(id,orderForm);
     }
 
     @ApiOperation(value = "Makes an order Invoiced")
     @PutMapping("/place/{id}")
     public void placeOrder(@PathVariable int id) throws ApiException {
-        dto.placeOrder(id);
+        orderDto.placeOrder(id);
     }
 
     @ApiOperation(value = "Downloads invoice for the order.")
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource>  downloadInvoice(@PathVariable int id) throws ApiException, IOException {
-        return dto.downloadInvoice(id);
+        return orderDto.downloadInvoice(id);
     }
 }
 

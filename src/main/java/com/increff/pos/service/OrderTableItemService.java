@@ -12,24 +12,24 @@ import java.util.List;
 public class OrderTableItemService {
 
     @Autowired
-    private OrderTableItemDao dao;
+    private OrderTableItemDao orderTableItemDao;
 
     @Transactional(rollbackOn = ApiException.class)
-    public void add(OrderTableItemPojo p) throws ApiException {
-        if(dao.select(p.getId()) != null)
+    public void add(OrderTableItemPojo orderTableItemPojo) throws ApiException {
+        if(orderTableItemDao.select(orderTableItemPojo.getId()) != null)
             throw new ApiException("The Order Item already exists in the table.");
-        dao.insert(p);
+        orderTableItemDao.insert(orderTableItemPojo);
     }
 
     @Transactional
     public void delete(int id)  throws ApiException{
         getCheck(id);
-        dao.delete(id);
+        orderTableItemDao.delete(id);
     }
 
     @Transactional
     public void deleteAll(int id)  throws ApiException{
-        dao.deleteAll(id);
+        orderTableItemDao.deleteAll(id);
     }
 
     @Transactional(rollbackOn = ApiException.class)
@@ -39,30 +39,30 @@ public class OrderTableItemService {
 
     @Transactional(rollbackOn = ApiException.class)
     public OrderTableItemPojo get(int userId, int productId) throws ApiException {
-        return dao.getOrderTableItemByBarcode(userId,productId);
+        return orderTableItemDao.getOrderTableItemByBarcode(userId,productId);
     }
 
     @Transactional
     public List<OrderTableItemPojo> getAll(int id) {
-        return dao.selectAll(id);
+        return orderTableItemDao.selectAll(id);
     }
 
     @Transactional(rollbackOn  = ApiException.class)
-    public void update(int id, OrderTableItemPojo p) throws ApiException {
-        OrderTableItemPojo ex = getCheck(id);
-        ex.setSelling_price(p.getSelling_price());
-        ex.setQuantity(p.getQuantity());
-        ex.setProduct_id(p.getProduct_id());
-        dao.update(ex);
+    public void update(int id, OrderTableItemPojo orderTableItemPojo) throws ApiException {
+        OrderTableItemPojo oldOrderTableItemPojo = getCheck(id);
+        oldOrderTableItemPojo.setSelling_price(orderTableItemPojo.getSelling_price());
+        oldOrderTableItemPojo.setQuantity(orderTableItemPojo.getQuantity());
+        oldOrderTableItemPojo.setProduct_id(orderTableItemPojo.getProduct_id());
+        orderTableItemDao.update(oldOrderTableItemPojo);
     }
 
     @Transactional
     public OrderTableItemPojo getCheck(int id) throws ApiException {
-        OrderTableItemPojo p = dao.select(id);
-        if (p == null) {
+        OrderTableItemPojo orderTableItemPojo = orderTableItemDao.select(id);
+        if (orderTableItemPojo == null) {
             throw new ApiException("OrderItem with given ID does not exit, id: " + id);
         }
-        return p;
+        return orderTableItemPojo;
     }
 
 }

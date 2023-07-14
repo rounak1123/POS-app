@@ -69,6 +69,8 @@ function addOrderItem(event){
        },
 	   success: function(response) {
 	   		getOrderItemList();
+            $.notify("Added the item","success");
+
 	   	    $("select[name='barcode']").val('');
             $("input[name='quantity']").val('');
             $("input[name='sellingPrice']").val('');
@@ -96,6 +98,8 @@ function updateOrderItem(event){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
+            $.notify("Updated the item","success");
+
 	   		getOrderItemList();
 	   },
 	   error: handleAjaxError
@@ -136,7 +140,8 @@ var url = getOrderUrl() + '/place/'+id;
      url: url,
      type: 'PUT',
      success: function(response) {
-     console.log("Order Status Set to Invoice Successfully");
+       $.notify("Order Placed","success");
+
       window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
      },
      error: handleAjaxError
@@ -187,6 +192,7 @@ function deleteOrderItem(id){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
+           $.notify("Order item deleted","success");
 	   		getOrderItemList();
 	   },
 	   error: handleAjaxError

@@ -18,18 +18,18 @@ import java.util.List;
 public class ReportsApiController {
 
     @Autowired
-    private ReportsDto dto;
+    private ReportsDto reportsDto;
 
     @ApiOperation(value = "Gets Sales Report")
     @RequestMapping(path = "/api/reports/sales", method = RequestMethod.POST)
-    public List<SalesReportData> salesReport(@RequestBody SalesReportForm f) throws ApiException {
-        return dto.salesReport(f);
+    public List<SalesReportData> salesReport(@RequestBody SalesReportForm salesReportForm) throws ApiException {
+        return reportsDto.salesReport(salesReportForm);
     }
 
     @ApiOperation(value = "Gets Daily Sales Report")
     @RequestMapping(path = "/api/reports/day-sales", method = RequestMethod.GET)
     public List<DaySalesData> daySalesReport()  {
-        return dto.daySalesReport();
+        return reportsDto.daySalesReport();
     }
 
 }

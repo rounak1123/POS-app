@@ -7,7 +7,16 @@ import com.increff.pos.model.BrandForm;
 import com.increff.pos.service.ApiException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -94,7 +103,7 @@ public class BrandDtoTest extends AbstractUnitTest {
         String category = "23435434534234#@";
         BrandForm f= FormConstructor.constructBrand(brand, category);
         dto.add(f);
-        List<BrandData> list = dto.search(f);
+        List<BrandData> list = dto.filterBrandCategory(f);
         for(BrandData b: list){
             assertEquals(b.getBrand(), "test12@!#");
             assertEquals(b.getCategory(), "23435434534234#@");
@@ -123,6 +132,17 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         List<BrandData> list = dto.getAll();
         assertEquals(list.size(), 4);
+
+    }
+
+    @Test
+    public void testUploadBrandCategory() throws ApiException, IOException {
+        FileInputStream file = new FileInputStream(new File("src/test/resources/com/increff/pos/brandUploadTest.tsv"));
+        String name = "brandUploadTest.tsv";
+
+        MultipartFile result = new MockMultipartFile(name, file);
+        dto.upload(result);
+        assertEquals(dto.getAll().size(), 3);
 
     }
 

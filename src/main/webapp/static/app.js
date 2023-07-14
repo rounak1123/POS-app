@@ -32,25 +32,25 @@ function readFileData(file, callback){
 }
 
 
-function writeFileData(data){
-//	var config = {
-//		quoteChar: '',
-//		escapeChar: '',
-//		delimiter: "\t"
-//	};
-//
-//	var data = Papa.unparse(arr, config);
+function writeFileData(arr){
+	var config = {
+		quoteChar: '',
+		escapeChar: '',
+		delimiter: "\t"
+	};
+    console.log(arr);
+	var data = Papa.unparse(arr, config);
     var blob = new Blob([data], {type: 'text/tsv;charset=utf-8;'});
     var fileUrl =  null;
 
     if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, 'errorFile.tsv');
+        fileUrl = navigator.msSaveBlob(blob, 'download.tsv');
     } else {
         fileUrl = window.URL.createObjectURL(blob);
     }
     var tempLink = document.createElement('a');
     tempLink.href = fileUrl;
-    tempLink.setAttribute('download', 'errorFile.tsv');
+    tempLink.setAttribute('download', 'download.tsv');
     tempLink.click(); 
 }
 

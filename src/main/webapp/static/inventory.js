@@ -7,7 +7,12 @@ function getInventoryUrl(){
 //BUTTON ACTIONS
 function updateInventory(event){
     console.log('in update')
-	$('#edit-inventory-modal').modal('toggle');
+    var isValid = $("#inventory-edit-form")[0].checkValidity();
+            if(!isValid){
+              $("#brand-edit-form")[0].reportValidity();
+                 return;
+            }
+
 	//Get the ID
 	var id = $("#inventory-edit-form input[name=id]").val();
 	var url = getInventoryUrl() + "/" + id;
@@ -23,6 +28,9 @@ function updateInventory(event){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
+	   		$.notify("Inventory updated", "success");
+	$('#edit-inventory-modal').modal('toggle');
+
 	   		getInventoryList();
 	   },
 	   error: handleAjaxError
@@ -112,6 +120,9 @@ function searchInventory() {
          	'Content-Type': 'application/json'
          },
   	   success: function(response) {
+	$('#edit-inventory-modal').modal('toggle');
+                    $.notify("Filtered Inventory data","success");
+
   	   		displayInventoryList(response);
   	   		$("#inventory-search-form")[0].reset();
   	   },
@@ -148,7 +159,7 @@ function processData(){
 
                 success:function(data){
                     console.log(data);
-                    $.notify("Successfully Uploaded the file",{type:"success"});
+                    $.notify("Uploaded the file successfully","success");
                    getInventoryList();
 
                 },

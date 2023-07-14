@@ -44,6 +44,8 @@ function addOrderTableItem(event){
          },
   	   success: function(response) {
   	   		getOrderItemList();
+            $.notify("Added Order Item","success");
+
             console.log(response);
             $("select[name='barcode']").val('');
             $("input[name='quantity']").val('');
@@ -82,6 +84,8 @@ function updateOrderItemDetails(event){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
+            $.notify("Updated Order Item","success");
+
 	   		getOrderItemList();
 	   },
 	   error: handleAjaxError
@@ -165,7 +169,7 @@ return;
      type: 'POST',
      contentType: 'application/json',
      success: function(response) {
-     console.log("Order Saved Successfully");
+     $.notify("Order Saved","success");
      console.log(response);
      addOrderItems(response.id);
     window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
@@ -184,7 +188,6 @@ var url = getOrderUrl() + '/place/'+id;
      url: url,
      type: 'PUT',
      success: function(response) {
-     console.log("Order Status Set to Invoice Successfully");
       window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
      },
      error: handleAjaxError
@@ -198,13 +201,12 @@ $.notify("No items in the order , cannot place order");
 return;
 };
  var orderUrl = getOrderUrl();
-console.log('inPlace order')
  $.ajax({
      url: orderUrl,
      type: 'POST',
      contentType: 'application/json',
      success: function(response) {
-     console.log("Order Created Successfully");
+     console.log("Order Placed");
      addOrderItems(response.id);
      setStatusInvoiced(response.id);
     window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
@@ -223,6 +225,7 @@ function clearOrder(){
 	   url: url,
 	   type: 'DELETE',
 	   success: function(data) {
+	        $.notify("Order cleared","success");
 	        console.log('Order Item list', data);
 	   		displayOrderItemList(data);
 	   },
@@ -277,6 +280,7 @@ function deleteTableItem(id){
 	   url: url,
 	   type: 'DELETE',
 	   success: function(data) {
+	   $.notify("Item deleted","success");
 	   getOrderItemList();
 	   },
 	   error: handleAjaxError

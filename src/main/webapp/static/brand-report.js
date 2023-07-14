@@ -1,5 +1,7 @@
 var brandData = []; // Programatically-generated options array with > 5 options
 var categoryData = [];
+var brandReportData = [];
+
 
 function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -15,6 +17,7 @@ function getBrandList(){
 	   type: 'GET',
 	   success: function(data) {
 	        console.log('brand list', data);
+	        brandReportData = data;
 	   		displayBrandList(data);
 	   		updateBrandCategoryList(data);
 	   },
@@ -22,6 +25,25 @@ function getBrandList(){
 	});
 }
 
+
+function downloadReport(){
+console.log(brandReportData);
+if(brandReportData.length == 0){
+$.notify("No brand report data, cannot download report");
+return;};
+
+
+var reportArrayData = [];
+
+for(i in brandReportData){
+var rowData = {};
+rowData.brand = brandReportData[i].brand;
+rowData.category = brandReportData[i].category;
+reportArrayData.push(rowData);
+}
+
+writeFileData(reportArrayData);
+}
 
 //UI DISPLAY METHODS
 
@@ -96,7 +118,10 @@ function searchBrandCategoryDropdown() {
          	'Content-Type': 'application/json'
          },
   	   success: function(response) {
+  	        brandReportData = response;
   	   		displayBrandList(response);
+	   		$.notify("Filtered data", "success");
+
   	   		$("#brand-search-form")[0].reset();
   	   },
   	   error: handleAjaxError
@@ -109,7 +134,11 @@ var table;
 
 function initDatatable(){
             table = $('#brand-table').DataTable(
-              {dom: 'lrtip'}
+                            {dom: 'lrtip',
+                             paging: false,
+                             scrollY: '450px',
+                             scrollColapse: 'true',
+                             }
             );
 
 }
@@ -117,6 +146,8 @@ function initDatatable(){
 function init(){
     initDatatable();
     $('#search-brand-category').click(searchBrandCategoryDropdown);
+	$('#download-report').click(downloadReport);
+
 }
 
 $(document).ready(init);

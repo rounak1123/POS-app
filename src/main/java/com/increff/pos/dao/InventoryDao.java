@@ -22,6 +22,13 @@ public class InventoryDao extends AbstractDao {
                     "JOIN ProductPojo p ON i.id = p.id\n"+
                     "JOIN BrandPojo b ON p.brand_category_id = b.id\n" +
                     "WHERE (b.brand = :brand OR :brand = '' OR :brand is null) AND (b.category = :category OR :category = '' OR :category is null) AND (p.barcode = :barcode OR :barcode = '') AND (p.name = :name OR :name = '')\n";
+    private static String filter_inventory_reports =
+            "SELECT b.brand, b.category, SUM(i.quantity)\n" +
+                    "From InventoryPojo i " +
+                    "JOIN ProductPojo p ON i.id = p.id\n"+
+                    "JOIN BrandPojo b ON p.brand_category_id = b.id\n" +
+                    "WHERE (b.brand = :brand OR :brand = '' OR :brand is null) AND (b.category = :category OR :category = '' OR :category is null)\n"+
+                    "GROUP BY b.brand,b.category";
 
     @PersistenceContext
     private EntityManager em;
@@ -54,6 +61,13 @@ public class InventoryDao extends AbstractDao {
         query.setParameter("category", category);
         query.setParameter("name", name);
         query.setParameter("barcode", barcode);
+        return query.getResultList();
+    }
+
+    public List<Object[]> filterInventoryReports(String brand, String category){
+        TypedQuery<Object[]> query = getQuery(filter_inventory_reports, Object[].class);
+        query.setParameter("brand", brand);
+        query.setParameter("category", category);
         return query.getResultList();
     }
 

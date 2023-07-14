@@ -34,12 +34,4 @@ public class UserApiController {
     public void add(@RequestBody UserForm form) throws ApiException {
         dto.add(form);
     }
-
-    @ApiOperation(value = "Gets list of all users")
-    @GetMapping
-    public List<UserData> getAll() {
-        return dto.getAll();
-    }
-
-
 }

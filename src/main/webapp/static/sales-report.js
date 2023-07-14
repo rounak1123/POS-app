@@ -1,4 +1,5 @@
 var table;
+var salesReportData = [];
 function getSalesReportUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/reports/sales";
@@ -8,7 +9,7 @@ function getSalesReport(form){
 
 	var $form = $("#sales-filter-form");
 	var json = toJson($form);
-	var url = e=getSalesReportUrl();
+	var url = getSalesReportUrl();
 
     console.log(json);
 
@@ -20,8 +21,8 @@ function getSalesReport(form){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
-//	   		filterSales();
-       console.log(response);
+	   console.log(response);
+	     salesReportData=response;
           displaySalesReports(response);
 	   },
 	   error: handleAjaxError
@@ -48,11 +49,37 @@ function filterSales(){
 getSalesReport();
 }
 
+function downloadReport(){
+console.log(salesReportData);
+if(salesReportData.length == 0){
+$.notify("No sales report data, cannot download report");
+return;};
+
+
+var reportArrayData = [];
+
+for(i in salesReportData){
+var rowData = {};
+rowData.brand = salesReportData[i].brand;
+rowData.category = salesReportData[i].category;
+rowData.quantity = salesReportData[i].quantity;
+rowData.revenue = salesReportData[i].revenue;
+reportArrayData.push(rowData);
+}
+
+writeFileData(reportArrayData);
+}
+
 function init(){
     getSalesReport();
-   var $tbody = $('#sales-table').find('tbody');
-     table = $('#sales-table').DataTable({dom : 'lrtip'});
+     table = $('#sales-table').DataTable(
+                   {dom: 'lrtip',
+                    paging: false,
+                    scrollY: '360px',
+                    scrollColapse: 'true',
+                    });
 	$('#filter-sales').click(filterSales);
+	$('#download-report').click(downloadReport);
 }
 
 $(document).ready(init);

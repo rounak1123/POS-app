@@ -48,47 +48,6 @@
         </div>
     </div>
 
-    <!-- Item Edit Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="edit-item-modal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Order Detail</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline" id="item-edit-form">
-                        <div class="form-group">
-                            <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="inputBarcode" class="form-control" name="barcode" placeholder="enter barcode" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
-                            <div class="col-sm-10">
-                                <input type="number" id="inputQuantity" class="form-control" name="quantity" placeholder="enter quantity"
-                                       step="1">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputSellingPrice" class="col-sm-2 col-form-label">Selling Price (INR)</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="inputSellingPrice" class="form-control" name="sellingPrice" placeholder="0.0">
-                            </div>
-                        </div>
-                        <input type="hidden" name="id" >
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="update-item">Update</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Order Item View Modal -->
     <div class="modal" tabindex="-1" role="dialog" id="order-item-view-modal" aria-labelledby="addBrandLabel" aria-hidden="true">

@@ -71,7 +71,7 @@ public class OrderDto {
 
     // CONVERSION METHODS
 
-    public InvoiceData convertOrderPojoToInvoiceData(OrderPojo orderPojo) throws ApiException {
+    private InvoiceData convertOrderPojoToInvoiceData(OrderPojo orderPojo) throws ApiException {
 
         String invoiceNumber = "INV-"+orderPojo.getId();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

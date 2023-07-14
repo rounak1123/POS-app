@@ -17,50 +17,50 @@ public class ReportsDto {
 
     @Autowired
     ReportsService service;
-    public List<SalesReportData> salesReport(SalesReportForm f){
-        if(f.getStartDate() == "")
-            f.setStartDate("1900-01-01");
-        if(f.getEndDate() == "")
-            f.setEndDate(LocalDate.now().toString());
+    public List<SalesReportData> salesReport(SalesReportForm salesReportForm){
+        if(salesReportForm.getStartDate() == "")
+            salesReportForm.setStartDate("1900-01-01");
+        if(salesReportForm.getEndDate() == "")
+            salesReportForm.setEndDate(LocalDate.now().toString());
 
-        LocalDate startDate = LocalDate.parse(f.getStartDate());
-        LocalDate endDate = LocalDate.parse(f.getEndDate());
-        String brand = f.getBrand();
-        String category = f.getCategory();
+        LocalDate startDate = LocalDate.parse(salesReportForm.getStartDate());
+        LocalDate endDate = LocalDate.parse(salesReportForm.getEndDate());
+        String brand = salesReportForm.getBrand();
+        String category = salesReportForm.getCategory();
 
-        List<Object[]> obj =  service.getSalesReport(startDate,endDate,brand,category);
-        return convert(obj);
+        List<Object[]> objectList =  service.getSalesReport(startDate,endDate,brand,category);
+        return convert(objectList);
     }
 
     public List<DaySalesData> daySalesReport(){
-        List<DaySalesPojo> list =  service.daySalesReport();
-        return convertToDaySalesData(list);
+        List<DaySalesPojo> daySalesPojoList =  service.daySalesReport();
+        return convertToDaySalesData(daySalesPojoList);
     }
 
-    public List<DaySalesData> convertToDaySalesData(List<DaySalesPojo> list){
-        List<DaySalesData> listData = new ArrayList<>();
-        for(DaySalesPojo p: list){
-            DaySalesData data = new DaySalesData();
-            data.setTotalRevenue(p.getTotal_revenue());
-            data.setInvoicedItemsCount(p.getInvoiced_items_count());
-            data.setInvoicedOrdersCount(p.getInvoiced_items_count());
-            data.setDate(p.getDate().toString());
-            listData.add(data);
+    public List<DaySalesData> convertToDaySalesData(List<DaySalesPojo> daySalesPojoList){
+        List<DaySalesData> daySalesDataList = new ArrayList<>();
+        for(DaySalesPojo daySalesPojo: daySalesPojoList){
+            DaySalesData daySalesData = new DaySalesData();
+            daySalesData.setTotalRevenue(daySalesPojo.getTotal_revenue());
+            daySalesData.setInvoicedItemsCount(daySalesPojo.getInvoiced_items_count());
+            daySalesData.setInvoicedOrdersCount(daySalesPojo.getInvoiced_items_count());
+            daySalesData.setDate(daySalesPojo.getDate().toString());
+            daySalesDataList.add(daySalesData);
         }
-        return listData;
+        return daySalesDataList;
     }
     public List<SalesReportData>  convert(List<Object[]> objList){
         System.out.println("object list length"+objList.toArray().length);
-        List<SalesReportData> list = new ArrayList<>();
+        List<SalesReportData> salesReportDataList = new ArrayList<>();
         for(Object[] obj : objList){
-            SalesReportData data = new SalesReportData();
-            data.setBrand((String) obj[0]);
-            data.setCategory((String) obj[1]);
-            data.setQuantity((Long) obj[2]);
-            data.setRevenue((Double) obj[3]);
-            list.add(data);
+            SalesReportData salesReportData = new SalesReportData();
+            salesReportData.setBrand((String) obj[0]);
+            salesReportData.setCategory((String) obj[1]);
+            salesReportData.setQuantity((Long) obj[2]);
+            salesReportData.setRevenue((Double) obj[3]);
+            salesReportDataList.add(salesReportData);
         }
 
-        return list;
+        return salesReportDataList;
     }
 }

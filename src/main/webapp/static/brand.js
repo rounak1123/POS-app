@@ -9,6 +9,11 @@ function getBrandUrl(){
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
+    var isValid = $("#brand-form")[0].checkValidity();
+    if(!isValid){
+      $("#brand-form")[0].reportValidity();
+         return;
+    }
 	var $form = $("#brand-form");
 	var json = toJson($form);
 	var url = getBrandUrl();
@@ -21,7 +26,11 @@ function addBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+	   		$.notify("Added Brand Category combination", "success");
+
 	   		getBrandList();
+	      $('#add-brand-modal').modal('toggle');
+
 	   		$("#brand-form")[0].reset();
 	   },
 	   error: handleAjaxError
@@ -31,8 +40,14 @@ function addBrand(event){
 }
 
 function updateBrand(event){
-	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
+
+	    var isValid = $("#brand-edit-form")[0].checkValidity();
+        if(!isValid){
+          $("#brand-edit-form")[0].reportValidity();
+             return;
+        }
+
 	var id = $("#brand-edit-form input[name=id]").val();
 	var url = getBrandUrl() + "/" + id;
 	//Set the values to update
@@ -47,7 +62,11 @@ function updateBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+	   		$.notify("Updated brand category", "success");
+
 	   		getBrandList();
+	$('#edit-brand-modal').modal('toggle');
+
 	   },
 	   error: handleAjaxError
 	});
@@ -98,7 +117,7 @@ var url = getBrandUrl()+'/upload';
 
                 success:function(data){
                     console.log(data);
-                    $.notify("Successfully Uploaded the file",{type:"success"});
+                    $.notify("Uploaded the file successfully","success");
                    getBrandList();
 
 
@@ -266,6 +285,8 @@ function searchBrandCategoryDropdown() {
          },
   	   success: function(response) {
   	   		displayBrandList(response);
+	   		$.notify("Filtered data", "success");
+
   	   		$("#brand-search-form")[0].reset();
   	   },
   	   error: handleAjaxError

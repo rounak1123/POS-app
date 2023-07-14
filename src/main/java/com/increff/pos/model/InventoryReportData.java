@@ -7,7 +7,7 @@ import lombok.Setter;
 public class InventoryReportData {
     private String brand;
     private String category;
-    private int quantity;
+    private Long quantity;
     private int id;
     private String barcode;
 

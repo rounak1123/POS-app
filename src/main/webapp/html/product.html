@@ -20,54 +20,6 @@ upload_file
 	</button>
 </h3>
 
- <!-- Top row with form-->
-<!-- <div class="row">-->
-<!--	 <div class="col-12">-->
-<!--			<form class="form-inline" id="product-form">-->
-<!--			  <div class="form-group">-->
-<!--			    <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>-->
-<!--			    <div class="col-sm-10">-->
-<!--			      <input type="text" class="form-control" name="barcode" id="inputBarcode" placeholder="enter barcode">-->
-<!--			    </div>-->
-<!--			  </div>-->
-<!--			  <div class="form-group">-->
-<!--			    <label for="inputBrand" class="col-sm-2 col-form-label">Brand Name</label>-->
-<!--			    <div class="col-sm-10">-->
-<!--			      <input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
-<!--			    </div>-->
-<!--			  </div>-->
-<!--				<div class="form-group">-->
-<!--					<label for="inputCategory" class="col-sm-2 col-form-label">Category</label>-->
-<!--					<div class="col-sm-10">-->
-<!--						<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->
-<!--					</div>-->
-<!--				</div>-->
-<!--				<div class="form-group">-->
-<!--					<label for="inputName" class="col-sm-2 col-form-label"> Product Name</label>-->
-<!--					<div class="col-sm-10">-->
-<!--						<input type="text" class="form-control" name="name" id="inputName" placeholder="enter product name">-->
-<!--					</div>-->
-<!--				</div>-->
-<!--				<div class="form-group">-->
-<!--					<label for="inputMrp" class="col-sm-2 col-form-label">Price (INR) </label>-->
-<!--					<div class="col-sm-10">-->
-<!--						<input type="number" class="form-control" name="mrp" id="inputMrp" placeholder="0.0">-->
-<!--					</div>-->
-<!--				</div>-->
-
-
-<!--			</form>-->
-<!--		 <button type="button" class="btn btn-primary" id="add-product">Add</button>-->
-<!--		 &nbsp;-->
-<!--		 <button type="button" class="btn btn-primary" id="refresh-data">Refresh</button>-->
-<!--		 &nbsp;-->
-<!--		 <button type="button" class="btn btn-primary" id="upload-data">Upload</button>-->
-
-
-<!--	 </div>	-->
-<!--</div> -->
-
-
 <!-- Blank Row -->
 <div class="row">
 	&nbsp;
@@ -75,8 +27,8 @@ upload_file
 
 	<div class="row mb-4">
 		<div class="col-12">
-			<form class="form-inline" id="product-search-form">
-				<div class="form-group">
+			<form class="form-inline row justify-content-center" id="product-search-form">
+				<div class="form-group col-sm-3">
 					<label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand</label>
 					<div class="col-sm-10">
 
@@ -86,7 +38,7 @@ upload_file
 						<!--						<input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter brand">-->
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group col-sm-3">
 					<label for="inputCategorySearch" class="col-sm-2 col-form-label">Category</label>
 					<div class="col-sm-10">
 						<select id="inputCategorySearch" class="form-control"  name="category">
@@ -96,7 +48,7 @@ upload_file
 					</div>
 
 				</div>
-				<div class="form-group">
+				<div class="form-group col-sm-3">
 					<label for="inputProductNameSearch" class="col-sm-2 col-form-label">Product Name</label>
 					<div class="col-sm-10">
 						<select id="inputProductNameSearch" class="form-control"  name="productName">
@@ -106,7 +58,7 @@ upload_file
 					</div>
 
 				</div>
-				<div class="form-group">
+				<div class="form-group col-sm-3">
 					<label for="inputBarcodeSearch" class="col-sm-2 col-form-label">Barcode</label>
 					<div class="col-sm-10">
 						<select id="inputBarcodeSearch" class="form-control"  name="barcode">
@@ -161,13 +113,13 @@ tune
 			  <div class="form-group row">
 			    <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="barcode" placeholder="enter barcode" readonly>
+			      <input type="text" class="form-control" name="barcode" placeholder="enter barcode" readonly required>
 			    </div>
 			  </div>
 				<div class="form-group row">
 					<label for="inputBrandEdit" class="col-sm-2 col-form-label">Brand</label>
 					<div class="col-sm-10">
-						<select id="inputBrandEdit" class="form-control" name="brand">
+						<select id="inputBrandEdit" class="form-control" name="brand" required>
 							<option value="">Select an option</option>
 						</select>
 						<!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
@@ -176,7 +128,7 @@ tune
 				<div class="form-group row">
 					<label for="inputCategoryEdit" class="col-sm-2 col-form-label">Category</label>
 					<div class="col-sm-10">
-						<select id="inputCategoryEdit" class="form-control"  name="category">
+						<select id="inputCategoryEdit" class="form-control"  name="category" required>
 							<option value="">Select an option</option>
 						</select>
 						<!--								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->
@@ -186,13 +138,13 @@ tune
 				<div class="form-group row">
 					<label for="inputName" class="col-sm-2 col-form-label">Product Name</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" name="name" placeholder="Product name">
+						<input type="text" class="form-control" name="name" placeholder="Product name" required>
 					</div>
 				</div>
 				<div class="form-group row">
 					<label for="inputMrp" class="col-sm-2 col-form-label">Price (INR)</label>
 					<div class="col-sm-10">
-						<input type="number" min="0.01" step="any" class="form-control" name="mrp" placeholder="0.0">
+						<input type="number" min="0.01" step="any" class="form-control" name="mrp" placeholder="0.0" required>
 					</div>
 				</div>
  	        <input type="hidden" name="id" >
@@ -260,13 +212,13 @@ tune
 						<div class="form-group row">
 							<label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="barcode" id="inputBarcode" placeholder="enter barcode">
+								<input type="text" class="form-control" name="barcode" id="inputBarcode" placeholder="enter barcode" required>
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 							<div class="col-sm-10">
-								<select id="inputBrand" class="form-control" name="brand">
+								<select id="inputBrand" class="form-control" name="brand" required>
 									<option value="">Select an option</option>
 								</select>
 <!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
@@ -275,7 +227,7 @@ tune
 						<div class="form-group row">
 							<label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 							<div class="col-sm-10">
-							<select id="inputCategory" class="form-control"  name="category" disabled>
+							<select id="inputCategory" class="form-control"  name="category" disabled required>
 								<option value="">Select an option</option>
 							</select>
 <!--								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->
@@ -285,13 +237,13 @@ tune
 						<div class="form-group row">
 							<label for="inputName" class="col-sm-2 col-form-label"> Product Name</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="name" id="inputName" placeholder="enter product name">
+								<input type="text" class="form-control" name="name" id="inputName" placeholder="enter product name" required>
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="inputMrp" class="col-sm-2 col-form-label">Price (INR) </label>
 							<div class="col-sm-10">
-								<input type="number" min="0.01" step="any" class="form-control" name="mrp" id="inputMrp" placeholder="0.0">
+								<input type="number" min="0.01" step="any" class="form-control" name="mrp" id="inputMrp" placeholder="0.0" required>
 							</div>
 						</div>
 					</form>

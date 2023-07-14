@@ -31,6 +31,10 @@ public class InventoryService {
         return inventoryDao.search(barcode, name, brand, category);
     }
 
+    public List<Object[]> filterInventoryReports(String brand, String category){
+        return inventoryDao.filterInventoryReports(brand,category);
+    }
+
     public void update(int id, InventoryPojo inventoryPojo) throws ApiException {
         InventoryPojo oldInventoryPojo = getCheck(id);
         if(oldInventoryPojo==null)

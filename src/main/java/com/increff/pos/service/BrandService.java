@@ -17,7 +17,10 @@ public class BrandService {
 // @
 	@Transactional(rollbackOn = ApiException.class)
 	public int  add(BrandPojo brandPojo) throws ApiException {
-		brandCategoryCombinationCheck(brandPojo);
+		BrandPojo OldBrandPojo = brandCategoryCombinationCheck(brandPojo);
+		if(OldBrandPojo != null)
+			throw new ApiException("Brand Category Combination already exists.");
+
 		return dao.insert(brandPojo);
 	}
 
@@ -39,8 +42,12 @@ public class BrandService {
 
 	@Transactional(rollbackOn  = ApiException.class)
 	public void update(int id, BrandPojo brandPojo) throws ApiException {
-		brandCategoryCombinationCheck(brandPojo);
 		BrandPojo oldBrandPojo = getCheck(id);
+		BrandPojo checkBrandPojo =  brandCategoryCombinationCheck(brandPojo);
+
+		if(checkBrandPojo != null && checkBrandPojo.getId() != id)
+			throw new ApiException("Brand Category combination already exists.");
+
 		oldBrandPojo.setCategory(brandPojo.getCategory());
 		oldBrandPojo.setBrand(brandPojo.getBrand());
 		dao.update(oldBrandPojo);
@@ -54,10 +61,8 @@ public class BrandService {
 		return brandPojo;
 	}
 
-	public void brandCategoryCombinationCheck(BrandPojo brandPojo) throws ApiException{
-		BrandPojo brandP = dao.select(brandPojo.getBrand(), brandPojo.getCategory());
-		if(brandP != null)
-			throw new ApiException("Brand Category combination already exists.");
+	public BrandPojo brandCategoryCombinationCheck(BrandPojo brandPojo) throws ApiException{
+		return dao.select(brandPojo.getBrand(), brandPojo.getCategory());
 	}
 
 	public String validate(BrandPojo p){

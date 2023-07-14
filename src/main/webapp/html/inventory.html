@@ -25,8 +25,8 @@ upload_file
 
     <div class="row mb-4">
         <div class="col-12">
-            <form class="form-inline" id="inventory-search-form">
-                <div class="form-group">
+            <form class="form-inline row justify-content-center" id="inventory-search-form">
+                <div class="form-group col-sm-3">
                     <label for="inputBrandSearch" class="col-sm-2 col-form-label">Brand</label>
                     <div class="col-sm-10">
 
@@ -36,7 +36,7 @@ upload_file
                         <!--						<input type="text" class="form-control" name="brand" id="inputBrandSearch" placeholder="enter brand">-->
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-sm-3">
                     <label for="inputCategorySearch" class="col-sm-2 col-form-label">Category</label>
                     <div class="col-sm-10">
                         <select id="inputCategorySearch" class="form-control"  name="category">
@@ -46,7 +46,7 @@ upload_file
                     </div>
 
                 </div>
-                <div class="form-group">
+                <div class="form-group col-sm-3">
                     <label for="inputProductNameSearch" class="col-sm-2 col-form-label">Product Name</label>
                     <div class="col-sm-10">
                         <select id="inputProductNameSearch" class="form-control"  name="productName">
@@ -56,7 +56,7 @@ upload_file
                     </div>
 
                 </div>
-                <div class="form-group">
+                <div class="form-group col-sm-3">
                     <label for="inputBarcodeSearch" class="col-sm-2 col-form-label">Barcode</label>
                     <div class="col-sm-10">
                         <select id="inputBarcodeSearch" class="form-control"  name="barcode">
@@ -96,41 +96,6 @@ tune
         </div>
     </div>
 
-    <!-- Inventory Add Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="add-inventory-modal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add to Inventory</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline" id="inventory-add-form">
-                        <div class="form-group">
-                            <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" name="barcode" id = "inputBarcode" placeholder="enter barcode" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
-                            <div class="col-sm-10">
-                                <input type="number" step = "1" class="form-control" name="quantity" id="inputQuantity" placeholder="enter quantity">
-                            </div>
-                        </div>
-                        <input type="hidden" name="id" >
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="add-inventory">Add Quantity</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Inventory Edit Modal -->
     <div class="modal" tabindex="-1" role="dialog" id="edit-inventory-modal">
         <div class="modal-dialog" role="document">
@@ -146,13 +111,13 @@ tune
                         <div class="form-group row">
                             <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="barcode" placeholder="enter barcode" readonly>
+                                <input type="text" id="inputBarcode" class="form-control" name="barcode" placeholder="enter barcode" readonly required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
                             <div class="col-sm-10">
-                                <input type="number" step = "1" class="form-control" name="quantity"  placeholder="enter quantity">
+                                <input type="number" id="inputQuantity" step = "1" class="form-control" name="quantity"  placeholder="enter quantity" required>
                             </div>
                         </div>
                         <input type="hidden" name="id" >

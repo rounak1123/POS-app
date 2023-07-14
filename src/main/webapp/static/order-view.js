@@ -57,6 +57,8 @@ $.ajax({
         downloadLink.download = "invoice_"+id+".pdf";
         downloadLink.click();
         window.URL.revokeObjectURL(url);
+        $.notify("Invoice downloaded.","success");
+
     },
     error: function(xhr, status, error) {
         console.error(error);
@@ -72,6 +74,8 @@ function generateInvoice(id){
 	   type: 'PUT',
 	   success: function(data) {
 	   getOrderList();
+       $.notify("Order placed and invoice generated.","success");
+
 	   },
 	   error: handleAjaxError
 	});

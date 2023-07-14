@@ -74,6 +74,7 @@ $(document).ready(function() {
       })
 
     } else {
+      categoryDropdown.val('');
       categoryDropdown.prop('disabled', true);
     }
   });
@@ -127,8 +128,11 @@ function addProduct(event){
        },	   
 	   success: function(response) {
 	   		getProductList();
+
 	   		$("#product-form")[0].reset();
-	   		$.notify("Product added successfully", "success");
+	        $('#addProduct').modal('toggle');
+
+	   		$.notify("Product added", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -144,7 +148,6 @@ function updateProductDetails(event){
         return;
         }
 
-	$('#edit-product-modal').modal('toggle');
 	//Get the ID
 	var id = $("#product-edit-form input[name=id]").val();
 	var url = getProductUrl() + "/" + id;
@@ -161,7 +164,10 @@ console.log(json);
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+	   $.notify("Product details updated","success");
 	   		getProductList();
+	$('#edit-product-modal').modal('toggle');
+
 	   },
 	   error: handleAjaxError
 	});
@@ -279,6 +285,7 @@ function searchProduct() {
          	'Content-Type': 'application/json'
          },
   	   success: function(response) {
+  	        $.notify("Filtered Data","success");
   	   		displayProductList(response);
   	   		$("#product-search-form")[0].reset();
   	   },
@@ -314,7 +321,7 @@ function processData(){
 
                 success:function(data){
                     console.log(data);
-                    $.notify("Successfully Uploaded the file","success");
+                    $.notify("Uploaded the file successfully","success");
                     getProductList();
 
                 },

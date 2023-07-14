@@ -12,9 +12,9 @@
 
 <h3 class="brand-header mt-2">
 	Brands Details
-	    <button th:if="${info.getRole() == 'admin'}" type="button" class="btn btn-primary brand-header-child" data-toggle="modal" data-target="#addBrand" >	Add	<span class="material-symbols-outlined">
+	    <button th:if="${info.getRole() == 'admin'}" type="button" class="btn btn-primary brand-header-child" data-toggle="modal" data-target="#add-brand-modal" >	Add	<span class="material-symbols-outlined">
 add
-</span></i></button>
+</span></button>
         <button th:if="${info.getRole() == 'admin'}" type="button" class="btn btn-info brand-header-child" id="upload-data">	Upload    <span class="material-symbols-outlined">
 upload_file
 </span>
@@ -155,7 +155,7 @@ tune
 
 <!--	Add Brand Category Modal -->
 	<!-- Modal -->
-	<div class="modal fade" id="addBrand" tabindex="-1"  aria-hidden="true">
+	<div class="modal fade" id="add-brand-modal" tabindex="-1"  aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">

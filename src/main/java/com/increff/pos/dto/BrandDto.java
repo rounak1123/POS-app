@@ -244,7 +244,6 @@ public class BrandDto {
         int nullValues = 0;
         for(int i=0;i<columns.length;i++){
             if(columns[i] == "") nullValues++;
-
             if(mapColumn.get(i).equals("brand") ){
                 brandForm.setBrand(columns[i]);
             }else if(mapColumn.get(i).equals("category"))

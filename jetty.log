@@ -3404,3 +3404,111 @@ org.eclipse.jetty.io.EofException
 2023-07-12 11:42:53 INFO  SecurityConfig:33 - Configuration complete
 2023-07-12 11:49:30 INFO  SecurityConfig:33 - Configuration complete
 2023-07-12 13:24:43 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 15:46:55 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 15:57:39 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 16:20:43 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 16:22:10 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 16:41:29 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 17:16:26 INFO  SecurityConfig:33 - Configuration complete
+2023-07-12 17:39:06 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 09:40:51 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 10:33:37 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 11:06:55 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 11:10:02 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 11:27:20 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 11:40:02 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 13:31:03 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 13:41:06 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 14:23:38 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 14:36:57 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 14:45:20 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 14:47:53 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 14:53:14 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 15:48:16 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 15:53:28 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 16:07:06 INFO  SecurityConfig:33 - Configuration complete
+2023-07-13 16:22:52 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandApiController': Unsatisfied dependency expressed through field 'brandDto'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'brandDto' defined in file [/Users/rounakagrawal/Desktop/POS/POS_Application/target/classes/com/increff/pos/dto/BrandDto.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect bean class [com.increff.pos.dto.BrandDto] for persistence metadata: could not find class that it depends on
+2023-07-13 16:22:52 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandApiController': Unsatisfied dependency expressed through field 'brandDto'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'brandDto' defined in file [/Users/rounakagrawal/Desktop/POS/POS_Application/target/classes/com/increff/pos/dto/BrandDto.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect bean class [com.increff.pos.dto.BrandDto] for persistence metadata: could not find class that it depends on
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:352)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:312)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:580)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'brandDto' defined in file [/Users/rounakagrawal/Desktop/POS/POS_Application/target/classes/com/increff/pos/dto/BrandDto.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect bean class [com.increff.pos.dto.BrandDto] for persistence metadata: could not find class that it depends on
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:526)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1138)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+Caused by: java.lang.IllegalStateException: Failed to introspect bean class [com.increff.pos.dto.BrandDto] for persistence metadata: could not find class that it depends on
+	at org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor.findPersistenceMetadata(PersistenceAnnotationBeanPostProcessor.java:401)
+	at org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor.postProcessMergedBeanDefinition(PersistenceAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyMergedBeanDefinitionPostProcessors(AbstractAutowireCapableBeanFactory.java:992)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:523)
+	... 51 more
+Caused by: java.lang.NoClassDefFoundError: Lcom/increff/pos/service/BrandService;
+	at java.lang.Class.getDeclaredFields0(Native Method)
+	at java.lang.Class.privateGetDeclaredFields(Class.java:2583)
+	at java.lang.Class.getDeclaredFields(Class.java:1916)
+	at org.springframework.util.ReflectionUtils.getDeclaredFields(ReflectionUtils.java:715)
+	at org.springframework.util.ReflectionUtils.doWithLocalFields(ReflectionUtils.java:656)
+	at org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor.buildPersistenceMetadata(PersistenceAnnotationBeanPostProcessor.java:418)
+	at org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor.findPersistenceMetadata(PersistenceAnnotationBeanPostProcessor.java:397)
+	... 54 more
+Caused by: java.lang.ClassNotFoundException: com.increff.pos.service.BrandService
+	at org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy.loadClass(SelfFirstStrategy.java:50)
+	at org.codehaus.plexus.classworlds.realm.ClassRealm.unsynchronizedLoadClass(ClassRealm.java:271)
+	at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass(ClassRealm.java:247)
+	at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass(ClassRealm.java:239)
+	at org.eclipse.jetty.webapp.WebAppClassLoader.loadClass(WebAppClassLoader.java:543)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	... 61 more
+2023-07-14 11:11:08 INFO  SecurityConfig:33 - Configuration complete
+2023-07-14 11:36:50 INFO  SecurityConfig:33 - Configuration complete
+2023-07-14 11:49:28 INFO  SecurityConfig:33 - Configuration complete
+2023-07-14 11:50:06 INFO  SecurityConfig:33 - Configuration complete

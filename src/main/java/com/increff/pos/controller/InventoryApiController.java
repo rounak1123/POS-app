@@ -1,10 +1,7 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.dto.InventoryDto;
-import com.increff.pos.model.InventoryData;
-import com.increff.pos.model.InventoryForm;
-import com.increff.pos.model.InventoryReportData;
-import com.increff.pos.model.InventorySearchForm;
+import com.increff.pos.model.*;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,9 +46,9 @@ public class InventoryApiController {
     }
 
     @ApiOperation(value= "inventory report")
-    @GetMapping("/report")
-    public List<InventoryReportData> getReports() throws ApiException {
-        return inventoryDto.getReports();
+    @PostMapping("/report")
+    public List<InventoryReportData> getReports(@RequestBody BrandForm brandForm) throws ApiException {
+        return inventoryDto.getReports(brandForm);
     }
 
     @ApiOperation(value= "search inventory data")

@@ -56,13 +56,9 @@ public class InventoryDto {
        inventoryService.update(inventoryPojo.getId(),inventoryPojo);
     }
 
-    public List<InventoryReportData> getReports() throws ApiException {
-        List<InventoryReportData> inventoryReportDataList = new ArrayList<>();
-        List<InventoryPojo> inventoryPojoList = inventoryService.getAll();
-        for (InventoryPojo p : inventoryPojoList) {
-            inventoryReportDataList.add(convertInventoryToReportForm(p));
-        }
-        return inventoryReportDataList;
+    public List<InventoryReportData> getReports(BrandForm brandForm) throws ApiException {
+        List<Object[]> inventoryReportObjectList = inventoryService.filterInventoryReports(brandForm.getBrand(), brandForm.getCategory());
+        return  convertInventoryReportObjectListToInventoryReportDataList(inventoryReportObjectList);
     }
 
     public List<InventoryData> search(InventorySearchForm inventorySearchForm) throws ApiException {
@@ -91,16 +87,18 @@ public class InventoryDto {
         return inventoryDataList;
     }
 
-    private InventoryReportData convertInventoryToReportForm(InventoryPojo inventoryPojo) throws ApiException {
-        BrandPojo brandPojo = inventoryFlowService.getBrandByProductId(inventoryPojo.getId());
-        String productBarcode = inventoryFlowService.getProductById(inventoryPojo.getId()).getBarcode();
-        InventoryReportData f = new InventoryReportData();
-        f.setQuantity(inventoryPojo.getQuantity());
-        f.setBrand(brandPojo.getBrand());
-        f.setCategory(brandPojo.getCategory());
-        f.setId(inventoryPojo.getId());
-        f.setBarcode(productBarcode);
-        return f;
+    public List<InventoryReportData>  convertInventoryReportObjectListToInventoryReportDataList(List<Object[]> objList){
+        System.out.println("object list length"+objList.toArray().length);
+        List<InventoryReportData> inventoryReportDataList = new ArrayList<>();
+        for(Object[] obj : objList){
+            InventoryReportData inventoryReportData = new InventoryReportData();
+            inventoryReportData.setBrand((String) obj[0]);
+            inventoryReportData.setCategory((String) obj[1]);
+            inventoryReportData.setQuantity((Long) obj[2]);
+            inventoryReportDataList.add(inventoryReportData);
+        }
+
+        return inventoryReportDataList;
     }
 
     private  InventoryData convertInventoryPojoToInventoryData(InventoryPojo inventoryPojo) throws ApiException {

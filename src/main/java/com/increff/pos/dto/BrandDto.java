@@ -123,11 +123,11 @@ public class BrandDto {
             throw new ApiException("brand or category length is more than 30");
     }
     public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
+        String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
         String patternString = "[^" + allowedCharacters + "]";
         Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
+
+        return pattern.matcher(input).matches();
     }
 
     // FILE UPLOAD METHODS

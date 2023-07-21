@@ -40,21 +40,21 @@ public class UserDto {
 
     // CHECKS AND NORMALIZATION FOR THE FORM.
 
-    public static void normalize(UserForm f) throws ApiException{
+    private static void normalize(UserForm f) throws ApiException{
         f.setEmail(StringUtil.toLowerCase(f.getEmail()).trim());
         f.setPassword(StringUtil.toLowerCase(f.getPassword()).trim());
         if(hasSpecialCharacter(f.getEmail()) || hasSpecialCharacter(f.getPassword()))
             throw new ApiException("invalid character in brand or category.");
     }
 
-    public static void emptyCheck(UserForm f) throws ApiException{
+    private static void emptyCheck(UserForm f) throws ApiException{
         if(StringUtil.isEmpty(f.getEmail()))
             throw  new ApiException("Email field cannot be empty.");
         if(StringUtil.isEmpty(f.getPassword()))
             throw  new ApiException("Password cannot be empty");
     }
 
-    public static boolean hasSpecialCharacter(String input) {
+    private static boolean hasSpecialCharacter(String input) {
         String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
         String patternString = "[^" + allowedCharacters + "]";
         Pattern pattern = Pattern.compile(patternString);

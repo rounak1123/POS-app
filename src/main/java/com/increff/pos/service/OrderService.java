@@ -6,6 +6,7 @@ import com.increff.pos.dao.OrderDao;
 import com.increff.pos.model.InvoiceData;
 import com.increff.pos.pojo.OrderPojo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -25,6 +26,9 @@ public class OrderService {
 
     @Autowired
     private OrderDao orderDao;
+
+    @Value("${invoiceApp.baseUrl}")
+    private String invoiceAppUrl;
 
     public OrderPojo add(OrderPojo orderPojo) throws ApiException {
         if(orderDao.select(orderPojo.getId()) != null)
@@ -51,7 +55,7 @@ public class OrderService {
         orderDao.update(ex);
     }
 
-    public OrderPojo getCheck(int id) throws ApiException {
+    private OrderPojo getCheck(int id) throws ApiException {
         OrderPojo orderPojo = orderDao.select(id);
         if (orderPojo == null) {
             throw new ApiException("OrderItem with given ID does not exit, id: " + id);
@@ -85,10 +89,10 @@ public class OrderService {
 
     }
 
-    public String getBase64String(InvoiceData invoiceData) throws JsonProcessingException {
+    private String getBase64String(InvoiceData invoiceData) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
-
-        String url = "http://localhost:6969/api/generate-invoice";
+        System.out.println(invoiceAppUrl);
+        String url = invoiceAppUrl + "/api/generate-invoice";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

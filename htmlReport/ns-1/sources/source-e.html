@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SampleController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: SampleController (com.increff.pos.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SampleController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.3%
+  </span>
+  <span class="absValue">
+    (1/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
+&nbsp;
+&nbsp;import com.increff.pos.util.IOUtil;
+&nbsp;import org.apache.commons.io.IOUtils;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestMethod;
+&nbsp;
+&nbsp;import javax.servlet.http.HttpServletResponse;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStream;
+&nbsp;
+&nbsp;@Controller
+<b class="fc">&nbsp;public class SampleController {</b>
+&nbsp;	@RequestMapping(value = &quot;/sample/{fileName:.+}&quot;, method = RequestMethod.GET)
+&nbsp;	public void getFile(@PathVariable(&quot;fileName&quot;) String fileName, HttpServletResponse response) throws IOException {
+&nbsp;		// get your file as InputStream
+<b class="nc">&nbsp;		response.setContentType(&quot;text/csv&quot;);</b>
+<b class="nc">&nbsp;		response.addHeader(&quot;Content-disposition:&quot;, &quot;attachment; filename=&quot; + fileName);</b>
+<b class="nc">&nbsp;		String fileClasspath = &quot;/com/increff/pos/&quot; + fileName;</b>
+<b class="nc">&nbsp;		System.out.println(fileClasspath);</b>
+<b class="nc">&nbsp;		InputStream is = SampleController.class.getResourceAsStream(fileClasspath);</b>
+&nbsp;		// copy it to response&#39;s OutputStream
+&nbsp;		try {
+<b class="nc">&nbsp;			IOUtils.copy(is, response.getOutputStream());</b>
+<b class="nc">&nbsp;			response.flushBuffer();</b>
+<b class="nc">&nbsp;		} catch (IOException e) {</b>
+<b class="nc">&nbsp;			throw e;</b>
+&nbsp;		} finally {
+<b class="nc">&nbsp;			IOUtil.closeQuietly(is);</b>
+<b class="nc">&nbsp;		}</b>
+&nbsp;
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
+</div>
+</body>
+</html>

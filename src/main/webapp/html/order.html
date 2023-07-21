@@ -25,7 +25,7 @@
                     <label for="inputBarcode" class="col-sm-2 col-form-label">Barcode</label>
                     <div class="col-sm-10">
 <!--                        <input type="text" class="form-control" name="barcode" id="inputBarcode" placeholder="enter barcode">-->
-                        <select id="inputBarcode" class="form-control" name="barcode"></select>
+                        <select id="inputBarcode" class="form-control" name="barcode" required></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -53,6 +53,17 @@
     <div class="row">
         &nbsp;
     </div>
+    <div>
+        <form class="form-inline fw-bold flex-row-reverse ml-4 mr-4 mb-2" id="order-tem-header" style="font-size: 140%;">
+            <div class="form-group">
+                <label class=" col-form-label">Total Amount:</label>
+                <div id="totalAmount">
+                    2000.00
+                </div>
+
+            </div>
+        </form>
+    </div>
     <div class="row">
 
         <!-- Table -->
@@ -63,7 +74,7 @@
                     <th scope="col" name="barcode">Barcode</th>
                     <th scope="col" name="quantity">Quantity</th>
                     <th scope="col" name="sellingPrice">Selling Price (Per pc.) </th>
-
+                    <th scope="col" name="total">Total</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -75,7 +86,7 @@
     </div>
 
     <!-- Item Edit Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="edit-item-modal">
+    <div class="modal fade" tabindex="-1" role="dialog" id="edit-item-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

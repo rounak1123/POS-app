@@ -14,7 +14,7 @@ import java.util.List;
 
 @Api
 @RestController
-@RequestMapping(path= "/api/brand")
+@RequestMapping(path= "/api")
 public class BrandApiController {
 
 
@@ -22,37 +22,37 @@ public class BrandApiController {
 	private BrandDto brandDto;
 
 	@ApiOperation(value = "Adds an brand")
-	@PostMapping
+	@PostMapping("/admin/brand")
 	public int add(@RequestBody BrandForm brandForm) throws ApiException {
 		return brandDto.add(brandForm);
 	}
 
 	@ApiOperation(value = "Gets an brand by ID")
-	@GetMapping("/{id}")
+	@GetMapping("/brand/{id}")
 	public BrandData get(@PathVariable int id) throws ApiException {
 		return brandDto.get(id);
 	}
 
 	@ApiOperation(value = "Gets list of all brands")
-	@GetMapping
+	@GetMapping("/brand")
 	public List<BrandData> getAll() {
 		return brandDto.getAll();
 	}
 
 	@ApiOperation(value = "Updates an brand")
-	@PutMapping("/{id}")
+	@PutMapping("/admin/brand/{id}")
 	public void update(@PathVariable int id, @RequestBody BrandForm brandForm) throws ApiException {
 		brandDto.update(id,brandForm);
 	}
 
     @ApiOperation(value = "upload tsv from UI")
-	@PostMapping("/upload")
+	@PostMapping("/admin/brand/upload")
     public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
 		 brandDto.upload(file);
 	}
 
 	@ApiOperation(value = "Search based on brand and category.")
-	@PostMapping("/search")
+	@PostMapping("/brand/search")
 	public List<BrandData> search(@RequestBody BrandForm brandForm) throws ApiException{
 		return brandDto.filterBrandCategory(brandForm);
 	}

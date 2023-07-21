@@ -1,5 +1,6 @@
 var orderItemTable;
 var table;
+var orderId;
 
 function getOrderUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -36,6 +37,7 @@ function editOrder(id){
 function viewOrder(id){
 // window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order-item/view?orderId='+id;
 	$('#order-item-view-modal').modal('toggle');
+	orderId=id;
 	getOrderItemList(id);
 
 
@@ -130,17 +132,22 @@ function getOrderItemList(orderId){
 
 function displayOrderItemList(data){
 	orderItemTable.clear().draw();
-
+    var total = 0.0;
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
+		var subTotal = e.quantity * e.sellingPrice;
+		total+= subTotal;
           orderItemTable.row.add([
             e.barcode,
             e.name,
             e.quantity,
-            e.sellingPrice.toFixed(2)
+            e.sellingPrice,
+            subTotal.toFixed(2),
           ]).draw();
 	}
+	$("#orderId").text("#"+orderId);
+	$("#totalAmount").text(" Rs."+total.toFixed(2));
 
 }
 
@@ -150,25 +157,26 @@ function displayOrderItemList(data){
 
 
 function init(){
+        orderItemTable = $('#order-item-view-table').DataTable(
+                  {dom: 'lrtip',
+                  "info": false,
+                   paging: false,
+                   scrollY: '300px',
+                   scrollColapse: 'true',
+                   }
+                );
     table = $('#order-view-table').DataTable(
               {dom: 'lrtip',
                paging: false,
+               "info": false,
                scrollY: '450px',
                scrollColapse: 'true',
                order: [[1,'desc']],
                }
             );
 
-        orderItemTable = $('#order-item-view-table').DataTable(
-                  {dom: 'lrtip',
-                   paging: false,
-                   scrollY: '300px',
-                   scrollColapse: 'true',
-                   }
-                );
     getOrderList();
 }
 
 $(document).ready(init);
-//$(document).ready(getOrderList);
 

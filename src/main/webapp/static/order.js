@@ -10,7 +10,7 @@ function getOrderUrl(){
    	return baseUrl + "/api/order";
 }
 
-function getOrderTableItemUrl() {
+function getOrderTempTableItemUrl() {
    	var baseUrl = $("meta[name=baseUrl]").attr("content")
    	return baseUrl + "/api/order-table-item";
 }
@@ -21,7 +21,7 @@ function getProductUrl() {
 }
 
 //BUTTON ACTIONS
-function addOrderTableItem(event){
+function addOrderTempTableItem(event){
 
     var isValid = $("#item-form")[0].checkValidity();
 
@@ -32,7 +32,7 @@ function addOrderTableItem(event){
   var barcode = $("select[name='barcode']").val();
   var quantity = $("input[name='quantity']").val();
   var sellingPrice = $("input[name='sellingPrice']").val();
-  var url = getOrderTableItemUrl();
+  var url = getOrderTempTableItemUrl();
   var obj = {barcode, quantity, sellingPrice, userId: user_id};
 
   	$.ajax({
@@ -64,13 +64,12 @@ function updateOrderItemDetails(event){
 	    var isValid = $("#item-edit-form")[0].checkValidity();
 
         if(!isValid){
-        $("#item-form")[0].reportValidity();
+        $("#item-edit-form")[0].reportValidity();
         return;
         }
 
-        	$('#edit-item-modal').modal('toggle');
 	var id = $("#item-edit-form input[name=id]").val();
-	var url = getOrderTableItemUrl() + "/" + id;
+	var url = getOrderTempTableItemUrl() + "/" + id;
 
 	//Set the values to update
 	var $form = $("#item-edit-form");
@@ -85,7 +84,7 @@ function updateOrderItemDetails(event){
        },
 	   success: function(response) {
             $.notify("Updated Order Item","success");
-
+        	$('#edit-item-modal').modal('toggle');
 	   		getOrderItemList();
 	   },
 	   error: handleAjaxError
@@ -96,7 +95,7 @@ function updateOrderItemDetails(event){
 
 
 function getOrderItemList(){
-	var url = getOrderTableItemUrl();
+	var url = getOrderTempTableItemUrl();
 	url+='/all/'+user_id;
 
 	$.ajax({
@@ -218,7 +217,7 @@ return;
 
 function clearOrder(){
 
-	var url = getOrderTableItemUrl();
+	var url = getOrderTempTableItemUrl();
 	url+='/all/'+user_id;
     console.log('in clear order');
 	$.ajax({
@@ -226,8 +225,9 @@ function clearOrder(){
 	   type: 'DELETE',
 	   success: function(data) {
 	        $.notify("Order cleared","success");
-	        console.log('Order Item list', data);
-	   		displayOrderItemList(data);
+	        	            $("select[name='barcode']").val('');
+                            $("input[name='quantity']").val('');
+                            $("input[name='sellingPrice']").val('');
 	   },
 	   error: handleAjaxError
 	});
@@ -238,32 +238,32 @@ function clearOrder(){
 //UI DISPLAY METHODS
 
 function displayOrderItemList(data){
-//	var $tbody = $('#order-table').find('tbody');
-//	$tbody.empty();
+
+    var totalAmount = 0.0;
     table.clear().draw();
 	for(var i in data){
 		var e = data[i];
 		var buttonHtml = ' <button onclick="displayEditItem(' + e.id + ')" class="btn btn-primary"><span class="material-symbols-outlined">border_color</span></button>';
-		 buttonHtml += ' <button onclick="deleteTableItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
+		 buttonHtml += ' <button onclick="deleteTempTableItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
+          var subTotal = e.sellingPrice * e.quantity;
+          totalAmount += subTotal;
 
-//		var row = '<tr>'
-//		+ '<td>' + e.barcode + '</td>'
-//		+ '<td>'  + e.quantity + '</td>'
-//		+ '<td>'  + e.sellingPrice + '</td>'
-//		+ '<td>' + buttonHtml + '</td>'
-//		+ '</tr>';
-//        $tbody.append(row);
           table.row.add([
             e.barcode,
             e.quantity,
-            e.sellingPrice.toFixed(2),
+            e.sellingPrice,
+            subTotal.toFixed(2),
             buttonHtml
           ]).draw();
+
 	}
+
+	$("#totalAmount").text(" Rs."+totalAmount.toFixed(2));
+
 }
 
 function displayEditItem(id){
-	var url = getOrderTableItemUrl() + "/" + id;
+	var url = getOrderTempTableItemUrl() + "/" + id;
 	$.ajax({
 	   url: url,
 	   type: 'GET',
@@ -274,8 +274,8 @@ function displayEditItem(id){
 	});
 }
 
-function deleteTableItem(id){
-	var url = getOrderTableItemUrl() + "/" + id;
+function deleteTempTableItem(id){
+	var url = getOrderTempTableItemUrl() + "/" + id;
 	$.ajax({
 	   url: url,
 	   type: 'DELETE',
@@ -303,6 +303,7 @@ function initDatatable(){
               {
                dom: 'lrtip',
                paging: false,
+               "info": false,
                scrollY: '450px',
                scrollColapse: 'true',
                }
@@ -313,7 +314,7 @@ function init(){
     initDatatable();
     setBarcodeDropdown();
 //	$('#add-item').click(addOrderItem);
-	$('#add-item').click(addOrderTableItem);
+	$('#add-item').click(addOrderTempTableItem);
 	$('#update-item').click(updateOrderItemDetails);
 	$('#refresh-data').click(getOrderItemList);
 	$('#save-order').click(saveOrder);

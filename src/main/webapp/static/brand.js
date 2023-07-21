@@ -5,7 +5,10 @@ function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/brand";
 }
-
+function getAdminBrandUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/admin/brand";
+}
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
@@ -16,7 +19,7 @@ function addBrand(event){
     }
 	var $form = $("#brand-form");
 	var json = toJson($form);
-	var url = getBrandUrl();
+	var url = getAdminBrandUrl();
 
 	$.ajax({
 	   url: url,
@@ -49,7 +52,7 @@ function updateBrand(event){
         }
 
 	var id = $("#brand-edit-form input[name=id]").val();
-	var url = getBrandUrl() + "/" + id;
+	var url = getAdminBrandUrl() + "/" + id;
 	//Set the values to update
 	var $form = $("#brand-edit-form");
 	var json = toJson($form);
@@ -93,7 +96,7 @@ function getBrandList(){
 // FILE UPLOAD METHODS
 
 function processData(){
-var url = getBrandUrl()+'/upload';
+var url = getAdminBrandUrl()+'/upload';
 
 
     var fileUpload = document.getElementById("brandFile");
@@ -227,19 +230,24 @@ function updateBrandCategoryList(data) {
 
 	brandData = [...new Set(brandData)];
 	categoryData = [...new Set(categoryData)];
-
-	  var brandDropdown = $('#inputBrandSearch');
-      brandDropdown.empty();
-      brandDropdown.append($('<option></option>').val('').html('Select an option'));
-      $.each(brandData, function (i, brand){
-          brandDropdown.append($('<option></option>').val(brand).html(brand));
+     $('#inputBrandSearch').select2({
+     data: brandData,
+     })
+      $('#inputCategorySearch').select2({
+      data: categoryData,
       })
-        var categoryDropdown = $('#inputCategorySearch');
-        categoryDropdown.empty();
-        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
-        $.each(categoryData, function (i, brand){
-            categoryDropdown.append($('<option></option>').val(brand).html(brand));
-        })
+//	  var brandDropdown = $('#inputBrandSearch');
+//      brandDropdown.empty();
+//      brandDropdown.append($('<option></option>').val('').html('Select an option'));
+//      $.each(brandData, function (i, brand){
+//          brandDropdown.append($('<option></option>').val(brand).html(brand));
+//      })
+//        var categoryDropdown = $('#inputCategorySearch');
+//        categoryDropdown.empty();
+//        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+//        $.each(categoryData, function (i, brand){
+//            categoryDropdown.append($('<option></option>').val(brand).html(brand));
+//        })
 }
 function openFilterModal() {
 	var url = getBrandUrl();
@@ -286,8 +294,6 @@ function searchBrandCategoryDropdown() {
   	   success: function(response) {
   	   		displayBrandList(response);
 	   		$.notify("Filtered data", "success");
-
-  	   		$("#brand-search-form")[0].reset();
   	   },
   	   error: handleAjaxError
   	});
@@ -297,6 +303,7 @@ function initDatatable(){
             table = $('#brand-table').DataTable(
               {dom: 'lrtip',
                paging: false,
+               "info": false,
                scrollY: '450px',
                scrollColapse: 'true',
                }

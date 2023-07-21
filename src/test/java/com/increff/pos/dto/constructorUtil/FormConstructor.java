@@ -12,7 +12,7 @@ public class FormConstructor {
         return f;
     }
 
-    public static ProductForm constructProduct(String barcode, String name, String brand, String category,double mrp){
+    public static ProductForm constructProduct(String barcode, String name, String brand, String category,String mrp){
         ProductForm f = new ProductForm();
         f.setCategory(category);
         f.setBrand(brand);
@@ -22,15 +22,15 @@ public class FormConstructor {
         return f;
     }
 
-    public static InventoryForm constructInventoryForm(String barcode, int quantity){
+    public static InventoryForm constructInventoryForm(String barcode, String quantity){
         InventoryForm f = new InventoryForm();
         f.setBarcode(barcode);
         f.setQuantity(quantity);
         return f;
     }
 
-    public static OrderTableItemForm constructOrderTableItem(String barcode, int quantity, double sellingPrice, int userId){
-        OrderTableItemForm f = new OrderTableItemForm();
+    public static OrderTempTableItemForm constructOrderTempTableItem(String barcode, String quantity, String sellingPrice, String userId){
+        OrderTempTableItemForm f = new OrderTempTableItemForm();
         f.setBarcode(barcode);
         f.setQuantity(quantity);
         f.setSellingPrice(sellingPrice);
@@ -38,7 +38,7 @@ public class FormConstructor {
         return f;
     }
 
-    public static OrderItemForm constructOrderItem(String barcode, int quantity, double sellingPrice, int orderId){
+    public static OrderItemForm constructOrderItem(String barcode, String quantity, String sellingPrice, String orderId){
         OrderItemForm f = new OrderItemForm();
         f.setBarcode(barcode);
         f.setQuantity(quantity);

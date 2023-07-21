@@ -13,7 +13,7 @@ import java.util.List;
 
 @Api
 @RestController
-@RequestMapping(path = "/api/inventory")
+@RequestMapping(path = "/api")
 public class InventoryApiController {
 
 
@@ -21,38 +21,38 @@ public class InventoryApiController {
     private InventoryDto inventoryDto;
 
     @ApiOperation(value = "Gets an inventory by ID")
-    @GetMapping("/{id}")
+    @GetMapping("/inventory/{id}")
     public InventoryData get(@PathVariable int id) throws ApiException {
         return inventoryDto.get(id);
     }
 
     @ApiOperation(value = "Gets list of all inventory")
-    @GetMapping
+    @GetMapping("/inventory")
     public List<InventoryData> getAll() throws ApiException {
         return inventoryDto.getAll();
     }
 
 
     @ApiOperation(value = "Update existing inventory")
-    @PutMapping("/{id}")
+    @PutMapping("/admin/inventory/{id}")
     public void update(@PathVariable int id, @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.update(id,inventoryForm);
     }
 
     @ApiOperation(value = "upload tsv from UI")
-    @PostMapping("/upload")
+    @PostMapping("/admin/inventory/upload")
     public void upload(@RequestParam(value="file") MultipartFile file) throws ApiException{
         inventoryDto.upload(file);
     }
 
     @ApiOperation(value= "inventory report")
-    @PostMapping("/report")
+    @PostMapping("/admin/inventory/report")
     public List<InventoryReportData> getReports(@RequestBody BrandForm brandForm) throws ApiException {
         return inventoryDto.getReports(brandForm);
     }
 
     @ApiOperation(value= "search inventory data")
-    @PostMapping("/search")
+    @PostMapping("/inventory/search")
     public List<InventoryData> search(@RequestBody InventorySearchForm inventorySearchForm) throws ApiException {
         return inventoryDto.search(inventorySearchForm);
     }

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
+@Transactional
 public class ProductDao extends AbstractDao {
 
 	private static String delete_id = "delete from ProductPojo p where id=:id";

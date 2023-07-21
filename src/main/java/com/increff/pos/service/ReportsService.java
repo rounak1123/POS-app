@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
 @Service
+@Transactional
 public class ReportsService {
 
     @Autowired
@@ -22,12 +24,12 @@ public class ReportsService {
     @Autowired
     private DaySalesSchedulerDao dailySalesDao;
 
-    @Transactional
-    public List<Object[]> getSalesReport(LocalDate startDate, LocalDate endDate, String brand, String category){
+
+    public List<Object[]> getSalesReport(Date startDate, Date endDate, String brand, String category){
         return dao.getSalesReport(startDate, endDate, brand, category);
     }
 
-    @Transactional
+
     public List<DaySalesPojo> daySalesReport(){
         return dailySalesDao.selectAll();
     }

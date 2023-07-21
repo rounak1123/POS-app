@@ -1,0 +1,152 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ReportsService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.service</a>
+</div>
+
+<h1>Coverage Summary for Class: ReportsService (com.increff.pos.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReportsService</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ReportsService$$EnhancerBySpringCGLIB$$afc849b4</td>
+  </tr>
+  <tr>
+    <td class="name">ReportsService$$EnhancerBySpringCGLIB$$ceb0042f</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+&nbsp;
+&nbsp;import com.increff.pos.dao.DaySalesSchedulerDao;
+&nbsp;import com.increff.pos.dao.ReportsDao;
+&nbsp;import com.increff.pos.model.SalesReportData;
+&nbsp;import com.increff.pos.model.SalesReportForm;
+&nbsp;import com.increff.pos.pojo.DaySalesPojo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class ReportsService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ReportsDao dao;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private DaySalesSchedulerDao dailySalesDao;
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public List&lt;Object[]&gt; getSalesReport(LocalDate startDate, LocalDate endDate, String brand, String category){
+<b class="nc">&nbsp;        return dao.getSalesReport(startDate, endDate, brand, category);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public List&lt;DaySalesPojo&gt; daySalesReport(){
+<b class="nc">&nbsp;        return dailySalesDao.selectAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
+</div>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > InventoryService</title>
+  <title>Coverage Report > DaySalesSchedulerDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.service</a>
+    <a href="../index.html">com.increff.pos.dao</a>
 </div>
 
-<h1>Coverage Summary for Class: InventoryService (com.increff.pos.service)</h1>
+<h1>Coverage Summary for Class: DaySalesSchedulerDao (com.increff.pos.dao)</h1>
 
 <table class="coverageStats">
 
@@ -37,7 +37,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">InventoryService</td>
+  <td class="name">DaySalesSchedulerDao</td>
 <td class="coverageStat">
   <span class="percent">
     28.6%
@@ -48,24 +48,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    25%
   </span>
   <span class="absValue">
-    (2/12)
+    (5/20)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">InventoryService$$EnhancerBySpringCGLIB$$54b383f0</td>
+    <td class="name">DaySalesSchedulerDao$$EnhancerBySpringCGLIB$$b9536c30</td>
   </tr>
   <tr>
-    <td class="name">InventoryService$$EnhancerBySpringCGLIB$$54b383f0$$FastClassBySpringCGLIB$$8aa72258</td>
-  </tr>
-  <tr>
-    <td class="name">InventoryService$$EnhancerBySpringCGLIB$$c08d66f7</td>
-  </tr>
-  <tr>
-    <td class="name">InventoryService$$FastClassBySpringCGLIB$$7f418056</td>
+    <td class="name">DaySalesSchedulerDao$$EnhancerBySpringCGLIB$$d83b26ab</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -79,10 +73,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    25%
   </span>
   <span class="absValue">
-    (2/12)
+    (5/20)
   </span>
 </td>
 </tr>
@@ -93,55 +87,72 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dao;
 &nbsp;
-&nbsp;import com.increff.pos.dao.InventoryDao;
-&nbsp;import com.increff.pos.pojo.InventoryPojo;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.increff.pos.pojo.DaySalesPojo;
+&nbsp;import com.increff.pos.pojo.OrderPojo;
+&nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
+&nbsp;import javax.persistence.EntityManager;
+&nbsp;import javax.persistence.PersistenceContext;
+&nbsp;import javax.persistence.TypedQuery;
 &nbsp;import javax.transaction.Transactional;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.ZoneId;
+&nbsp;import java.util.Date;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;@Service
-<b class="fc">&nbsp;public class InventoryService {</b>
+&nbsp;@Repository
+<b class="fc">&nbsp;public class DaySalesSchedulerDao extends AbstractDao {</b>
+<b class="fc">&nbsp;    private static String select_all = &quot;select p from DaySalesPojo p order by Date(p.date) desc&quot;;</b>
+<b class="fc">&nbsp;    private static String invoice_count =</b>
+&nbsp;            &quot;select count(id) &quot; +
+&nbsp;            &quot;from OrderPojo &quot; +
+&nbsp;                    &quot;where status = &#39;invoiced&#39; and Date(time)=:date&quot;;
+<b class="fc">&nbsp;    private static String items_count =</b>
+&nbsp;            &quot;select sum(quantity) as items_count from OrderItemPojo\n &quot; +
+&nbsp;                    &quot;where order_id in &quot; +
+&nbsp;                    &quot;(select id from OrderPojo where status=&#39;invoiced&#39; and Date(time)=:date)&quot;;
+<b class="fc">&nbsp;    private static String total_revenue =</b>
+&nbsp;            &quot;select sum(quantity*selling_price) as total_revenue from OrderItemPojo\n&quot; +
+&nbsp;                    &quot;where order_id in (select id from OrderPojo &quot; +
+&nbsp;                    &quot;where status=&#39;invoiced&#39; and Date(time)=:date)&quot;;
 &nbsp;
-&nbsp;    @Autowired
-&nbsp;    private InventoryDao dao;
-&nbsp;
-&nbsp;    @Transactional(rollbackOn = ApiException.class)
-&nbsp;    public void add(InventoryPojo p) throws ApiException {
-<b class="fc">&nbsp;        dao.add(p);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @Transactional(rollbackOn = ApiException.class)
-&nbsp;    public InventoryPojo get(int id) throws ApiException {
-<b class="nc">&nbsp;        return getCheck(id);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @Transactional
-&nbsp;    public List&lt;InventoryPojo&gt; getAll() {
-<b class="nc">&nbsp;        return dao.selectAll();</b>
-&nbsp;    }
+&nbsp;    @PersistenceContext
+&nbsp;    private EntityManager em;
 &nbsp;
 &nbsp;    @Transactional
-&nbsp;    public List&lt;InventoryPojo&gt;  search(String barcode, String name, String brand, String category) {
-<b class="nc">&nbsp;        return dao.search(barcode, name, brand, category);</b>
+&nbsp;    public void insert(DaySalesPojo p) {
+<b class="nc">&nbsp;        em.persist(p);</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @Transactional(rollbackOn  = ApiException.class)
-&nbsp;    public void update(int id, InventoryPojo p) throws ApiException {
-<b class="nc">&nbsp;        InventoryPojo ex = getCheck(id);</b>
-<b class="nc">&nbsp;        if(ex==null)</b>
-<b class="nc">&nbsp;            throw new ApiException(&quot;Product id is invalid.&quot;);</b>
-<b class="nc">&nbsp;        ex.setQuantity(p.getQuantity());</b>
-<b class="nc">&nbsp;        dao.update(ex);</b>
+&nbsp;    public List&lt;DaySalesPojo&gt; selectAll() {
+<b class="nc">&nbsp;        TypedQuery&lt;DaySalesPojo&gt; query = getQuery(select_all, DaySalesPojo.class);</b>
+<b class="nc">&nbsp;        return query.getResultList();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @Transactional
-&nbsp;    public InventoryPojo getCheck(int id) throws ApiException {
-<b class="nc">&nbsp;        InventoryPojo p = dao.select(id);</b>
-<b class="nc">&nbsp;        return p;</b>
+&nbsp;    public long getInvoiceCount(LocalDate date){
+<b class="nc">&nbsp;        Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());</b>
+<b class="nc">&nbsp;        TypedQuery&lt;Long&gt; query = getQuery(invoice_count, Long.class);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;date&quot;, convertedDate);</b>
+&nbsp;
+<b class="nc">&nbsp;        return query.getSingleResult().intValue();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public long getItemsCount(LocalDate date){
+<b class="nc">&nbsp;        Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());</b>
+<b class="nc">&nbsp;        TypedQuery&lt;Long&gt; query = getQuery(items_count, Long.class);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;date&quot;, convertedDate);</b>
+&nbsp;
+<b class="nc">&nbsp;        return query.getSingleResult().intValue();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getRevenue(LocalDate date){
+<b class="nc">&nbsp;        Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());</b>
+<b class="nc">&nbsp;        TypedQuery&lt;Double&gt; query = getQuery(total_revenue, Double.class);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;date&quot;, convertedDate);</b>
+&nbsp;
+<b class="nc">&nbsp;        return query.getSingleResult().doubleValue();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
@@ -169,7 +180,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

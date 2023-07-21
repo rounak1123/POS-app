@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -86,7 +84,7 @@ public class OrderDto {
     }
 
 
-    private  OrderData convertOrderPojoToOrderData(OrderPojo orderPojo) {
+    private  static OrderData convertOrderPojoToOrderData(OrderPojo orderPojo) {
         OrderData orderData = new OrderData();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = orderPojo.getTime().format(dateTimeFormatter);
@@ -96,7 +94,7 @@ public class OrderDto {
         return orderData;
     }
 
-    private List<OrderData> convertOrderPojoListToOrderDataList(List<OrderPojo> orderPojoList){
+    private static List<OrderData> convertOrderPojoListToOrderDataList(List<OrderPojo> orderPojoList){
         List<OrderData> orderDataList = new ArrayList<OrderData>();
         for (OrderPojo orderPojo : orderPojoList) {
             orderDataList.add(convertOrderPojoToOrderData(orderPojo));

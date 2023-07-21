@@ -15,19 +15,20 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping(path = "/api/admin")
 public class ReportsApiController {
 
     @Autowired
     private ReportsDto reportsDto;
 
     @ApiOperation(value = "Gets Sales Report")
-    @RequestMapping(path = "/api/reports/sales", method = RequestMethod.POST)
+    @PostMapping("/reports/sales")
     public List<SalesReportData> salesReport(@RequestBody SalesReportForm salesReportForm) throws ApiException {
         return reportsDto.salesReport(salesReportForm);
     }
 
     @ApiOperation(value = "Gets Daily Sales Report")
-    @RequestMapping(path = "/api/reports/day-sales", method = RequestMethod.GET)
+    @GetMapping("/reports/day-sales")
     public List<DaySalesData> daySalesReport()  {
         return reportsDto.daySalesReport();
     }

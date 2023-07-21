@@ -1,0 +1,140 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProductFlowService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.service.flow</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductFlowService (com.increff.pos.service.flow)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductFlowService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service.flow;
+&nbsp;
+&nbsp;import com.increff.pos.pojo.BrandPojo;
+&nbsp;import com.increff.pos.pojo.InventoryPojo;
+&nbsp;import com.increff.pos.service.ApiException;
+&nbsp;import com.increff.pos.service.BrandService;
+&nbsp;import com.increff.pos.service.InventoryService;
+&nbsp;import com.increff.pos.spring.SecurityConfig;
+&nbsp;import org.apache.log4j.Logger;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class ProductFlowService {</b>
+&nbsp;    @Autowired
+&nbsp;    public BrandService brandService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    InventoryService inventoryService;
+&nbsp;
+&nbsp;
+&nbsp;    public BrandPojo getBrandCategory(String brand, String category) throws ApiException {
+<b class="fc">&nbsp;        return brandService.get(brand, category);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public BrandPojo getBrandCategory(int id) throws ApiException {
+<b class="fc">&nbsp;        return brandService.get(id);</b>
+&nbsp;    }
+&nbsp;    public void addInventory(int id) throws ApiException {
+<b class="fc">&nbsp;        InventoryPojo inventoryPojo = new InventoryPojo();</b>
+<b class="fc">&nbsp;        inventoryPojo.setId(id);</b>
+<b class="fc">&nbsp;        inventoryPojo.setQuantity(0);</b>
+<b class="fc">&nbsp;        inventoryService.add(inventoryPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
+</div>
+</body>
+</html>

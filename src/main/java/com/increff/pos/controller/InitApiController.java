@@ -1,6 +1,5 @@
 package com.increff.pos.controller;
 
-import com.increff.pos.model.InfoData;
 import com.increff.pos.model.UserForm;
 import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
@@ -13,17 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @RestController
 public class InitApiController extends AbstractUiController {
 
 	@Autowired
-	private UserService service;
-	@Autowired
-	private InfoData info;
+	private UserService userService;
+
 	@Value(("${app.supervisorEmail}"))
 	private String supervisorEmail;
 
@@ -33,11 +28,11 @@ public class InitApiController extends AbstractUiController {
 		if(form.getEmail() == supervisorEmail){
 			UserPojo p = convert(form);
 			p.setRole("admin");
-			service.add(p);
+			userService.add(p);
 		}else {
 			UserPojo p = convert(form);
 			p.setRole("standard");
-			service.add(p);
+			userService.add(p);
 		}
 	}
 

@@ -1,0 +1,229 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OrderService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.service</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderService (com.increff.pos.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderService</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (7/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31.6%
+  </span>
+  <span class="absValue">
+    (12/38)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OrderService$$EnhancerBySpringCGLIB$$8ef8c0c7</td>
+  </tr>
+  <tr>
+    <td class="name">OrderService$$EnhancerBySpringCGLIB$$8ef8c0c7$$FastClassBySpringCGLIB$$a35f6635</td>
+  </tr>
+  <tr>
+    <td class="name">OrderService$$EnhancerBySpringCGLIB$$ade07b42</td>
+  </tr>
+  <tr>
+    <td class="name">OrderService$$FastClassBySpringCGLIB$$feafb4a4</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (7/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31.6%
+  </span>
+  <span class="absValue">
+    (12/38)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.core.JsonProcessingException;
+&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+&nbsp;import com.increff.pos.dao.OrderDao;
+&nbsp;import com.increff.pos.model.InvoiceData;
+&nbsp;import com.increff.pos.pojo.OrderPojo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.core.io.FileSystemResource;
+&nbsp;import org.springframework.core.io.Resource;
+&nbsp;import org.springframework.http.*;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.client.RestTemplate;
+&nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileOutputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Transactional
+<b class="fc">&nbsp;public class OrderService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrderDao orderDao;
+&nbsp;
+&nbsp;    public OrderPojo add(OrderPojo orderPojo) throws ApiException {
+<b class="fc">&nbsp;        if(orderDao.select(orderPojo.getId()) != null)</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;The Order Item already exists in the table.&quot;);</b>
+<b class="fc">&nbsp;       return orderDao.insert(orderPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void delete(int id)  throws ApiException{
+<b class="fc">&nbsp;        getCheck(id);</b>
+<b class="fc">&nbsp;        orderDao.delete(id);</b>
+&nbsp;    }
+&nbsp;    public OrderPojo get(int id) throws ApiException {
+<b class="fc">&nbsp;        return getCheck(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;OrderPojo&gt; getAll() {
+<b class="fc">&nbsp;        return orderDao.selectAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update(int id, OrderPojo p) throws ApiException {
+<b class="fc">&nbsp;        OrderPojo ex = getCheck(id);</b>
+<b class="nc">&nbsp;        ex.setTime(p.getTime());</b>
+<b class="nc">&nbsp;        ex.setStatus(p.getStatus());</b>
+<b class="nc">&nbsp;        orderDao.update(ex);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderPojo getCheck(int id) throws ApiException {
+<b class="fc">&nbsp;        OrderPojo orderPojo = orderDao.select(id);</b>
+<b class="fc">&nbsp;        if (orderPojo == null) {</b>
+<b class="fc">&nbsp;            throw new ApiException(&quot;OrderItem with given ID does not exit, id: &quot; + id);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return orderPojo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // DOWNLOAD INVOICE METHODS
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Resource&gt; downloadInvoice(InvoiceData invoiceData) throws IOException {
+&nbsp;
+<b class="nc">&nbsp;        String convertedBase64 =  getBase64String(invoiceData);</b>
+&nbsp;
+<b class="nc">&nbsp;        byte[] pdfData = Base64.getDecoder().decode(convertedBase64);</b>
+&nbsp;
+<b class="nc">&nbsp;        String filePath = &quot;/Users/rounakagrawal/Desktop/POS/POS_Application/output.pdf&quot;;</b>
+<b class="nc">&nbsp;        File outputFile = new File(filePath);</b>
+<b class="nc">&nbsp;        FileOutputStream fos = new FileOutputStream(outputFile);</b>
+<b class="nc">&nbsp;        fos.write(pdfData);</b>
+<b class="nc">&nbsp;        fos.close();</b>
+<b class="nc">&nbsp;        HttpHeaders headers = new HttpHeaders();</b>
+<b class="nc">&nbsp;        headers.setContentType(MediaType.APPLICATION_PDF);</b>
+<b class="nc">&nbsp;        headers.setContentDispositionFormData(&quot;attachment&quot;, outputFile.getName());</b>
+&nbsp;
+<b class="nc">&nbsp;        ResponseEntity&lt;Resource&gt; responseOut = new ResponseEntity&lt;&gt;(</b>
+&nbsp;                new FileSystemResource(outputFile),
+&nbsp;                headers,
+&nbsp;                HttpStatus.OK
+&nbsp;        );
+<b class="nc">&nbsp;              return responseOut;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getBase64String(InvoiceData invoiceData) throws JsonProcessingException {
+<b class="nc">&nbsp;        RestTemplate restTemplate = new RestTemplate();</b>
+&nbsp;
+<b class="nc">&nbsp;        String url = &quot;http://localhost:6969/api/generate-invoice&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        HttpHeaders headers = new HttpHeaders();</b>
+<b class="nc">&nbsp;        headers.setContentType(MediaType.APPLICATION_JSON);</b>
+&nbsp;
+<b class="nc">&nbsp;        ObjectMapper objectMapper = new ObjectMapper();</b>
+<b class="nc">&nbsp;        String requestBody = objectMapper.writeValueAsString(invoiceData);</b>
+<b class="nc">&nbsp;        HttpEntity&lt;String&gt; requestEntity = new HttpEntity&lt;&gt;(requestBody, headers);</b>
+&nbsp;
+<b class="nc">&nbsp;        ResponseEntity&lt;String&gt; responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        String responseBody = responseEntity.getBody();</b>
+<b class="nc">&nbsp;        return responseBody;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
+</div>
+</body>
+</html>

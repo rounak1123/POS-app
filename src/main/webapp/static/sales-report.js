@@ -2,7 +2,7 @@ var table;
 var salesReportData = [];
 function getSalesReportUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/reports/sales";
+	return baseUrl + "/api/admin/reports/sales";
 }
 
 function getSalesReport(form){
@@ -75,6 +75,7 @@ function init(){
      table = $('#sales-table').DataTable(
                    {dom: 'lrtip',
                     paging: false,
+                    "info": false,
                     scrollY: '360px',
                     scrollColapse: 'true',
                     });

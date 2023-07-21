@@ -8,7 +8,10 @@ import com.increff.pos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 @Component
+@Transactional
 public class InventoryFlowService {
 
     @Autowired
@@ -16,7 +19,7 @@ public class InventoryFlowService {
     @Autowired
     public BrandService brandService;
 
-    public ProductPojo getProductByBarcode(String barcode){
+    public ProductPojo getProductByBarcode(String barcode) throws ApiException{
         return productService.getProductByBarcode(barcode);
     }
 

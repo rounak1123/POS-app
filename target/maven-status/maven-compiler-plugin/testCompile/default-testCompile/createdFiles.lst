@@ -1,5 +1,7 @@
 com/increff/pos/dto/BrandDtoTest.class
+com/increff/pos/dto/OrderDtoTest.class
 com/increff/pos/dto/QaConfig.class
 com/increff/pos/dto/AbstractUnitTest.class
 com/increff/pos/dto/constructorUtil/FormConstructor.class
 com/increff/pos/dto/ProductDtoTest.class
+com/increff/pos/dto/InventoryDtoTest.class

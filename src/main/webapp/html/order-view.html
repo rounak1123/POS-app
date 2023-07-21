@@ -60,6 +60,23 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div>
+                        <form class="form-inline fw-bold row justify-content-between ml-4 mr-4 mb-2" id="order-tem-header" style="font-size: 140%;">
+                            <div class="form-group ">
+                                <label class=" col-form-label fw-bold">Order Id: </label>
+                                <div  id="orderId">
+                                    200
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class=" col-form-label">Total Amount:</label>
+                                <div id="totalAmount">
+                                    2000.00
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
                     <table class="table table-striped" id="order-item-view-table">
                         <thead>
                         <tr>
@@ -67,6 +84,7 @@
                             <th scope="col" name="name">Name</th>
                             <th scope="col" name="quantity">Quantity</th>
                             <th scope="col" name="sellingPrice">Selling Price</th>
+                            <th scope="col" name="Total">Sub Total</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -3,9 +3,9 @@ var categoryData = [];
 var inventoryReportData = [];
 
 var table;
-function getInventoryUrl(){
+function getAdminInventoryUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/inventory";
+	return baseUrl + "/api/admin/inventory";
 }
 function updateBrandCategoryList(data) {
 
@@ -20,19 +20,25 @@ function updateBrandCategoryList(data) {
 
 	brandData = [...new Set(brandData)];
 	categoryData = [...new Set(categoryData)];
-
-	  var brandDropdown = $('#inputBrandSearch');
-      brandDropdown.empty();
-      brandDropdown.append($('<option></option>').val('').html('Select an option'));
-      $.each(brandData, function (i, brand){
-          brandDropdown.append($('<option></option>').val(brand).html(brand));
+     $('#inputBrandSearch').select2({
+     data: brandData,
+     })
+      $('#inputCategorySearch').select2({
+      data: categoryData,
       })
-        var categoryDropdown = $('#inputCategorySearch');
-        categoryDropdown.empty();
-        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
-        $.each(categoryData, function (i, brand){
-            categoryDropdown.append($('<option></option>').val(brand).html(brand));
-        })
+
+//	  var brandDropdown = $('#inputBrandSearch');
+//      brandDropdown.empty();
+//      brandDropdown.append($('<option></option>').val('').html('Select an option'));
+//      $.each(brandData, function (i, brand){
+//          brandDropdown.append($('<option></option>').val(brand).html(brand));
+//      })
+//        var categoryDropdown = $('#inputCategorySearch');
+//        categoryDropdown.empty();
+//        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
+//        $.each(categoryData, function (i, brand){
+//            categoryDropdown.append($('<option></option>').val(brand).html(brand));
+//        })
 }
 function downloadReport(){
 console.log(inventoryReportData);
@@ -57,7 +63,7 @@ writeFileData(reportArrayData);
 function getInventoryList(){
 	var $form = $("#inventory-report-filter-form");
 	var json = toJson($form);
-	var url = getInventoryUrl();
+	var url = getAdminInventoryUrl();
 	url+='/report';
 	$.ajax({
 	   url: url,
@@ -103,6 +109,7 @@ function initDataTable(){
   table = $('#inventory-table').DataTable(
 		               {dom: 'lrtip',
                         paging: false,
+                        "info": false,
                         scrollY: '450px',
                         scrollColapse: 'true',
                         });

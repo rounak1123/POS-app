@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
+@Transactional
 public class BrandDao extends AbstractDao {
 
 	private static String delete_id = "delete from BrandPojo p where id=:id";
@@ -43,9 +44,6 @@ public class BrandDao extends AbstractDao {
 	public List<BrandPojo> selectAll() {
 		TypedQuery<BrandPojo> query = getQuery(select_all, BrandPojo.class);
 		return query.getResultList();
-	}
-
-	public void update(BrandPojo brandPojo) {
 	}
 
 	public BrandPojo select(String brand, String category){

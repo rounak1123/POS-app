@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ProductService</title>
+  <title>Coverage Report > OrderTempTableItemDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.service</a>
+    <a href="../index.html">com.increff.pos.dao</a>
 </div>
 
-<h1>Coverage Summary for Class: ProductService (com.increff.pos.service)</h1>
+<h1>Coverage Summary for Class: OrderTempTableItemDao (com.increff.pos.dao)</h1>
 
 <table class="coverageStats">
 
@@ -37,52 +37,52 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ProductService</td>
+  <td class="name">OrderTempTableItemDao</td>
 <td class="coverageStat">
   <span class="percent">
-    66.7%
+    88.9%
   </span>
   <span class="absValue">
-    (6/9)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    75%
+    87.5%
   </span>
   <span class="absValue">
-    (18/24)
+    (21/24)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">ProductService$$EnhancerBySpringCGLIB$$53a338f7</td>
+    <td class="name">OrderTempTableItemDao$$EnhancerBySpringCGLIB$$165dda58</td>
   </tr>
   <tr>
-    <td class="name">ProductService$$EnhancerBySpringCGLIB$$53a338f7$$FastClassBySpringCGLIB$$de76a4bc</td>
+    <td class="name">OrderTempTableItemDao$$EnhancerBySpringCGLIB$$165dda58$$FastClassBySpringCGLIB$$2b7c04ce</td>
   </tr>
   <tr>
-    <td class="name">ProductService$$EnhancerBySpringCGLIB$$bf7d1bfe</td>
+    <td class="name">OrderTempTableItemDao$$EnhancerBySpringCGLIB$$354594d3</td>
   </tr>
   <tr>
-    <td class="name">ProductService$$FastClassBySpringCGLIB$$662934a3</td>
+    <td class="name">OrderTempTableItemDao$$FastClassBySpringCGLIB$$23ee68df</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    66.7%
+    88.9%
   </span>
   <span class="absValue">
-    (6/9)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    75%
+    87.5%
   </span>
   <span class="absValue">
-    (18/24)
+    (21/24)
   </span>
 </td>
 </tr>
@@ -93,76 +93,68 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dao;
 &nbsp;
-&nbsp;import com.increff.pos.dao.ProductDao;
-&nbsp;import com.increff.pos.pojo.ProductPojo;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.increff.pos.pojo.OrderTempTableItemPojo;
+&nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
+&nbsp;import javax.persistence.EntityManager;
+&nbsp;import javax.persistence.PersistenceContext;
+&nbsp;import javax.persistence.Query;
+&nbsp;import javax.persistence.TypedQuery;
 &nbsp;import javax.transaction.Transactional;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;@Service
-&nbsp;@Transactional
-<b class="fc">&nbsp;public class ProductService {</b>
+&nbsp;@Repository
+<b class="fc">&nbsp;public class OrderTempTableItemDao extends AbstractDao {</b>
 &nbsp;
-&nbsp;	@Autowired
-&nbsp;	private ProductDao dao;
+<b class="fc">&nbsp;    private static String delete_id = &quot;delete from OrderTempTableItemPojo p where id=:id&quot;;</b>
+<b class="fc">&nbsp;    private static String delete_all_id = &quot;delete from OrderTempTableItemPojo p where user_id=:userId&quot;;</b>
+<b class="fc">&nbsp;    private static String select_id = &quot;select p from OrderTempTableItemPojo p where id=:id&quot;;</b>
+<b class="fc">&nbsp;    private static String select_barcode = &quot;select p from OrderTempTableItemPojo p where user_id=:userId and product_id=:productId&quot;;</b>
+<b class="fc">&nbsp;    private static String select_all = &quot;select p from OrderTempTableItemPojo p where user_id=:userId&quot;;</b>
 &nbsp;
-&nbsp;	@Transactional(rollbackOn = ApiException.class)
-&nbsp;	public int add(ProductPojo p) throws ApiException {
-<b class="fc">&nbsp;		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());</b>
-<b class="fc">&nbsp;		if(pojo!=null)</b>
-<b class="fc">&nbsp;			throw  new ApiException(&quot;The product already exists in the database.&quot;);</b>
-<b class="fc">&nbsp;		int id =  dao.insert(p);</b>
-<b class="fc">&nbsp;		return id;</b>
+&nbsp;    @PersistenceContext
+&nbsp;    private EntityManager em;
 &nbsp;
-&nbsp;	}
+&nbsp;    @Transactional
+&nbsp;    public void insert(OrderTempTableItemPojo orderTempTableItemPojo) {
+<b class="fc">&nbsp;        em.persist(orderTempTableItemPojo);</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	@Transactional(rollbackOn = ApiException.class)
-&nbsp;	public ProductPojo get(int id) throws ApiException {
-<b class="fc">&nbsp;		return getCheck(id);</b>
-&nbsp;	}
+&nbsp;    public int delete(int id) {
+<b class="fc">&nbsp;        Query query = em.createQuery(delete_id);</b>
+<b class="fc">&nbsp;        query.setParameter(&quot;id&quot;, id);</b>
+<b class="fc">&nbsp;        return query.executeUpdate();</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	public ProductPojo getProductByBarcode(String barcode){
-<b class="nc">&nbsp;		return  dao.getProductByBarcode(barcode);</b>
-&nbsp;	}
+&nbsp;    public int deleteAll(int userId) {
+<b class="nc">&nbsp;        Query query = em.createQuery(delete_all_id);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;userId&quot;, userId);</b>
+<b class="nc">&nbsp;        return query.executeUpdate();</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	public List&lt;ProductPojo&gt; getAll() {
-<b class="fc">&nbsp;		return dao.selectAll();</b>
-&nbsp;	}
+&nbsp;    public OrderTempTableItemPojo select(int id) {
+<b class="fc">&nbsp;        TypedQuery&lt;OrderTempTableItemPojo&gt; query = getQuery(select_id, OrderTempTableItemPojo.class);</b>
+<b class="fc">&nbsp;        query.setParameter(&quot;id&quot;, id);</b>
+<b class="fc">&nbsp;        return getSingle(query);</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	@Transactional(rollbackOn  = ApiException.class)
-&nbsp;	public void update(int id, ProductPojo p) throws ApiException {
-<b class="fc">&nbsp;		ProductPojo ex = getCheck(id);</b>
-<b class="fc">&nbsp;		ex.setBarcode(p.getBarcode());</b>
-<b class="fc">&nbsp;		ex.setBrand_category_id(p.getBrand_category_id());</b>
-<b class="fc">&nbsp;		ex.setName(p.getName());</b>
-<b class="fc">&nbsp;		ex.setMrp(p.getMrp());</b>
-<b class="fc">&nbsp;		dao.update(ex);</b>
-&nbsp;	}
+&nbsp;    public List&lt;OrderTempTableItemPojo&gt; selectAll(int userId) {
+<b class="fc">&nbsp;        TypedQuery&lt;OrderTempTableItemPojo&gt; query = getQuery(select_all, OrderTempTableItemPojo.class);</b>
+<b class="fc">&nbsp;        query.setParameter(&quot;userId&quot;, userId);</b>
+<b class="fc">&nbsp;        return query.getResultList();</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	public String validate(ProductPojo p) throws ApiException {
-<b class="nc">&nbsp;		ProductPojo pojo = dao.getProductByBarcode(p.getBarcode());</b>
-<b class="nc">&nbsp;		if(pojo != null){</b>
-<b class="nc">&nbsp;			return  &quot;Already Exists with same barcode.&quot;;</b>
-&nbsp;		}
-<b class="nc">&nbsp;		return &quot;&quot;;</b>
-&nbsp;	}
+&nbsp;    public OrderTempTableItemPojo getOrderTempTableItemByBarcode(int userId, int productId){
+<b class="fc">&nbsp;        TypedQuery&lt;OrderTempTableItemPojo&gt; query = getQuery(select_barcode, OrderTempTableItemPojo.class);</b>
+<b class="fc">&nbsp;        query.setParameter(&quot;userId&quot;, userId);</b>
+<b class="fc">&nbsp;        query.setParameter(&quot;productId&quot;, productId);</b>
+<b class="fc">&nbsp;        return getSingle(query);</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	public List&lt;Object[]&gt; search(String brand, String category, String name, String barcode) {
-<b class="nc">&nbsp;		return dao.search(brand, category, name, barcode);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	public ProductPojo getCheck(int id) throws ApiException {
-<b class="fc">&nbsp;		ProductPojo p = dao.select(id);</b>
-<b class="fc">&nbsp;		if (p == null) {</b>
-<b class="fc">&nbsp;			throw new ApiException(&quot;Product with given ID does not exit, id: &quot; + id);</b>
-&nbsp;		}
-<b class="fc">&nbsp;		return p;</b>
-&nbsp;	}
-&nbsp;
+&nbsp;    public void update(OrderTempTableItemPojo orderTempTableItemPojo) {
+<b class="fc">&nbsp;    }</b>
 &nbsp;}
 </code>
 </pre>
@@ -187,7 +179,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

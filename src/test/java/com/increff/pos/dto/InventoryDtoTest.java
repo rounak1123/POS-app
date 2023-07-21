@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -28,26 +29,31 @@ public class InventoryDtoTest extends AbstractUnitTest{
     private ProductDto productDto;
 
     @Before
-    public  void addBrandProduct() throws  ApiException {
-        BrandForm f = FormConstructor.constructBrand("test", "test1");
-        brandDto.add(f);
-        ProductForm productForm = FormConstructor.constructProduct("2342  ", "  test23", " test", " test1", 200.0);
+    public void populateDB() throws ApiException {
+        brandDto.add(FormConstructor.constructBrand("testBrand1", "testCategory1"));
+        brandDto.add(FormConstructor.constructBrand("testBrand2", "testCategory2"));
+        brandDto.add(FormConstructor.constructBrand("testBrand3", "testCategory3"));
+        brandDto.add(FormConstructor.constructBrand("testBrand4", "testCategory4"));
 
-        int id = productDto.add(productForm);
+        productDto.add(FormConstructor.constructProduct("testBarcode1","testName1","testBrand1","testCategory1","2000"));
+        productDto.add(FormConstructor.constructProduct("testBarcode2","testName2","testBrand2","testCategory2","2000"));
+        productDto.add(FormConstructor.constructProduct("testBarcode3" +
+                "","testName3","testBrand3","testCategory3","2000"));
+        productDto.add(FormConstructor.constructProduct("testBarcode4","testName4","testBrand4","testCategory4","2000"));
     }
 
     @Test
     public void testUpdate() throws ApiException {
-       ProductData productData=  productDto.getAll().get(0);
-        InventoryForm inventoryForm = FormConstructor.constructInventoryForm(productData.getBarcode()+"   ", 200);
+        InventoryForm inventoryForm = FormConstructor.constructInventoryForm("testBarcode1", "200");
+        ProductData productData = getProductData("testbarcode1");
        dto.update(productData.getId(),inventoryForm);
-       InventoryData invetoryData = dto.get(productData.getId());
-       assertEquals(invetoryData.getQuantity(), 200);
+       InventoryData inventoryData = dto.get(productData.getId());
+       assertEquals(String.valueOf(inventoryData.getQuantity()), "200");
     }
 
     @Test
     public void testGetInventory() throws ApiException {
-        ProductData productData=  productDto.getAll().get(0);
+        ProductData productData = getProductData("testbarcode1");
         InventoryData inventoryData = dto.get(productData.getId());
 
         assertEquals(inventoryData.getId(),productData.getId());
@@ -56,19 +62,9 @@ public class InventoryDtoTest extends AbstractUnitTest{
     @Test
     public void testGetAll() throws ApiException {
 
-        ProductForm productForm1 = FormConstructor.constructProduct("2342432  ", "  test23", " test", " test1", 200.0);
-
-        ProductForm productForm2 = FormConstructor.constructProduct("233453542  ", "  test23", " test", " test1", 200.0);
-
-        ProductForm productForm3 = FormConstructor.constructProduct("232424242  ", "  test23", " test", " test1", 200.0);
-        ProductForm productForm4 = FormConstructor.constructProduct("23534342  ", "  test23", " test", " test1", 200.0);
+        ProductForm productForm1 = FormConstructor.constructProduct("2342432  ", "  test23", " testBrand1", " testCategory1", "200.0");
         productDto.add(productForm1);
-        productDto.add(productForm2);
-        productDto.add(productForm3);
-        productDto.add(productForm4);
         List<InventoryData> list = dto.getAll();
-
-
 
         assertEquals(list.size(), 5);
 
@@ -92,10 +88,28 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         MultipartFile result = new MockMultipartFile(name, file);
         dto.upload(result);
-        List<InventoryData> inventoryDataList = dto.getAll();
-        assertEquals(dto.getAll().get(0).getQuantity(), 0);
-        assertEquals(dto.getAll().get(1).getQuantity(), 2000);
-        assertEquals(dto.getAll().get(2).getQuantity(), 2000);
+        InventoryData inventoryData = getInventoryData("234423423");
 
+        assertEquals(inventoryData.getQuantity(), "2000");
+    }
+
+    public ProductData getProductData(String barcode) throws ApiException {
+        List<ProductData> productDataList = productDto.getAll();
+        for(ProductData product: productDataList){
+            if(product.getBarcode().equals(barcode)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    public InventoryData getInventoryData(String barcode) throws ApiException {
+        List<InventoryData> inventoryDataList = dto.getAll();
+        for(InventoryData inventoryData: inventoryDataList){
+            if(inventoryData.getBarcode().equals(barcode)) {
+                return inventoryData;
+            }
+        }
+        return null;
     }
 }

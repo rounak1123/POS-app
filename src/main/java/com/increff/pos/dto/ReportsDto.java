@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -25,11 +27,13 @@ public class ReportsDto {
 
         LocalDate startDate = LocalDate.parse(salesReportForm.getStartDate());
         LocalDate endDate = LocalDate.parse(salesReportForm.getEndDate());
+        Date startDateConverted = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDateConverted = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         String brand = salesReportForm.getBrand();
         String category = salesReportForm.getCategory();
 
-        List<Object[]> objectList =  service.getSalesReport(startDate,endDate,brand,category);
-        return convert(objectList);
+        List<Object[]> objectList =  service.getSalesReport(startDateConverted,endDateConverted,brand,category);
+        return convertToSalesReportData(objectList);
     }
 
     public List<DaySalesData> daySalesReport(){
@@ -37,20 +41,19 @@ public class ReportsDto {
         return convertToDaySalesData(daySalesPojoList);
     }
 
-    public List<DaySalesData> convertToDaySalesData(List<DaySalesPojo> daySalesPojoList){
+    private static List<DaySalesData> convertToDaySalesData(List<DaySalesPojo> daySalesPojoList){
         List<DaySalesData> daySalesDataList = new ArrayList<>();
         for(DaySalesPojo daySalesPojo: daySalesPojoList){
             DaySalesData daySalesData = new DaySalesData();
             daySalesData.setTotalRevenue(daySalesPojo.getTotal_revenue());
             daySalesData.setInvoicedItemsCount(daySalesPojo.getInvoiced_items_count());
-            daySalesData.setInvoicedOrdersCount(daySalesPojo.getInvoiced_items_count());
+            daySalesData.setInvoicedOrdersCount(daySalesPojo.getInvoiced_orders_count());
             daySalesData.setDate(daySalesPojo.getDate().toString());
             daySalesDataList.add(daySalesData);
         }
         return daySalesDataList;
     }
-    public List<SalesReportData>  convert(List<Object[]> objList){
-        System.out.println("object list length"+objList.toArray().length);
+    private static List<SalesReportData>  convertToSalesReportData(List<Object[]> objList){
         List<SalesReportData> salesReportDataList = new ArrayList<>();
         for(Object[] obj : objList){
             SalesReportData salesReportData = new SalesReportData();

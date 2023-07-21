@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OrderItemApiController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.pos.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderItemApiController (com.increff.pos.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderItemApiController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
+&nbsp;
+&nbsp;import com.increff.pos.dto.OrderItemDto;
+&nbsp;import com.increff.pos.model.OrderItemData;
+&nbsp;import com.increff.pos.model.OrderItemForm;
+&nbsp;import com.increff.pos.service.ApiException;
+&nbsp;import io.swagger.annotations.Api;
+&nbsp;import io.swagger.annotations.ApiOperation;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.security.access.method.P;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Api
+&nbsp;@RestController
+&nbsp;@RequestMapping(path= &quot;/api/order-item&quot;)
+<b class="fc">&nbsp;public class OrderItemApiController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrderItemDto orderItemDto;
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Adds an order-item&quot;)
+&nbsp;    @PostMapping
+&nbsp;    public void add(@RequestBody OrderItemForm orderItemForm) throws ApiException {
+<b class="nc">&nbsp;        orderItemDto.add(orderItemForm);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Deletes an order-item&quot;)
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public void delete(@PathVariable int id) throws ApiException {
+<b class="nc">&nbsp;        orderItemDto.delete(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Deletes all order-item of an order&quot;)
+&nbsp;    @DeleteMapping(&quot;/order/{id}&quot;)
+&nbsp;    public void deleteAll(@PathVariable int id) throws ApiException {
+<b class="nc">&nbsp;        orderItemDto.deleteAll(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Gets an order-item by ID&quot;)
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public OrderItemData get(@PathVariable int id) throws ApiException {
+<b class="nc">&nbsp;        return orderItemDto.get(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Gets list of all order-items&quot;)
+&nbsp;    @GetMapping(&quot;/order/{orderId}&quot;)
+&nbsp;    public List&lt;OrderItemData&gt; getAll(@PathVariable int orderId) throws ApiException {
+<b class="nc">&nbsp;        return orderItemDto.getAll(orderId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Updates an order-item&quot;)
+&nbsp;    @PutMapping(&quot;/{id}&quot;)
+&nbsp;    public void update(@PathVariable int id, @RequestBody OrderItemForm orderItemForm) throws ApiException {
+<b class="nc">&nbsp;        orderItemDto.update(id,orderItemForm);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Adds all order-items&quot;)
+&nbsp;    @PostMapping(&quot;/all&quot;)
+&nbsp;    public void addAll(@RequestBody List&lt;OrderItemForm&gt; orderItemFormList) throws ApiException {
+<b class="nc">&nbsp;        orderItemDto.addAll(orderItemFormList);</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
+</div>
+</body>
+</html>

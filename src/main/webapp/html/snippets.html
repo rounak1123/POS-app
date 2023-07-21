@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="baseUrl" th:attr="content=${baseUrl}">
-
+<title>Smart-POS</title>
+  <link rel="icon" th:href=
+          "@{/static/img_2.png}"
+        type="image/png}">
 <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,600,0,0" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -17,6 +20,7 @@
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
 
+
 </head>
 
 <!--// New Name head-->
@@ -26,7 +30,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="baseUrl" th:attr="content=${baseUrl}">
-
+  <title>Smart-POS</title>
+  <link rel="icon" th:href="@{/static/img_2.png}"
+        type="image/png}">
   <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -185,8 +191,26 @@
   </nav>
 </header>
 
+<div id="modal-confirm-sure" class="modal fade" th:fragment="modal-confirm">
+  <div class="modal-dialog modal-confirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Are you sure?</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Do you really want to delete these records? This process cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="delete-button-modal">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<footer class="footer  mt-1" id="footer" th:fragment="name_footer">
+
+<footer class="footer  mt-1 text-white" id="footer" th:fragment="name_footer">
 	Copyright Increff 2023
     <script>
       	    var user_role = '[[${info.getRole()}]]';

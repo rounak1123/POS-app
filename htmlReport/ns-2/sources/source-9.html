@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > UserService</title>
+  <title>Coverage Report > ReportsDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,15 +18,18 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.service</a>
+    <a href="../index.html">com.increff.pos.dao</a>
 </div>
 
-<h1>Coverage Summary for Class: UserService (com.increff.pos.service)</h1>
+<h1>Coverage Summary for Class: ReportsDao (com.increff.pos.dao)</h1>
 
 <table class="coverageStats">
-
 <tr>
   <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
 <th class="coverageStat 
 ">
   Method, %
@@ -37,49 +40,33 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">UserService</td>
+  <td class="name">ReportsDao</td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    100%
   </span>
   <span class="absValue">
-    (1/6)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    9.1%
+    66.7%
   </span>
   <span class="absValue">
-    (1/11)
-  </span>
-</td>
-</tr>
-  <tr>
-    <td class="name">UserService$$EnhancerBySpringCGLIB$$56665055</td>
-  </tr>
-  <tr>
-    <td class="name">UserService$$EnhancerBySpringCGLIB$$c240335c</td>
-  </tr>
-<tr>
-  <td class="name"><strong>Total</strong></td>
-<td class="coverageStat">
-  <span class="percent">
-    16.7%
-  </span>
-  <span class="absValue">
-    (1/6)
+    (2/3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    9.1%
+    20%
   </span>
   <span class="absValue">
-    (1/11)
+    (2/10)
   </span>
 </td>
 </tr>
+
 </table>
 
 <br/>
@@ -87,51 +74,46 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dao;
 &nbsp;
-&nbsp;import com.increff.pos.dao.UserDao;
-&nbsp;import com.increff.pos.pojo.UserPojo;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.increff.pos.model.SalesReportData;
+&nbsp;import com.increff.pos.model.SalesReportForm;
+&nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
-&nbsp;import javax.transaction.Transactional;
+&nbsp;import javax.persistence.EntityManager;
+&nbsp;import javax.persistence.PersistenceContext;
+&nbsp;import javax.persistence.TypedQuery;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.ZoneId;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Date;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;@Service
-<b class="fc">&nbsp;public class UserService {</b>
+&nbsp;@Repository
+<b class="fc">&nbsp;public class ReportsDao extends AbstractDao{</b>
+<b class="fc">&nbsp;    private static String sales_report =</b>
+&nbsp;            &quot;SELECT b.brand as brand, b.category as category, SUM(oi.quantity) AS quantity, SUM(oi.quantity * oi.selling_price) AS revenue\n&quot; +
+&nbsp;                    &quot;FROM OrderPojo o\n&quot; +
+&nbsp;                    &quot;JOIN OrderItemPojo oi ON o.id = oi.order_id\n&quot; +
+&nbsp;                    &quot;JOIN ProductPojo p ON oi.product_id = p.id\n&quot; +
+&nbsp;                    &quot;JOIN BrandPojo b ON p.brand_category_id = b.id\n&quot; +
+&nbsp;                    &quot;WHERE (b.brand = :brand OR :brand = &#39;&#39; OR :brand is null) AND (b.category = :category OR :category = &#39;&#39; OR :category is null) AND o.status = &#39;invoiced&#39; AND Date(o.time) between :startDate and :endDate\n&quot; +
+&nbsp;                    &quot;GROUP BY b.brand, b.category&quot;;
 &nbsp;
-&nbsp;	@Autowired
-&nbsp;	private UserDao dao;
+&nbsp;    @PersistenceContext
+&nbsp;    private EntityManager em;
 &nbsp;
-&nbsp;	@Transactional
-&nbsp;	public void add(UserPojo p) throws ApiException {
-<b class="nc">&nbsp;		normalize(p);</b>
-<b class="nc">&nbsp;		UserPojo existing = dao.select(p.getEmail());</b>
-<b class="nc">&nbsp;		if (existing != null) {</b>
-<b class="nc">&nbsp;			throw new ApiException(&quot;User with given email already exists&quot;);</b>
-&nbsp;		}
-<b class="nc">&nbsp;		dao.insert(p);</b>
-&nbsp;	}
+&nbsp;    public List&lt;Object[]&gt; getSalesReport(LocalDate startDate, LocalDate endDate, String brand, String category){
+<b class="nc">&nbsp;        TypedQuery&lt;Object[]&gt; query = getQuery(sales_report, Object[].class);</b>
+<b class="nc">&nbsp;        Date startDateConverted = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());</b>
+<b class="nc">&nbsp;        Date endDateConverted = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;brand&quot;, brand);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;category&quot;, category);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;startDate&quot;,startDateConverted);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;endDate&quot;, endDateConverted);</b>
+<b class="nc">&nbsp;        return query.getResultList();</b>
+&nbsp;    }
 &nbsp;
-&nbsp;	@Transactional(rollbackOn = ApiException.class)
-&nbsp;	public UserPojo get(String email) throws ApiException {
-<b class="nc">&nbsp;		return dao.select(email);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	@Transactional
-&nbsp;	public List&lt;UserPojo&gt; getAll() {
-<b class="nc">&nbsp;		return dao.selectAll();</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	@Transactional
-&nbsp;	public void delete(int id) {
-<b class="nc">&nbsp;		dao.delete(id);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	protected static void normalize(UserPojo p) {
-<b class="nc">&nbsp;		p.setEmail(p.getEmail().toLowerCase().trim());</b>
-<b class="nc">&nbsp;		p.setRole(p.getRole().toLowerCase().trim());</b>
-&nbsp;	}
 &nbsp;}
 </code>
 </pre>
@@ -156,7 +138,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

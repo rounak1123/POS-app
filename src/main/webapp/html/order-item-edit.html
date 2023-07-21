@@ -12,7 +12,7 @@
 
     <h3 class="mt-2">Order Items Edit
         <button type="button" class="btn btn-info" id="place-order">Place Order</button>
-        <button type="button" class="btn btn-danger" id="delete-order">Delete Order</button>
+        <button type="button" class="btn btn-danger" id="delete-order" data-toggle="modal" data-target="#modal-confirm-sure">Delete Order</button>
     </h3>
 
     <!-- Top row with form-->
@@ -47,6 +47,25 @@
     <div class="row">
         &nbsp;
     </div>
+
+    <div>
+        <form class="form-inline fw-bold row justify-content-between ml-4 mr-4 mb-2" id="order-tem-header" style="font-size: 140%;">
+            <div class="form-group ">
+                <label class=" col-form-label fw-bold">Order Id: </label>
+                <div  id="orderId">
+                    200
+                </div>
+            </div>
+            <div class="form-group">
+                <label class=" col-form-label">Total Amount:</label>
+                <div id="totalAmount">
+                    2000.00
+                </div>
+
+            </div>
+        </form>
+    </div>
+
     <div class="row">
 
         <!-- Table -->
@@ -58,6 +77,7 @@
                     <th scope="col" name="name">Name</th>
                     <th scope="col" name="quantity">Quantity</th>
                     <th scope="col" name="sellingPrice">Selling Price</th>
+                    <th scope="col" name="total">Total</th>
                     <th scope="col" >Actions</th>
                 </tr>
                 </thead>
@@ -69,7 +89,7 @@
     </div>
 
     <!-- Item Edit Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="order-item-edit-modal">
+    <div class="modal fade" tabindex="-1" role="dialog" id="order-item-edit-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -89,14 +109,14 @@
                         <div class="form-group row">
                             <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
                             <div class="col-sm-10">
-                                <input type="number"  class="form-control" name="quantity" placeholder="enter quantity"
+                                <input type="number" min="1"class="form-control" name="quantity" placeholder="enter quantity"
                                        step="1">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputSellingPrice" class="col-sm-2 col-form-label">Selling Price (INR)</label>
                             <div class="col-sm-10">
-                                <input type="number" step="any" class="form-control" name="sellingPrice" placeholder="0.0">
+                                <input type="number" step="any" min="0.01" class="form-control" name="sellingPrice" placeholder="0.0">
                             </div>
                         </div>
                         <input type="hidden" name="id" >
@@ -110,11 +130,15 @@
         </div>
     </div>
 
+    <div th:replace="snippets.html :: modal-confirm"></div>
+
+
 </div> <!-- Container end-->
 
 <footer th:replace="snippets.html :: name_footer"></footer>
 
 <script th:src="@{/static/order-item-edit.js}"/></script>
+
 <script src="bootstrap-notify.js"></script>
 
 </body>

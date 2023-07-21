@@ -99,7 +99,7 @@ tune
 
 
 <!-- product Edit Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="edit-product-modal">
+<div class="modal fade" tabindex="-1" role="dialog" id="edit-product-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -119,7 +119,7 @@ tune
 				<div class="form-group row">
 					<label for="inputBrandEdit" class="col-sm-2 col-form-label">Brand</label>
 					<div class="col-sm-10">
-						<select id="inputBrandEdit" class="form-control" name="brand" required>
+						<select id="inputBrandEdit" class="form-control" data-width="100%" name="brand" required>
 							<option value="">Select an option</option>
 						</select>
 						<!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
@@ -128,7 +128,7 @@ tune
 				<div class="form-group row">
 					<label for="inputCategoryEdit" class="col-sm-2 col-form-label">Category</label>
 					<div class="col-sm-10">
-						<select id="inputCategoryEdit" class="form-control"  name="category" required>
+						<select id="inputCategoryEdit" class="form-control" data-width="100%" name="category" required>
 							<option value="">Select an option</option>
 						</select>
 						<!--								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->
@@ -160,7 +160,7 @@ tune
 
 
 <!-- product Upload Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="upload-product-modal">
+<div class="modal fade" tabindex="-1" role="dialog" id="upload-product-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -218,16 +218,16 @@ tune
 						<div class="form-group row">
 							<label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 							<div class="col-sm-10">
-								<select id="inputBrand" class="form-control" name="brand" required>
+								<select id="inputBrand"  name="brand" required data-width="100%">
 									<option value="">Select an option</option>
 								</select>
 <!--								<input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand Name">-->
 							</div>
 						</div>
 						<div class="form-group row">
-							<label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
+							<label for="inputCategory" class="col-sm-2 col-form-label" >Category</label>
 							<div class="col-sm-10">
-							<select id="inputCategory" class="form-control"  name="category" disabled required>
+							<select id="inputCategory" class="form-select"  name="category" disabled required data-width="100%">
 								<option value="">Select an option</option>
 							</select>
 <!--								<input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category">-->

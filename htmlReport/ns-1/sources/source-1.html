@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > BrandDto</title>
+  <title>Coverage Report > AbstractUiController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.dto</a>
+    <a href="../index.html">com.increff.pos.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: BrandDto (com.increff.pos.dto)</h1>
+<h1>Coverage Summary for Class: AbstractUiController (com.increff.pos.controller)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">BrandDto</td>
+  <td class="name">AbstractUiController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    33.3%
+    50%
   </span>
   <span class="absValue">
-    (6/18)
+    (1/2)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    18.3%
+    11.1%
   </span>
   <span class="absValue">
-    (20/109)
+    (1/9)
   </span>
 </td>
 </tr>
@@ -74,224 +74,41 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
 &nbsp;
-&nbsp;import com.increff.pos.model.BrandData;
-&nbsp;import com.increff.pos.model.BrandForm;
-&nbsp;import com.increff.pos.model.ErrorBrandData;
-&nbsp;import com.increff.pos.model.MessageData;
-&nbsp;import com.increff.pos.pojo.BrandPojo;
-&nbsp;import com.increff.pos.service.ApiException;
-&nbsp;import com.increff.pos.service.BrandService;
-&nbsp;import com.increff.pos.util.StringUtil;
-&nbsp;import com.increff.pos.util.ValidatorUtil;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Component;
-&nbsp;import org.springframework.web.bind.annotation.PathVariable;
-&nbsp;import org.springframework.web.bind.annotation.RequestBody;
-&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.servlet.ModelAndView;
 &nbsp;
-&nbsp;import java.io.*;
-&nbsp;import java.util.ArrayList;
-&nbsp;import java.util.List;
-&nbsp;import java.util.regex.Matcher;
-&nbsp;import java.util.regex.Pattern;
+&nbsp;import com.increff.pos.model.InfoData;
+&nbsp;import com.increff.pos.util.SecurityUtil;
+&nbsp;import com.increff.pos.util.UserPrincipal;
 &nbsp;
-&nbsp;@Component
-<b class="fc">&nbsp;public class BrandDto {</b>
+&nbsp;@Controller
+<b class="fc">&nbsp;public abstract class AbstractUiController {</b>
 &nbsp;
-&nbsp;    @Autowired
-&nbsp;    private BrandService service;
+&nbsp;	@Autowired
+&nbsp;	private InfoData info;
 &nbsp;
-&nbsp;//    @Autowired
-&nbsp;//    ValidatorUtil validatorUtil;
+&nbsp;	@Value(&quot;${app.baseUrl}&quot;)
+&nbsp;	private String baseUrl;
 &nbsp;
-&nbsp;    public int add(@RequestBody BrandForm form) throws ApiException {
-&nbsp;//        validatorUtil.validateFormCheck(form);
+&nbsp;	protected ModelAndView mav(String page) {
+&nbsp;		// Get current user
+<b class="nc">&nbsp;		UserPrincipal principal = SecurityUtil.getPrincipal();</b>
 &nbsp;
-<b class="fc">&nbsp;        emptyCheck(form);</b>
-<b class="fc">&nbsp;        normalize(form);</b>
-<b class="fc">&nbsp;        BrandPojo p = convert(form);</b>
-<b class="fc">&nbsp;        return service.add(p);</b>
-&nbsp;    }
-&nbsp;    public BrandData get(@PathVariable int id) throws ApiException {
-<b class="nc">&nbsp;        BrandPojo p = service.get(id);</b>
-<b class="nc">&nbsp;        return convert(p);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public List&lt;BrandData&gt; getAll() {
-<b class="nc">&nbsp;        List&lt;BrandPojo&gt; list = service.getAll();</b>
-<b class="nc">&nbsp;        List&lt;BrandData&gt; list2 = new ArrayList&lt;BrandData&gt;();</b>
-<b class="nc">&nbsp;        for (BrandPojo p : list) {</b>
-<b class="nc">&nbsp;            list2.add(convert(p));</b>
-<b class="nc">&nbsp;        }</b>
-<b class="nc">&nbsp;        list2.sort((o1, o2) -&gt; {</b>
-<b class="nc">&nbsp;            if (o1.getId() &gt; o2.getId()) return -1;</b>
-<b class="nc">&nbsp;            else return 1;</b>
-&nbsp;        });
-<b class="nc">&nbsp;        return list2;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void update(@PathVariable int id, @RequestBody BrandForm f) throws ApiException {
-<b class="nc">&nbsp;        normalize(f);</b>
-<b class="nc">&nbsp;        emptyCheck(f);</b>
-<b class="nc">&nbsp;        BrandPojo p = convert(f);</b>
-<b class="nc">&nbsp;        service.update(id, p);</b>
-&nbsp;    }
+<b class="nc">&nbsp;		info.setRole(principal == null ? &quot;&quot; : principal.getRole());</b>
+<b class="nc">&nbsp;		info.setEmail(principal == null ? &quot;&quot; : principal.getEmail());</b>
+<b class="nc">&nbsp;		info.setId(principal == null ? -1 : principal.getId());</b>
 &nbsp;
 &nbsp;
-&nbsp;    public void upload( MultipartFile file) throws ApiException{
-<b class="nc">&nbsp;        processUpload(file);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public List&lt;BrandData&gt; search(BrandForm f){
-<b class="nc">&nbsp;          List&lt;BrandPojo&gt; list =  service.search(f.getBrand(), f.getCategory());</b>
-<b class="nc">&nbsp;        List&lt;BrandData&gt; list2 = new ArrayList&lt;BrandData&gt;();</b>
-<b class="nc">&nbsp;        for (BrandPojo p : list) {</b>
-<b class="nc">&nbsp;            list2.add(convert(p));</b>
-<b class="nc">&nbsp;        }</b>
-<b class="nc">&nbsp;        list2.sort((o1, o2) -&gt; {</b>
-<b class="nc">&nbsp;            if (o1.getId() &gt; o2.getId()) return -1;</b>
-<b class="nc">&nbsp;            else return 1;</b>
-&nbsp;        });
-<b class="nc">&nbsp;        return list2;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    // CONVERSION METHODS
-&nbsp;
-&nbsp;    private  BrandData convert(BrandPojo p) {
-<b class="nc">&nbsp;        BrandData d = new BrandData();</b>
-<b class="nc">&nbsp;        d.setCategory(p.getCategory());</b>
-<b class="nc">&nbsp;        d.setBrand(p.getBrand());</b>
-<b class="nc">&nbsp;        d.setId(p.getId());</b>
-<b class="nc">&nbsp;        return d;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;
-&nbsp;    private  BrandPojo convert(BrandForm f) throws ApiException {
-<b class="fc">&nbsp;        BrandPojo p = new BrandPojo();</b>
-<b class="fc">&nbsp;        p.setBrand(f.getBrand());</b>
-<b class="fc">&nbsp;        p.setCategory(f.getCategory());</b>
-<b class="fc">&nbsp;        return p;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    // CHECKS AND NORMALIZATION FOR THE FORM.
-&nbsp;
-&nbsp;    public static void normalize(BrandForm f) throws ApiException{
-<b class="fc">&nbsp;        f.setBrand(StringUtil.toLowerCase(f.getBrand()).trim());</b>
-<b class="fc">&nbsp;        f.setCategory(StringUtil.toLowerCase(f.getCategory()).trim());</b>
-<b class="fc">&nbsp;        if(hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory()))</b>
-<b class="nc">&nbsp;            throw new ApiException(&quot;invalid character in brand or category.&quot;);</b>
-<b class="fc">&nbsp;        if(f.getBrand().length() &gt; 30 || f.getCategory().length() &gt; 30)</b>
-<b class="nc">&nbsp;            throw new ApiException(&quot;brand or category length is more than 30&quot;);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public String validate(@RequestBody BrandForm f) throws ApiException {
-<b class="nc">&nbsp;        normalize(f);</b>
-<b class="nc">&nbsp;        if(StringUtil.isEmpty(f.getBrand()) || StringUtil.isEmpty(f.getCategory()))</b>
-<b class="nc">&nbsp;            return &quot;Brand or Category empty&quot;;</b>
-&nbsp;
-<b class="nc">&nbsp;        BrandPojo p = convert(f);</b>
-<b class="nc">&nbsp;        return service.validate(p);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public static void emptyCheck(BrandForm f) throws ApiException{
-<b class="fc">&nbsp;        if(StringUtil.isEmpty(f.getBrand()))</b>
-<b class="nc">&nbsp;            throw  new ApiException(&quot;Brand field cannot be empty.&quot;);</b>
-<b class="fc">&nbsp;        if(StringUtil.isEmpty(f.getCategory()))</b>
-<b class="nc">&nbsp;            throw  new ApiException(&quot;Category cannot be empty&quot;);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public static boolean hasSpecialCharacter(String input) {
-<b class="fc">&nbsp;        String allowedCharacters = &quot;-a-zA-Z0-9_*#@!.&amp;%\\s&quot;;</b>
-<b class="fc">&nbsp;        String patternString = &quot;[^&quot; + allowedCharacters + &quot;]&quot;;</b>
-<b class="fc">&nbsp;        Pattern pattern = Pattern.compile(patternString);</b>
-<b class="fc">&nbsp;        Matcher matcher = pattern.matcher(input);</b>
-<b class="fc">&nbsp;        return matcher.find();</b>
-&nbsp;    }
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;    // FILE UPLOAD METHODS
-&nbsp;
-&nbsp;    public void processUpload(MultipartFile file) throws ApiException {
-<b class="nc">&nbsp;        List&lt;BrandForm&gt; brandList = convertTsvToForm(file);</b>
-<b class="nc">&nbsp;        List&lt;ErrorBrandData&gt; errorBrandDataList = new ArrayList&lt;&gt;();</b>
-<b class="nc">&nbsp;        int errorCount=0;</b>
-&nbsp;
-<b class="nc">&nbsp;        for(int i=0; i&lt; brandList.size();i++){</b>
-<b class="nc">&nbsp;            normalize(brandList.get(i));</b>
-<b class="nc">&nbsp;            String error = validate(brandList.get(i));</b>
-<b class="nc">&nbsp;            if(StringUtil.isEmpty(error) == false)</b>
-<b class="nc">&nbsp;                errorCount++;</b>
-<b class="nc">&nbsp;            ErrorBrandData data = new ErrorBrandData();</b>
-<b class="nc">&nbsp;            data.setBrand(brandList.get(i).getBrand());</b>
-<b class="nc">&nbsp;            data.setCategory(brandList.get(i).getCategory());</b>
-<b class="nc">&nbsp;            data.setError(error);</b>
-<b class="nc">&nbsp;            errorBrandDataList.add(data);</b>
-&nbsp;        }
-&nbsp;
-<b class="nc">&nbsp;        if(errorCount &gt; 0){</b>
-<b class="nc">&nbsp;            convertFormToTsv(errorBrandDataList);</b>
-<b class="nc">&nbsp;            throw new ApiException(&quot;Unable to upload due to invalid data&quot;);</b>
-&nbsp;        }
-&nbsp;
-<b class="nc">&nbsp;        for(int i=0; i&lt; brandList.size();i++){</b>
-<b class="nc">&nbsp;            add(brandList.get(i));</b>
-&nbsp;        }
-&nbsp;
-&nbsp;    }
-&nbsp;
-&nbsp;    private List&lt;BrandForm&gt; convertTsvToForm(MultipartFile file) throws ApiException{
-<b class="nc">&nbsp;        List&lt;BrandForm&gt; myObjects = new ArrayList&lt;&gt;();</b>
-&nbsp;        try {
-<b class="nc">&nbsp;            InputStream inputStream = file.getInputStream();</b>
-<b class="nc">&nbsp;            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));</b>
-<b class="nc">&nbsp;            int rowCount=0;</b>
-&nbsp;            String line;
-<b class="nc">&nbsp;            while ((line = reader.readLine()) != null) {</b>
-<b class="nc">&nbsp;                String[] columns = line.split(&quot;\t&quot;);</b>
-<b class="nc">&nbsp;                if(rowCount == 0) {</b>
-<b class="nc">&nbsp;                    rowCount++;</b>
-<b class="nc">&nbsp;                    continue;</b>
-&nbsp;                }
-<b class="nc">&nbsp;                if (columns.length &gt;= 2) {</b>
-<b class="nc">&nbsp;                    BrandForm myObject = new BrandForm();</b>
-<b class="nc">&nbsp;                    myObject.setBrand(columns[0]);</b>
-<b class="nc">&nbsp;                    myObject.setCategory(columns[1]);</b>
-<b class="nc">&nbsp;                    myObjects.add(myObject);</b>
-&nbsp;                }
-<b class="nc">&nbsp;            }</b>
-&nbsp;
-<b class="nc">&nbsp;            reader.close();</b>
-<b class="nc">&nbsp;        } catch (IOException e) {</b>
-<b class="nc">&nbsp;            System.out.println(&quot;Unable to convert tsvData to BrandForm&quot;);</b>
-<b class="nc">&nbsp;        }</b>
-<b class="nc">&nbsp;        return myObjects;</b>
-&nbsp;
-&nbsp;
-&nbsp;    }
-&nbsp;
-&nbsp;    private void convertFormToTsv(List&lt;ErrorBrandData&gt; errorList){
-<b class="nc">&nbsp;        String filePath = &quot;/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv&quot;; // Output file path</b>
-&nbsp;
-<b class="nc">&nbsp;        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,false))) {</b>
-&nbsp;            // Write the header row
-<b class="nc">&nbsp;            writer.write(&quot;Brand\tCategory\tError\n&quot;);</b>
-&nbsp;
-&nbsp;            // Write each object as a new row
-<b class="nc">&nbsp;            for (Object obj : errorList) {</b>
-<b class="nc">&nbsp;                if (obj instanceof ErrorBrandData) {</b>
-<b class="nc">&nbsp;                    ErrorBrandData brandData = (ErrorBrandData) obj;</b>
-<b class="nc">&nbsp;                    writer.write(brandData.getBrand() + &quot;\t&quot; + brandData.getCategory() + &quot;\t&quot;+ brandData.getError()+&quot;\n&quot;);</b>
-&nbsp;                }
-<b class="nc">&nbsp;            }</b>
-&nbsp;
-<b class="nc">&nbsp;            System.out.println(&quot;TSV file generated successfully.&quot;);</b>
-<b class="nc">&nbsp;        } catch (IOException e) {</b>
-<b class="nc">&nbsp;            System.err.println(&quot;Error writing TSV file: &quot; + e.getMessage());</b>
-<b class="nc">&nbsp;        }</b>
-&nbsp;    }
+&nbsp;		// Set info
+<b class="nc">&nbsp;		ModelAndView mav = new ModelAndView(page);</b>
+<b class="nc">&nbsp;		mav.addObject(&quot;info&quot;, info);</b>
+<b class="nc">&nbsp;		mav.addObject(&quot;baseUrl&quot;, baseUrl);</b>
+<b class="nc">&nbsp;		return mav;</b>
+&nbsp;	}
 &nbsp;
 &nbsp;}
 </code>
@@ -317,7 +134,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

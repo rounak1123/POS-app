@@ -1,11 +1,14 @@
 package com.increff.pos.service;
 
 import com.increff.pos.dao.ProductDao;
+import com.increff.pos.model.ErrorData;
+import com.increff.pos.model.ProductForm;
 import com.increff.pos.pojo.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -15,7 +18,11 @@ public class ProductService {
 	@Autowired
 	private ProductDao productDao;
 
-	@Transactional(rollbackOn = ApiException.class)
+	@Autowired
+	private ErrorData errorData;
+
+	HashMap<String,Integer> mapBarcodeCount=new HashMap<String,Integer>();
+
 	public int add(ProductPojo productPojo) throws ApiException {
 		ProductPojo oldProductPojo = productDao.getProductByBarcode(productPojo.getBarcode());
 		if(oldProductPojo!=null)
@@ -25,20 +32,21 @@ public class ProductService {
 
 	}
 
-	@Transactional(rollbackOn = ApiException.class)
 	public ProductPojo get(int id) throws ApiException {
 		return getCheck(id);
 	}
 
-	public ProductPojo getProductByBarcode(String barcode){
-		return  productDao.getProductByBarcode(barcode);
+	public ProductPojo getProductByBarcode(String barcode) throws ApiException{
+		ProductPojo productPojo =   productDao.getProductByBarcode(barcode);
+		if(productPojo == null)
+			throw new ApiException("Product with given barcode doesn't exists.");
+		return productPojo;
 	}
 
 	public List<ProductPojo> getAll() {
 		return productDao.selectAll();
 	}
 
-	@Transactional(rollbackOn  = ApiException.class)
 	public void update(int id, ProductPojo productPojo) throws ApiException {
 		ProductPojo ex = getCheck(id);
 		ex.setBarcode(productPojo.getBarcode());
@@ -48,19 +56,50 @@ public class ProductService {
 		productDao.update(ex);
 	}
 
-	public String validate(ProductPojo productPojo) throws ApiException {
+	public String validate(ProductPojo productPojo, int rowCount) throws ApiException {
 		ProductPojo oldProductPojo = productDao.getProductByBarcode(productPojo.getBarcode());
 		if(oldProductPojo != null){
-			return  "Already Exists with same barcode.";
+			errorData.addErrorMessage(rowCount,"Barcode already exists");
+			errorData.setHasErrorOnUpload(true);
 		}
 		return "";
+	}
+
+	private void createMapForBarcodeCount(List<ProductForm> productFormList){
+		for(ProductForm productForm: productFormList){
+			String barcode = productForm.getBarcode();
+
+			Integer countBarcode = mapBarcodeCount.get(barcode);
+
+			if(countBarcode == null)
+				mapBarcodeCount.put(barcode,1);
+			else mapBarcodeCount.put(barcode,countBarcode+1);
+		}
+	}
+
+	public void checkDuplicateBarcode(List<ProductForm> productFormList){
+		  int rowCount = 0;
+
+          for(ProductForm productForm: productFormList){
+			  if(mapBarcodeCount.get(productForm.getBarcode()) > 1){
+				  errorData.addErrorMessage(rowCount, "Duplicate Barcode in the file");
+				  errorData.setHasErrorOnUpload(true);
+			  }
+			  rowCount++;
+		  }
+	}
+
+	public void validateDuplicateBarcode(List<ProductForm> productFormList){
+		createMapForBarcodeCount(productFormList);
+		checkDuplicateBarcode(productFormList);
+		mapBarcodeCount.clear();
 	}
 
 	public List<Object[]> search(String brand, String category, String name, String barcode) {
 		return productDao.search(brand, category, name, barcode);
 	}
 
-	public ProductPojo getCheck(int id) throws ApiException {
+	private ProductPojo getCheck(int id) throws ApiException {
 		ProductPojo productPojo = productDao.select(id);
 		if (productPojo == null) {
 			throw new ApiException("Product with given ID does not exit, id: " + id);

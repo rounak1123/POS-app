@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > BrandService</title>
+  <title>Coverage Report > BrandDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.service</a>
+    <a href="../index.html">com.increff.pos.dao</a>
 </div>
 
-<h1>Coverage Summary for Class: BrandService (com.increff.pos.service)</h1>
+<h1>Coverage Summary for Class: BrandDao (com.increff.pos.dao)</h1>
 
 <table class="coverageStats">
 
@@ -37,55 +37,55 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">BrandService</td>
+  <td class="name">BrandDao</td>
 <td class="coverageStat">
   <span class="percent">
-    90%
+    88.9%
   </span>
   <span class="absValue">
-    (9/10)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    82.6%
+    88%
   </span>
   <span class="absValue">
-    (19/23)
+    (22/25)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">BrandService$$EnhancerBySpringCGLIB$$27d52eef</td>
+    <td class="name">BrandDao$$EnhancerBySpringCGLIB$$cf27d2fc</td>
   </tr>
   <tr>
-    <td class="name">BrandService$$EnhancerBySpringCGLIB$$27d52eef$$FastClassBySpringCGLIB$$b6ee93f8</td>
+    <td class="name">BrandDao$$EnhancerBySpringCGLIB$$cf27d2fc$$FastClassBySpringCGLIB$$a662e521</td>
   </tr>
   <tr>
-    <td class="name">BrandService$$EnhancerBySpringCGLIB$$93af11f6</td>
+    <td class="name">BrandDao$$EnhancerBySpringCGLIB$$ee0f8d77</td>
   </tr>
   <tr>
-    <td class="name">BrandService$$EnhancerBySpringCGLIB$$93af11f6$$FastClassBySpringCGLIB$$b8109f3d</td>
+    <td class="name">BrandDao$$EnhancerBySpringCGLIB$$ee0f8d77$$FastClassBySpringCGLIB$$40585890</td>
   </tr>
   <tr>
-    <td class="name">BrandService$$FastClassBySpringCGLIB$$45e56e4b</td>
+    <td class="name">BrandDao$$FastClassBySpringCGLIB$$8104a3eb</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    90%
+    88.9%
   </span>
   <span class="absValue">
-    (9/10)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    82.6%
+    88%
   </span>
   <span class="absValue">
-    (19/23)
+    (22/25)
   </span>
 </td>
 </tr>
@@ -96,74 +96,76 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dao;
 &nbsp;
-&nbsp;import com.increff.pos.dao.BrandDao;
 &nbsp;import com.increff.pos.pojo.BrandPojo;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
+&nbsp;import javax.persistence.EntityManager;
+&nbsp;import javax.persistence.PersistenceContext;
+&nbsp;import javax.persistence.Query;
+&nbsp;import javax.persistence.TypedQuery;
 &nbsp;import javax.transaction.Transactional;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;@Service
-&nbsp;@Transactional
-<b class="fc">&nbsp;public class BrandService {</b>
+&nbsp;@Repository
+<b class="fc">&nbsp;public class BrandDao extends AbstractDao {</b>
 &nbsp;
-&nbsp;	@Autowired
-&nbsp;	private BrandDao dao;
+<b class="fc">&nbsp;	private static String delete_id = &quot;delete from BrandPojo p where id=:id&quot;;</b>
+<b class="fc">&nbsp;	private static String select_id = &quot;select p from BrandPojo p where id=:id&quot;;</b>
+<b class="fc">&nbsp;	private static String select_all = &quot;select p from BrandPojo p&quot;;</b>
+<b class="fc">&nbsp;	private static String select_brand_category = &quot;select p from BrandPojo p where brand=:brand and category=:category&quot;;</b>
+<b class="fc">&nbsp;	private static String search_brand_category = &quot;select p from BrandPojo p where (:brand= &#39;&#39; or  brand=:brand)  and (:category = &#39;&#39; or category=:category)&quot;;</b>
 &nbsp;
-&nbsp;	@Transactional(rollbackOn = ApiException.class)
-&nbsp;	public int  add(BrandPojo p) throws ApiException {
-<b class="fc">&nbsp;		brandCategoryCombinationCheck(p);</b>
-<b class="fc">&nbsp;		return dao.insert(p);</b>
+&nbsp;	@PersistenceContext
+&nbsp;	private EntityManager em;
+&nbsp;
+&nbsp;	@Transactional
+&nbsp;	public int insert(BrandPojo brandPojo) {
+<b class="fc">&nbsp;		em.persist(brandPojo);</b>
+<b class="fc">&nbsp;		return brandPojo.getId();</b>
 &nbsp;	}
 &nbsp;
-&nbsp;	public BrandPojo get(int id) throws ApiException {
-<b class="fc">&nbsp;		return getCheck(id);</b>
+&nbsp;	public int delete(int id) {
+<b class="nc">&nbsp;		Query query = em.createQuery(delete_id);</b>
+<b class="nc">&nbsp;		query.setParameter(&quot;id&quot;, id);</b>
+<b class="nc">&nbsp;		return query.executeUpdate();</b>
 &nbsp;	}
 &nbsp;
-&nbsp;	public BrandPojo get(String  brand, String category) throws ApiException {
-<b class="fc">&nbsp;		return dao.select(brand,category);</b>
+&nbsp;	public BrandPojo select(int id) {
+<b class="fc">&nbsp;		TypedQuery&lt;BrandPojo&gt; query = getQuery(select_id, BrandPojo.class);</b>
+<b class="fc">&nbsp;		query.setParameter(&quot;id&quot;, id);</b>
+<b class="fc">&nbsp;		return getSingle(query);</b>
 &nbsp;	}
 &nbsp;
-&nbsp;	public List&lt;BrandPojo&gt; getAll() {
-<b class="fc">&nbsp;		return dao.selectAll();</b>
+&nbsp;	public List&lt;BrandPojo&gt; selectAll() {
+<b class="fc">&nbsp;		TypedQuery&lt;BrandPojo&gt; query = getQuery(select_all, BrandPojo.class);</b>
+<b class="fc">&nbsp;		return query.getResultList();</b>
 &nbsp;	}
 &nbsp;
-&nbsp;	public List&lt;BrandPojo&gt; search(String brand, String category) {
-<b class="fc">&nbsp;		return dao.search(brand,category);</b>
+&nbsp;	public void update(BrandPojo brandPojo) {
+<b class="fc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	public BrandPojo select(String brand, String category){
+&nbsp;
+<b class="fc">&nbsp;		TypedQuery&lt;BrandPojo&gt; query = getQuery(select_brand_category, BrandPojo.class);</b>
+<b class="fc">&nbsp;		query.setParameter(&quot;brand&quot;, brand);</b>
+<b class="fc">&nbsp;		query.setParameter(&quot;category&quot;,category);</b>
+<b class="fc">&nbsp;		return getSingle(query);</b>
+&nbsp;
 &nbsp;	}
 &nbsp;
-&nbsp;	@Transactional(rollbackOn  = ApiException.class)
-&nbsp;	public void update(int id, BrandPojo p) throws ApiException {
-<b class="fc">&nbsp;		brandCategoryCombinationCheck(p);</b>
-<b class="fc">&nbsp;		BrandPojo ex = getCheck(id);</b>
-<b class="fc">&nbsp;		ex.setCategory(p.getCategory());</b>
-<b class="fc">&nbsp;		ex.setBrand(p.getBrand());</b>
-<b class="fc">&nbsp;		dao.update(ex);</b>
+&nbsp;	public List&lt;BrandPojo&gt; search(String brand, String category){
+&nbsp;
+<b class="fc">&nbsp;		TypedQuery&lt;BrandPojo&gt; query = getQuery(search_brand_category, BrandPojo.class);</b>
+<b class="fc">&nbsp;		query.setParameter(&quot;brand&quot;, brand);</b>
+<b class="fc">&nbsp;		query.setParameter(&quot;category&quot;,category);</b>
+<b class="fc">&nbsp;		return query.getResultList();</b>
+&nbsp;
 &nbsp;	}
 &nbsp;
-&nbsp;	public BrandPojo getCheck(int id) throws ApiException {
-<b class="fc">&nbsp;		BrandPojo p = dao.select(id);</b>
-<b class="fc">&nbsp;		if (p == null) {</b>
-<b class="fc">&nbsp;			throw new ApiException(&quot;Brand with given ID does not exit, id: &quot; + id);</b>
-&nbsp;		}
-<b class="fc">&nbsp;		return p;</b>
-&nbsp;	}
 &nbsp;
-&nbsp;	public void brandCategoryCombinationCheck(BrandPojo p) throws ApiException{
-<b class="fc">&nbsp;		BrandPojo brandP = dao.select(p.getBrand(), p.getCategory());</b>
-<b class="fc">&nbsp;		if(brandP != null)</b>
-<b class="fc">&nbsp;			throw new ApiException(&quot;Brand Category combination already exists.&quot;);</b>
-&nbsp;	}
 &nbsp;
-&nbsp;	public String validate(BrandPojo p) throws ApiException{
-<b class="nc">&nbsp;		BrandPojo brandP = dao.select(p.getBrand(),p.getCategory());</b>
-<b class="nc">&nbsp;		if(brandP != null)</b>
-<b class="nc">&nbsp;			return &quot;Brand Category already exists&quot;;</b>
-<b class="nc">&nbsp;		return &quot;&quot;;</b>
-&nbsp;	}
 &nbsp;
 &nbsp;}
 </code>
@@ -189,7 +191,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

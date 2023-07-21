@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > UserDto</title>
+  <title>Coverage Report > LoginController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.dto</a>
+    <a href="../index.html">com.increff.pos.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: UserDto (com.increff.pos.dto)</h1>
+<h1>Coverage Summary for Class: LoginController (com.increff.pos.controller)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">UserDto</td>
+  <td class="name">LoginController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    11.1%
+    25%
   </span>
   <span class="absValue">
-    (1/9)
+    (1/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    2.6%
+    4.8%
   </span>
   <span class="absValue">
-    (1/38)
+    (1/21)
   </span>
 </td>
 </tr>
@@ -74,99 +74,87 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
 &nbsp;
-&nbsp;import com.increff.pos.model.UserData;
-&nbsp;import com.increff.pos.model.UserForm;
+&nbsp;import com.increff.pos.model.InfoData;
+&nbsp;import com.increff.pos.model.LoginForm;
 &nbsp;import com.increff.pos.pojo.UserPojo;
 &nbsp;import com.increff.pos.service.ApiException;
 &nbsp;import com.increff.pos.service.UserService;
-&nbsp;import com.increff.pos.util.StringUtil;
+&nbsp;import com.increff.pos.util.SecurityUtil;
+&nbsp;import com.increff.pos.util.UserPrincipal;
+&nbsp;import io.swagger.annotations.ApiOperation;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.beans.factory.annotation.Value;
-&nbsp;import org.springframework.stereotype.Component;
-&nbsp;import org.springframework.web.bind.annotation.PathVariable;
-&nbsp;import org.springframework.web.bind.annotation.RequestBody;
-&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+&nbsp;import org.springframework.security.core.Authentication;
+&nbsp;import org.springframework.security.core.authority.SimpleGrantedAuthority;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestMethod;
+&nbsp;import org.springframework.web.servlet.ModelAndView;
 &nbsp;
-&nbsp;import java.io.*;
+&nbsp;import javax.servlet.http.HttpServletRequest;
+&nbsp;import javax.servlet.http.HttpServletResponse;
+&nbsp;import javax.servlet.http.HttpSession;
 &nbsp;import java.util.ArrayList;
-&nbsp;import java.util.List;
-&nbsp;import java.util.regex.Matcher;
-&nbsp;import java.util.regex.Pattern;
+&nbsp;import java.util.Objects;
 &nbsp;
-&nbsp;@Component
-<b class="fc">&nbsp;public class UserDto {</b>
+&nbsp;@Controller
+<b class="fc">&nbsp;public class LoginController {</b>
 &nbsp;
-&nbsp;    @Autowired
-&nbsp;    private UserService service;
+&nbsp;	@Autowired
+&nbsp;	private UserService service;
+&nbsp;	@Autowired
+&nbsp;	private InfoData info;
+&nbsp;	
+&nbsp;	@ApiOperation(value = &quot;Logs in a user&quot;)
+&nbsp;	@RequestMapping(path = &quot;/session/login&quot;, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+&nbsp;	public ModelAndView login(HttpServletRequest req, LoginForm f) throws ApiException {
+<b class="nc">&nbsp;		UserPojo p = service.get(f.getEmail());</b>
+<b class="nc">&nbsp;		boolean authenticated = (p != null &amp;&amp; Objects.equals(p.getPassword(), f.getPassword()));</b>
+<b class="nc">&nbsp;		if (!authenticated) {</b>
+<b class="nc">&nbsp;			info.setMessage(&quot;Invalid username or password&quot;);</b>
+<b class="nc">&nbsp;			return new ModelAndView(&quot;redirect:/site/login&quot;);</b>
+&nbsp;		}
 &nbsp;
-&nbsp;    @Value((&quot;${app.supervisorEmail}&quot;))
-&nbsp;    private String supervisorEmail;
+&nbsp;		// Create authentication object
+<b class="nc">&nbsp;		Authentication authentication = convert(p);</b>
+&nbsp;		// Create new session
+<b class="nc">&nbsp;		HttpSession session = req.getSession(true);</b>
+&nbsp;		// Attach Spring SecurityContext to this new session
+<b class="nc">&nbsp;		SecurityUtil.createContext(session);</b>
+&nbsp;		// Attach Authentication object to the Security Context
+<b class="nc">&nbsp;		SecurityUtil.setAuthentication(authentication);</b>
 &nbsp;
-&nbsp;    public void add(@RequestBody UserForm form) throws ApiException {
-<b class="nc">&nbsp;        emptyCheck(form);</b>
-<b class="nc">&nbsp;        normalize(form);</b>
-<b class="nc">&nbsp;        UserPojo p = convert(form);</b>
-<b class="nc">&nbsp;        service.add(p);</b>
-&nbsp;    }
+<b class="nc">&nbsp;		return new ModelAndView(&quot;redirect:/ui/home&quot;);</b>
 &nbsp;
-&nbsp;    public List&lt;UserData&gt; getAll() {
-<b class="nc">&nbsp;        List&lt;UserPojo&gt; list = service.getAll();</b>
-<b class="nc">&nbsp;        List&lt;UserData&gt; list2 = new ArrayList&lt;UserData&gt;();</b>
-<b class="nc">&nbsp;        for (UserPojo p : list) {</b>
-<b class="nc">&nbsp;            list2.add(convert(p));</b>
-<b class="nc">&nbsp;        }</b>
-<b class="nc">&nbsp;        list2.sort((o1, o2) -&gt; {</b>
-<b class="nc">&nbsp;            if (o1.getId() &gt; o2.getId()) return -1;</b>
-<b class="nc">&nbsp;            else return 1;</b>
-&nbsp;        });
-<b class="nc">&nbsp;        return list2;</b>
-&nbsp;    }
+&nbsp;	}
 &nbsp;
+&nbsp;	@RequestMapping(path = &quot;/session/logout&quot;, method = RequestMethod.GET)
+&nbsp;	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) {
+<b class="nc">&nbsp;		request.getSession().invalidate();</b>
+<b class="nc">&nbsp;		return new ModelAndView(&quot;redirect:/&quot;);</b>
+&nbsp;	}
 &nbsp;
-&nbsp;    private  UserData convert(UserPojo p) {
-<b class="nc">&nbsp;        UserData d = new UserData();</b>
-<b class="nc">&nbsp;        d.setEmail(p.getEmail());</b>
-<b class="nc">&nbsp;        d.setId(p.getId());</b>
-<b class="nc">&nbsp;        return d;</b>
-&nbsp;    }
+&nbsp;	private static Authentication convert(UserPojo p) {
+&nbsp;		// Create principal
+<b class="nc">&nbsp;		UserPrincipal principal = new UserPrincipal();</b>
+<b class="nc">&nbsp;		principal.setEmail(p.getEmail());</b>
+<b class="nc">&nbsp;		principal.setId(p.getId());</b>
+<b class="nc">&nbsp;		principal.setRole(p.getRole());</b>
 &nbsp;
+&nbsp;		// Create Authorities
+<b class="nc">&nbsp;		ArrayList&lt;SimpleGrantedAuthority&gt; authorities = new ArrayList&lt;SimpleGrantedAuthority&gt;();</b>
+<b class="nc">&nbsp;		authorities.add(new SimpleGrantedAuthority(p.getRole()));</b>
+&nbsp;		// you can add more roles if required
 &nbsp;
-&nbsp;    private  UserPojo convert(UserForm f) throws ApiException {
-<b class="nc">&nbsp;        UserPojo p = new UserPojo();</b>
-<b class="nc">&nbsp;        p.setEmail(f.getEmail());</b>
-<b class="nc">&nbsp;        p.setPassword(f.getPassword());</b>
-<b class="nc">&nbsp;        if(f.getEmail() == supervisorEmail)</b>
-<b class="nc">&nbsp;            p.setRole(&quot;admin&quot;);</b>
-&nbsp;        else
-<b class="nc">&nbsp;            p.setRole(&quot;operator&quot;);</b>
-<b class="nc">&nbsp;        return p;</b>
-&nbsp;    }
+&nbsp;		// Create Authentication
+<b class="nc">&nbsp;		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, null,</b>
+&nbsp;				authorities);
+<b class="nc">&nbsp;		return token;</b>
+&nbsp;	}
 &nbsp;
-&nbsp;    // CHECKS AND NORMALIZATION FOR THE FORM.
-&nbsp;
-&nbsp;    public static void normalize(UserForm f) throws ApiException{
-<b class="nc">&nbsp;        f.setEmail(StringUtil.toLowerCase(f.getEmail()).trim());</b>
-<b class="nc">&nbsp;        f.setPassword(StringUtil.toLowerCase(f.getPassword()).trim());</b>
-<b class="nc">&nbsp;        if(hasSpecialCharacter(f.getEmail()) || hasSpecialCharacter(f.getPassword()))</b>
-<b class="nc">&nbsp;            throw new ApiException(&quot;invalid character in brand or category.&quot;);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public static void emptyCheck(UserForm f) throws ApiException{
-<b class="nc">&nbsp;        if(StringUtil.isEmpty(f.getEmail()))</b>
-<b class="nc">&nbsp;            throw  new ApiException(&quot;Email field cannot be empty.&quot;);</b>
-<b class="nc">&nbsp;        if(StringUtil.isEmpty(f.getPassword()))</b>
-<b class="nc">&nbsp;            throw  new ApiException(&quot;Password cannot be empty&quot;);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public static boolean hasSpecialCharacter(String input) {
-<b class="nc">&nbsp;        String allowedCharacters = &quot;-a-zA-Z0-9_*#@!.&amp;%\\s&quot;;</b>
-<b class="nc">&nbsp;        String patternString = &quot;[^&quot; + allowedCharacters + &quot;]&quot;;</b>
-<b class="nc">&nbsp;        Pattern pattern = Pattern.compile(patternString);</b>
-<b class="nc">&nbsp;        Matcher matcher = pattern.matcher(input);</b>
-<b class="nc">&nbsp;        return matcher.find();</b>
-&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -191,7 +179,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

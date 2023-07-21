@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
+@Transactional
 public class OrderItemDao extends AbstractDao {
 
     private static String delete_id = "delete from OrderItemPojo p where id=:id";

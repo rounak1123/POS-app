@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 @Repository
+@Transactional
 public class UserDao extends AbstractDao {
 
 	private static String select_id = "select p from UserPojo p where id=:id";

@@ -30,6 +30,7 @@ function deleteOrder(){
 }
 
 function deleteOrderItems(){
+
     var deleteOrderItemsUrl = getOrderItemUrl() + "/order/" + orderId;
 	$.ajax({
 	   url: deleteOrderItemsUrl,
@@ -82,8 +83,12 @@ function addOrderItem(event){
 }
 
 function updateOrderItem(event){
-	$('#order-item-edit-modal').modal('toggle');
 	//Get the ID
+	    var isValid = $("#order-item-edit-form")[0].checkValidity();
+                if(!isValid){
+                  $("#order-item-edit-form")[0].reportValidity();
+                     return;
+                }
 	var id = $("#order-item-edit-form input[name=id]").val();
 	var url = getOrderItemUrl() + "/" + id;
 	//Set the values to update
@@ -99,6 +104,7 @@ function updateOrderItem(event){
        },
 	   success: function(response) {
             $.notify("Updated the item","success");
+	$('#order-item-edit-modal').modal('toggle');
 
 	   		getOrderItemList();
 	   },
@@ -162,22 +168,29 @@ setStatusInvoiced(orderId);
 //UI DISPLAY METHODS
 
 function displayOrderItemList(data){
-	var $tbody = $('#order-item-table').find('tbody');
 	table.clear().draw();
+    var totalAmount = 0.0;
 
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
 		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')" class="btn btn-primary"><span class="material-symbols-outlined">border_color</span></button>'
-            buttonHtml += ' <button onclick="deleteOrderItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>'
+            buttonHtml += ' <button onclick="deleteOrderItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>';
+        var subTotal = e.quantity * e.sellingPrice;
+
+            totalAmount += subTotal;
           table.row.add([
             e.barcode,
             e.name,
             e.quantity,
-            e.sellingPrice.toFixed(2),
+            e.sellingPrice,
+            subTotal.toFixed(2),
             buttonHtml
           ]).draw();
 	}
+
+		$("#orderId").text("#"+orderId);
+    	$("#totalAmount").text(" Rs."+totalAmount.toFixed(2));
 
 }
 
@@ -246,6 +259,7 @@ function initDatatable(){
             table = $('#order-item-table').DataTable(
                     {dom: 'lrtip',
                      paging: false,
+                     "info": false,
                      scrollY: '450px',
                      scrollColapse: 'true',
                      }
@@ -259,7 +273,7 @@ function init(){
 	$('#add-order-item').click(addOrderItem);
 	$('#update-order-item').click(updateOrderItem);
 	$('#place-order').click(placeOrder);
-	$('#delete-order').click(deleteOrderItems);
+	$('#delete-button-modal').click(deleteOrderItems);
 	$('#refresh-data').click(getOrderItemList);
 
 }

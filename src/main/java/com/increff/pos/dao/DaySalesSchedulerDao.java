@@ -14,8 +14,10 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
+@Transactional
 public class DaySalesSchedulerDao extends AbstractDao {
     private static String select_all = "select p from DaySalesPojo p order by Date(p.date) desc";
+    private static String select = "select p from DaySalesPojo p where Date(p.date)=:date";
     private static String invoice_count =
             "select count(id) " +
             "from OrderPojo " +
@@ -42,26 +44,29 @@ public class DaySalesSchedulerDao extends AbstractDao {
         return query.getResultList();
     }
 
-    public long getInvoiceCount(LocalDate date){
-        Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    public DaySalesPojo select(Date date){
+        TypedQuery<DaySalesPojo> query = getQuery(select, DaySalesPojo.class);
+        query.setParameter("date", date);
+        return getSingle(query);
+    }
+
+    public long getInvoiceCount(Date date){
         TypedQuery<Long> query = getQuery(invoice_count, Long.class);
-        query.setParameter("date", convertedDate);
+        query.setParameter("date", date);
 
         return query.getSingleResult().intValue();
     }
 
-    public long getItemsCount(LocalDate date){
-        Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    public long getItemsCount(Date date){
         TypedQuery<Long> query = getQuery(items_count, Long.class);
-        query.setParameter("date", convertedDate);
+        query.setParameter("date", date);
 
         return query.getSingleResult().intValue();
     }
 
-    public double getRevenue(LocalDate date){
-        Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    public double getRevenue(Date date){
         TypedQuery<Double> query = getQuery(total_revenue, Double.class);
-        query.setParameter("date", convertedDate);
+        query.setParameter("date", date);
 
         return query.getSingleResult().doubleValue();
     }

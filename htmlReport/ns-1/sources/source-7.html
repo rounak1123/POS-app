@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ReportsDto</title>
+  <title>Coverage Report > InventoryApiController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.dto</a>
+    <a href="../index.html">com.increff.pos.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: ReportsDto (com.increff.pos.dto)</h1>
+<h1>Coverage Summary for Class: InventoryApiController (com.increff.pos.controller)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ReportsDto</td>
+  <td class="name">InventoryApiController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    20%
+    14.3%
   </span>
   <span class="absValue">
-    (1/5)
+    (1/7)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    2.9%
+    14.3%
   </span>
   <span class="absValue">
-    (1/34)
+    (1/7)
   </span>
 </td>
 </tr>
@@ -74,71 +74,66 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
 &nbsp;
-&nbsp;import com.increff.pos.model.DaySalesData;
-&nbsp;import com.increff.pos.model.SalesReportData;
-&nbsp;import com.increff.pos.model.SalesReportForm;
-&nbsp;import com.increff.pos.pojo.DaySalesPojo;
-&nbsp;import com.increff.pos.service.ReportsService;
+&nbsp;import com.increff.pos.dto.InventoryDto;
+&nbsp;import com.increff.pos.model.*;
+&nbsp;import com.increff.pos.service.ApiException;
+&nbsp;import io.swagger.annotations.Api;
+&nbsp;import io.swagger.annotations.ApiOperation;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
 &nbsp;
-&nbsp;import java.time.LocalDate;
-&nbsp;import java.util.ArrayList;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;@Component
-<b class="fc">&nbsp;public class ReportsDto {</b>
+&nbsp;@Api
+&nbsp;@RestController
+&nbsp;@RequestMapping(path = &quot;/api/inventory&quot;)
+<b class="fc">&nbsp;public class InventoryApiController {</b>
+&nbsp;
 &nbsp;
 &nbsp;    @Autowired
-&nbsp;    ReportsService service;
-&nbsp;    public List&lt;SalesReportData&gt; salesReport(SalesReportForm f){
-<b class="nc">&nbsp;        if(f.getStartDate() == &quot;&quot;)</b>
-<b class="nc">&nbsp;            f.setStartDate(&quot;1900-01-01&quot;);</b>
-<b class="nc">&nbsp;        if(f.getEndDate() == &quot;&quot;)</b>
-<b class="nc">&nbsp;            f.setEndDate(LocalDate.now().toString());</b>
+&nbsp;    private InventoryDto inventoryDto;
 &nbsp;
-<b class="nc">&nbsp;        LocalDate startDate = LocalDate.parse(f.getStartDate());</b>
-<b class="nc">&nbsp;        LocalDate endDate = LocalDate.parse(f.getEndDate());</b>
-<b class="nc">&nbsp;        String brand = f.getBrand();</b>
-<b class="nc">&nbsp;        String category = f.getCategory();</b>
-&nbsp;
-<b class="nc">&nbsp;        List&lt;Object[]&gt; obj =  service.getSalesReport(startDate,endDate,brand,category);</b>
-<b class="nc">&nbsp;        return convert(obj);</b>
+&nbsp;    @ApiOperation(value = &quot;Gets an inventory by ID&quot;)
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public InventoryData get(@PathVariable int id) throws ApiException {
+<b class="nc">&nbsp;        return inventoryDto.get(id);</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public List&lt;DaySalesData&gt; daySalesReport(){
-<b class="nc">&nbsp;        List&lt;DaySalesPojo&gt; list =  service.daySalesReport();</b>
-<b class="nc">&nbsp;        return convertToDaySalesData(list);</b>
+&nbsp;    @ApiOperation(value = &quot;Gets list of all inventory&quot;)
+&nbsp;    @GetMapping
+&nbsp;    public List&lt;InventoryData&gt; getAll() throws ApiException {
+<b class="nc">&nbsp;        return inventoryDto.getAll();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public List&lt;DaySalesData&gt; convertToDaySalesData(List&lt;DaySalesPojo&gt; list){
-<b class="nc">&nbsp;        List&lt;DaySalesData&gt; listData = new ArrayList&lt;&gt;();</b>
-<b class="nc">&nbsp;        for(DaySalesPojo p: list){</b>
-<b class="nc">&nbsp;            DaySalesData data = new DaySalesData();</b>
-<b class="nc">&nbsp;            data.setTotalRevenue(p.getTotal_revenue());</b>
-<b class="nc">&nbsp;            data.setInvoicedItemsCount(p.getInvoiced_items_count());</b>
-<b class="nc">&nbsp;            data.setInvoicedOrdersCount(p.getInvoiced_items_count());</b>
-<b class="nc">&nbsp;            data.setDate(p.getDate().toString());</b>
-<b class="nc">&nbsp;            listData.add(data);</b>
-<b class="nc">&nbsp;        }</b>
-<b class="nc">&nbsp;        return listData;</b>
-&nbsp;    }
-&nbsp;    public List&lt;SalesReportData&gt;  convert(List&lt;Object[]&gt; objList){
-<b class="nc">&nbsp;        System.out.println(&quot;object list length&quot;+objList.toArray().length);</b>
-<b class="nc">&nbsp;        List&lt;SalesReportData&gt; list = new ArrayList&lt;&gt;();</b>
-<b class="nc">&nbsp;        for(Object[] obj : objList){</b>
-<b class="nc">&nbsp;            SalesReportData data = new SalesReportData();</b>
-<b class="nc">&nbsp;            data.setBrand((String) obj[0]);</b>
-<b class="nc">&nbsp;            data.setCategory((String) obj[1]);</b>
-<b class="nc">&nbsp;            data.setQuantity((Long) obj[2]);</b>
-<b class="nc">&nbsp;            data.setRevenue((Double) obj[3]);</b>
-<b class="nc">&nbsp;            list.add(data);</b>
-<b class="nc">&nbsp;        }</b>
 &nbsp;
-<b class="nc">&nbsp;        return list;</b>
+&nbsp;    @ApiOperation(value = &quot;Update existing inventory&quot;)
+&nbsp;    @PutMapping(&quot;/{id}&quot;)
+&nbsp;    public void update(@PathVariable int id, @RequestBody InventoryForm inventoryForm) throws ApiException {
+<b class="nc">&nbsp;        inventoryDto.update(id,inventoryForm);</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;upload tsv from UI&quot;)
+&nbsp;    @PostMapping(&quot;/upload&quot;)
+&nbsp;    public void upload(@RequestParam(value=&quot;file&quot;) MultipartFile file) throws ApiException{
+<b class="nc">&nbsp;        inventoryDto.upload(file);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value= &quot;inventory report&quot;)
+&nbsp;    @PostMapping(&quot;/report&quot;)
+&nbsp;    public List&lt;InventoryReportData&gt; getReports(@RequestBody BrandForm brandForm) throws ApiException {
+<b class="nc">&nbsp;        return inventoryDto.getReports(brandForm);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value= &quot;search inventory data&quot;)
+&nbsp;    @PostMapping(&quot;/search&quot;)
+&nbsp;    public List&lt;InventoryData&gt; search(@RequestBody InventorySearchForm inventorySearchForm) throws ApiException {
+<b class="nc">&nbsp;        return inventoryDto.search(inventorySearchForm);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -163,7 +158,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

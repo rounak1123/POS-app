@@ -43,7 +43,7 @@ public class InventoryService {
         inventoryDao.update(oldInventoryPojo);
     }
 
-    public InventoryPojo getCheck(int id) throws ApiException {
+    private InventoryPojo getCheck(int id) throws ApiException {
         InventoryPojo inventoryPojo = inventoryDao.select(id);
         return inventoryPojo;
     }

@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter @Setter
 public class OrderItemForm {
     private String barcode;
-    private double sellingPrice;
-    private int quantity;
-    private int orderId;
+    private String sellingPrice;
+    private String quantity;
+    private String orderId;
 }

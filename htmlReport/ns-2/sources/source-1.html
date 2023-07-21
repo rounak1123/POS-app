@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ApiException</title>
+  <title>Coverage Report > AbstractDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.service</a>
+    <a href="../index.html">com.increff.pos.dao</a>
 </div>
 
-<h1>Coverage Summary for Class: ApiException (com.increff.pos.service)</h1>
+<h1>Coverage Summary for Class: AbstractDao (com.increff.pos.dao)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ApiException</td>
+  <td class="name">AbstractDao</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -54,7 +54,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (1/1)
+    (4/4)
   </span>
 </td>
 <td class="coverageStat">
@@ -62,7 +62,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (1/1)
+    (4/4)
   </span>
 </td>
 </tr>
@@ -74,17 +74,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.service;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dao;
 &nbsp;
-&nbsp;import java.util.ArrayList;
-&nbsp;import java.util.List;
+&nbsp;import javax.persistence.EntityManager;
+&nbsp;import javax.persistence.PersistenceContext;
+&nbsp;import javax.persistence.TypedQuery;
 &nbsp;
-&nbsp;public class ApiException extends Exception {
-&nbsp;
-&nbsp;	private static final long serialVersionUID = 1L;
+<b class="fc">&nbsp;public abstract class AbstractDao {</b>
 &nbsp;	
-&nbsp;	public ApiException(String str) {
-<b class="fc">&nbsp;		super(str);</b>
+&nbsp;	@PersistenceContext
+&nbsp;	private EntityManager em;
+&nbsp;
+&nbsp;	protected &lt;T&gt; T getSingle(TypedQuery&lt;T&gt; query) {
+<b class="fc">&nbsp;		return query.getResultList().stream().findFirst().orElse(null);</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	protected &lt;T&gt; TypedQuery&lt;T&gt; getQuery(String jpql, Class&lt;T&gt; clazz) {
+<b class="fc">&nbsp;		return em.createQuery(jpql, clazz);</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	protected EntityManager em() {
+<b class="fc">&nbsp;		return em;</b>
 &nbsp;	}
 &nbsp;
 &nbsp;}
@@ -111,7 +121,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-10 13:32</div>
+    <div style="float:right;">generated on 2023-07-17 13:04</div>
 </div>
 </body>
 </html>

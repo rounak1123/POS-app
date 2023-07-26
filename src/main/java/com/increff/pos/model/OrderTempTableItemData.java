@@ -6,4 +6,5 @@ import lombok.Setter;
 @Getter @Setter
 public class OrderTempTableItemData extends OrderTempTableItemForm{
     private int id;
+    private String name;
 }

@@ -1,7 +1,9 @@
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/ProductDtoTest.java
+/Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/ReportsDtoTest.java
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/InventoryDtoTest.java
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/BrandDtoTest.java
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/AbstractUnitTest.java
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/QaConfig.java
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/constructorUtil/FormConstructor.java
 /Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/OrderDtoTest.java
+/Users/rounakagrawal/Desktop/POS/POS_Application/src/test/java/com/increff/pos/dto/UserDtoTest.java

@@ -93,6 +93,29 @@ public class InventoryDtoTest extends AbstractUnitTest{
         assertEquals(inventoryData.getQuantity(), "2000");
     }
 
+    @Test(expected = ApiException.class)
+    public void testInvalidUploadInventory() throws ApiException, IOException {
+        FileInputStream fileBrand = new FileInputStream(new File("src/test/resources/com/increff/pos/brandUploadTest.tsv"));
+        String nameBrand = "brandUploadTest.tsv";
+
+        MultipartFile resultBrand = new MockMultipartFile(nameBrand, fileBrand);
+        brandDto.upload(resultBrand);
+        FileInputStream fileProduct = new FileInputStream(new File("src/test/resources/com/increff/pos/productUploadTest.tsv"));
+        String nameProduct = "productUploadTest.tsv";
+
+        MultipartFile resultProduct = new MockMultipartFile(nameProduct, fileProduct);
+        productDto.upload(resultProduct);
+
+        FileInputStream file = new FileInputStream(new File("src/test/resources/com/increff/pos/inventory-invalid.tsv"));
+        String name = "inventory-invalid.tsv";
+
+        MultipartFile result = new MockMultipartFile(name, file);
+        dto.upload(result);
+        InventoryData inventoryData = getInventoryData("234423423");
+
+        assertEquals(inventoryData.getQuantity(), "2000");
+    }
+
     public ProductData getProductData(String barcode) throws ApiException {
         List<ProductData> productDataList = productDto.getAll();
         for(ProductData product: productDataList){

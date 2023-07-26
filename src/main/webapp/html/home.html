@@ -1,39 +1,132 @@
 <!doctype html>
 
 <html lang="en">
+<head>
+	<link rel="stylesheet" th:href="@{/static/home.css}">
 
-<head th:replace="snippets.html :: name_head"></head>
+</head>
+<head th:replace="snippets.html :: name_head">
+</head>
 
 <body>
 
 <nav th:replace="snippets.html :: site_nav_bar_imp"></nav>
 
 <div class="container">
- <!-- Top row with form-->
-<div class="row">
-	<div class="col-2">
-<!--		<a th:href="@{/ui/brand}" title="Brand"> Brand </i> </a>-->
-<!--	</div>-->
-<!--	<div class="col-2">-->
-<!--	 	<a th:href="@{/ui/employee}" title="Employees"> <i class="fas fa-users"></i> </a>-->
-<!--	 </div>	-->
-<!--	 <div class="col-2">-->
-<!--	 	<a th:href="@{/ui/admin}" title="Admin"> <i class="fas fa-cog"></i> </a>-->
-	 </div>	
-</div>
-	<div >
-		<img class="home-image" src="https://img.freepik.com/free-vector/scan-pay-concept-illustration_114360-7455.jpg?w=1380&t=st=1687713854~exp=1687714454~hmac=efba54b06e769ac17d93aaceaf45edf3357c9ca39a190d51a3363c967808e2aa">
-	</div>
-	<div class="home-description">
-		Take Control of Your Sales and Inventory like Never Before!
+	<div class="d-flex align-items-center justify-content-between mb-4">
+		<div class="home-description">
+			Take Control of Your Sales and Inventory like Never Before!
+		</div>
+		<img class="home-image" src="https://img.freepik.com/free-vector/scan-pay-concept-illustration_114360-7455.jpg?w=1380&amp;t=st=1687713854~exp=1687714454~hmac=efba54b06e769ac17d93aaceaf45edf3357c9ca39a190d51a3363c967808e2aa">
+
 
 	</div>
+	<div class="row mt-4 justify-content-center">
+		<div class="col-md-4 mt-2 mb-2">
+		<h2 class="text-center">Our Services</h2>
+			<hr>
 
+		</div>
+	</div>
+	<div class="row justify-content-center mb-4">
+		<div class="col-md-4 mt-4">
+			<h4 class="text-center"><strong>Brands</strong></h4>
+			<hr>
+			<a >
+			<div class="profile-card-4 text-center"><img src="https://img.freepik.com/free-vector/product-brand-building-corporate-identity-design-studio-designers-flat-characters-teamwork-cooperation-collaboration-company-name-concept-illustration_335657-1722.jpg?size=626&amp;ext=jpg&amp;ga=GA1.1.294826523.1690125524&amp;semt=sph" class="img img-fluid">
+				<div class="profile-content">
 
+					<div class="profile-description">Your brand, our passion – together, we create a fashion. Here, You can manage brands and their categories!</div>
+					<a th:href="@{/ui/brand}"><button class="btn btn-success mt-2">Handle Brand Details</button> </a>
+				</div>
+			</div>
+			</a>
+		</div>
+		<div class="col-md-4 mt-4" >
+			<h4 class="text-center"><strong>Product</strong></h4>
+			<hr>
+			<a >
+			<div class="profile-card-4 text-center"><img src="https://img.freepik.com/free-vector/men-accessories-icon-set_1284-20849.jpg?size=626&amp;ext=jpg&amp;ga=GA1.1.294826523.1690125524&amp;semt=sph" class="img img-fluid">
+				<div class="profile-content">
+
+					<div class="profile-description">Crafted for You: Elevating Your Lifestyle. Manage Product details here!</div>
+					<a th:href="@{/ui/product}"><button class="btn btn-success mt-2">Manage Product Details</button> </a>
+
+				</div>
+			</div>
+			</a>
+		</div>
+
+		<div class="col-md-4 mt-4">
+			<h4 class="text-center"><strong>Manage Inventory</strong></h4>
+			<hr>
+			<a >
+
+			<div class="profile-card-4 text-center"><img src="https://img.freepik.com/free-vector/checking-boxes-concept-illustration_114360-2429.jpg?size=626&amp;ext=jpg&amp;ga=GA1.1.294826523.1690125524&amp;semt=sph" class="img img-fluid">
+				<div class="profile-content">
+
+					<div class="profile-description">Your Inventory, Our Expertise: Together, We Thrive. Manage your inventory with a click!</div>
+					<a th:href="@{/ui/inventory}"><button class="btn btn-success mt-2">Control Inventory</button> </a>
+
+				</div>
+			</div>
+			</a>
+		</div>
+		<div class="col-md-4 mt-4" >
+			<h4 class="text-center"><strong>Orders</strong></h4>
+			<hr>
+			<div class="profile-card-4 text-center"><img src="https://img.freepik.com/free-vector/cash-payment-concept-illustration_114360-2771.jpg?size=626&amp;ext=jpg&amp;ga=GA1.1.294826523.1690125524&amp;semt=ais" class="img img-fluid">
+				<div class="profile-content">
+
+					<div class="profile-description">Efficient Orders, Happy Customers: The Key to Lasting Relationships.</div>
+                    <a th:href="@{/ui/order/new}"><button class="btn btn-success mt-2">Create Order!</button> </a>
+					<a th:href="@{/ui/order/view}"><button class="btn btn-info mt-2">View Orders</button> </a>
+				</div>
+			</div>
+		</div>
+		<div th:if="${info.getRole() == 'admin'}" class="col-md-4 mt-4">
+			<h4 class="text-center"><strong>Reports</strong></h4>
+			<hr>
+			<div class="profile-card-4 text-center"><img src="https://img.freepik.com/free-vector/businessman-holding-pencil-big-complete-checklist-with-tick-marks_1150-35019.jpg?size=626&amp;ext=jpg&amp;ga=GA1.2.294826523.1690125524&amp;semt=sph" class="img img-fluid">
+				<div class="profile-content">
+
+					<div class="profile-description">Insights at a Glance: Unveiling the Power of Reports.</div>
+					<a th:href="@{/ui/report/brand}"><button class="btn btn-success mt-2">Brand Report</button> </a>
+					<a th:href="@{/ui/report/inventory}"><button class="btn btn-info mt-2">Inventory Report</button> </a>
+
+				</div>
+			</div>
+		</div>
+		<div th:if="${info.getRole() == 'admin'}" class="col-md-4 mt-4">
+			<h4 class="text-center"><strong>Sales Report</strong></h4>
+			<hr>
+			<div class="profile-card-4 text-center"><img src="https://img.freepik.com/premium-vector/color-modern-illustration-data-analysis_145666-902.jpg?size=626&amp;ext=jpg&amp;ga=GA1.2.294826523.1690125524&amp;semt=sph" class="img img-fluid">
+				<div class="profile-content">
+					<div class="profile-description">Sales Insights Unleashed: Your Path to Profitability.</div>
+					<a th:href="@{/ui/report/sales}"><button class="btn btn-success mt-2">Sales Report</button> </a>
+					<a th:href="@{/ui/report/day-sales}"><button class="btn btn-info mt-2">Day Sales Report</button> </a>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </div> <!-- Container end-->
 <script>
 	    var user_role = '[[${info.getRole()}]]';
+      // Scrolling Effect
+
+      $(window).on("scroll", function() {
+            if($(window).scrollTop()) {
+                  $('nav').addClass('black');
+            }
+
+            else {
+                  $('nav').removeClass('black');
+            }
+      })
+
+
+      </script>
 </script>
 <footer th:replace="snippets.html :: name_footer"></footer>
 

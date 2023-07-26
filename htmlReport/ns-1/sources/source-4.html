@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > BrandApiController</title>
+  <title>Coverage Report > OrderItemDto</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.controller</a>
+    <a href="../index.html">com.increff.pos.dto</a>
 </div>
 
-<h1>Coverage Summary for Class: BrandApiController (com.increff.pos.controller)</h1>
+<h1>Coverage Summary for Class: OrderItemDto (com.increff.pos.dto)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">BrandApiController</td>
+  <td class="name">OrderItemDto</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    14.3%
+    69.2%
   </span>
   <span class="absValue">
-    (1/7)
+    (9/13)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    14.3%
+    67.2%
   </span>
   <span class="absValue">
-    (1/7)
+    (45/67)
   </span>
 </td>
 </tr>
@@ -74,66 +74,145 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
 &nbsp;
-&nbsp;import com.increff.pos.dto.BrandDto;
-&nbsp;import com.increff.pos.model.BrandData;
-&nbsp;import com.increff.pos.model.BrandForm;
+&nbsp;import com.increff.pos.model.OrderItemData;
+&nbsp;import com.increff.pos.model.OrderItemForm;
+&nbsp;import com.increff.pos.pojo.OrderItemPojo;
+&nbsp;import com.increff.pos.pojo.ProductPojo;
 &nbsp;import com.increff.pos.service.ApiException;
-&nbsp;import io.swagger.annotations.Api;
-&nbsp;import io.swagger.annotations.ApiOperation;
+&nbsp;import com.increff.pos.service.OrderItemService;
+&nbsp;import com.increff.pos.service.flow.OrderItemFlowService;
+&nbsp;import com.increff.pos.util.StringUtil;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.web.bind.annotation.*;
-&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import org.springframework.stereotype.Component;
 &nbsp;
+&nbsp;import java.text.DecimalFormat;
+&nbsp;import java.util.ArrayList;
 &nbsp;import java.util.List;
+&nbsp;import java.util.regex.Pattern;
 &nbsp;
-&nbsp;@Api
-&nbsp;@RestController
-&nbsp;@RequestMapping(path= &quot;/api/brand&quot;)
-<b class="fc">&nbsp;public class BrandApiController {</b>
+&nbsp;@Component
+<b class="fc">&nbsp;public class OrderItemDto {</b>
 &nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrderItemService orderItemService;
 &nbsp;
-&nbsp;	@Autowired
-&nbsp;	private BrandDto brandDto;
+&nbsp;    @Autowired
+&nbsp;    private OrderItemFlowService orderItemFlowService;
 &nbsp;
-&nbsp;	@ApiOperation(value = &quot;Adds an brand&quot;)
-&nbsp;	@PostMapping
-&nbsp;	public int add(@RequestBody BrandForm brandForm) throws ApiException {
-<b class="nc">&nbsp;		return brandDto.add(brandForm);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	@ApiOperation(value = &quot;Gets an brand by ID&quot;)
-&nbsp;	@GetMapping(&quot;/{id}&quot;)
-&nbsp;	public BrandData get(@PathVariable int id) throws ApiException {
-<b class="nc">&nbsp;		return brandDto.get(id);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	@ApiOperation(value = &quot;Gets list of all brands&quot;)
-&nbsp;	@GetMapping
-&nbsp;	public List&lt;BrandData&gt; getAll() {
-<b class="nc">&nbsp;		return brandDto.getAll();</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	@ApiOperation(value = &quot;Updates an brand&quot;)
-&nbsp;	@PutMapping(&quot;/{id}&quot;)
-&nbsp;	public void update(@PathVariable int id, @RequestBody BrandForm brandForm) throws ApiException {
-<b class="nc">&nbsp;		brandDto.update(id,brandForm);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;    @ApiOperation(value = &quot;upload tsv from UI&quot;)
-&nbsp;	@PostMapping(&quot;/upload&quot;)
-&nbsp;    public void upload(@RequestParam(value=&quot;file&quot;) MultipartFile file) throws ApiException{
-<b class="nc">&nbsp;		 brandDto.upload(file);</b>
-&nbsp;	}
-&nbsp;
-&nbsp;	@ApiOperation(value = &quot;Search based on brand and category.&quot;)
-&nbsp;	@PostMapping(&quot;/search&quot;)
-&nbsp;	public List&lt;BrandData&gt; search(@RequestBody BrandForm brandForm) throws ApiException{
-<b class="nc">&nbsp;		return brandDto.filterBrandCategory(brandForm);</b>
-&nbsp;	}
+&nbsp;    public void add(OrderItemForm orderItemForm) throws ApiException {
+<b class="nc">&nbsp;        normalize(orderItemForm);</b>
+<b class="nc">&nbsp;        emptyCheck(orderItemForm);</b>
+<b class="nc">&nbsp;        invalidCharacterAndLengthCheck(orderItemForm);</b>
+<b class="nc">&nbsp;        OrderItemPojo newOrderItemPojo = convertOrderItemFormToOrderItemPojo(orderItemForm);</b>
+<b class="nc">&nbsp;        orderItemFlowService.add(newOrderItemPojo);</b>
+&nbsp;    }
 &nbsp;
 &nbsp;
+&nbsp;    public void delete(int id) throws ApiException {
+<b class="nc">&nbsp;        orderItemFlowService.delete(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void deleteAll(int orderId) throws ApiException {
+<b class="fc">&nbsp;        List&lt;OrderItemPojo&gt; orderItemPojoList = orderItemService.getAll(orderId);</b>
+<b class="fc">&nbsp;        for(OrderItemPojo orderItemPojo: orderItemPojoList){</b>
+<b class="nc">&nbsp;            delete(orderItemPojo.getId());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderItemData get(int id) throws ApiException {
+<b class="nc">&nbsp;        OrderItemPojo orderItemPojo = orderItemService.get(id);</b>
+<b class="nc">&nbsp;        return convertOrderItemPojoToOrderItemData(orderItemPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;OrderItemData&gt; getAll(int orderId) throws ApiException {
+<b class="fc">&nbsp;        List&lt;OrderItemPojo&gt; orderItemPojoList = orderItemService.getAll(orderId);</b>
+<b class="fc">&nbsp;        List&lt;OrderItemData&gt; orderItemDataList = new ArrayList&lt;OrderItemData&gt;();</b>
+<b class="fc">&nbsp;        for (OrderItemPojo orderItemPojo : orderItemPojoList) {</b>
+<b class="fc">&nbsp;            orderItemDataList.add(convertOrderItemPojoToOrderItemData(orderItemPojo));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return orderItemDataList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update(int id, OrderItemForm orderItemForm) throws ApiException {
+<b class="fc">&nbsp;        normalize(orderItemForm);</b>
+<b class="fc">&nbsp;        emptyCheck(orderItemForm);</b>
+<b class="fc">&nbsp;        invalidCharacterAndLengthCheck(orderItemForm);</b>
+<b class="fc">&nbsp;        OrderItemPojo newOrderItemPojo = convertOrderItemFormToOrderItemPojo(orderItemForm);</b>
+<b class="fc">&nbsp;        orderItemFlowService.update(id, newOrderItemPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addAll(List&lt;OrderItemForm&gt; orderItemFormList) throws ApiException {
+<b class="nc">&nbsp;        for(OrderItemForm orderItemForm: orderItemFormList){</b>
+<b class="nc">&nbsp;            add(orderItemForm);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // CONVERSION
+&nbsp;
+&nbsp;    private  OrderItemData convertOrderItemPojoToOrderItemData(OrderItemPojo orderItemPojo) throws ApiException {
+<b class="fc">&nbsp;        OrderItemData orderItemData = new OrderItemData();</b>
+<b class="fc">&nbsp;        ProductPojo productPojo = orderItemFlowService.getProductByProductId(orderItemPojo.getProduct_id());</b>
+&nbsp;
+<b class="fc">&nbsp;        orderItemData.setQuantity(String.valueOf(orderItemPojo.getQuantity()));</b>
+<b class="fc">&nbsp;        orderItemData.setSellingPrice(String.valueOf(orderItemPojo.getSelling_price()));</b>
+<b class="fc">&nbsp;        orderItemData.setId(orderItemPojo.getId());</b>
+<b class="fc">&nbsp;        orderItemData.setBarcode(productPojo.getBarcode());</b>
+<b class="fc">&nbsp;        orderItemData.setName(productPojo.getName());</b>
+<b class="fc">&nbsp;        return orderItemData;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private  OrderItemPojo convertOrderItemFormToOrderItemPojo(OrderItemForm orderItemForm) throws ApiException{
+<b class="fc">&nbsp;        normalize(orderItemForm);</b>
+<b class="fc">&nbsp;        OrderItemPojo orderItemPojo = new OrderItemPojo();</b>
+<b class="fc">&nbsp;        int productId = orderItemFlowService.getProductByBarcode(orderItemForm.getBarcode()).getId();</b>
+<b class="fc">&nbsp;        orderItemPojo.setProduct_id(productId);</b>
+<b class="fc">&nbsp;        orderItemPojo.setQuantity(Integer.valueOf(orderItemForm.getQuantity()));</b>
+<b class="fc">&nbsp;        orderItemPojo.setSelling_price(Double.valueOf(orderItemForm.getSellingPrice()));</b>
+<b class="fc">&nbsp;        orderItemPojo.setOrder_id(Integer.valueOf(orderItemForm.getOrderId()));</b>
+&nbsp;
+<b class="fc">&nbsp;        return orderItemPojo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // NORMALIZATION AND CHECKS
+&nbsp;
+&nbsp;    public static void normalize(OrderItemForm orderItemForm){
+<b class="fc">&nbsp;        DecimalFormat df=new DecimalFormat(&quot;#.##&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        orderItemForm.setBarcode(StringUtil.toLowerCase(orderItemForm.getBarcode()));</b>
+<b class="fc">&nbsp;        orderItemForm.setOrderId(StringUtil.trimZeros(StringUtil.toLowerCase(orderItemForm.getOrderId())));</b>
+<b class="fc">&nbsp;        orderItemForm.setQuantity(StringUtil.trimZeros(StringUtil.toLowerCase(orderItemForm.getQuantity())));</b>
+<b class="fc">&nbsp;        orderItemForm.setSellingPrice(StringUtil.trimZeros(StringUtil.toLowerCase(orderItemForm.getSellingPrice())));</b>
+<b class="fc">&nbsp;        orderItemForm.setSellingPrice(df.format(Double.valueOf(orderItemForm.getSellingPrice())));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void emptyCheck(OrderItemForm orderItemForm) throws ApiException{
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderItemForm.getBarcode()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Barcode cannot be empty.&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderItemForm.getOrderId()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;OrderId cannot be empty.&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderItemForm.getQuantity()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Quantity cannot be empty.&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderItemForm.getSellingPrice()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Selling Price cannot be empty.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public static void invalidCharacterAndLengthCheck(OrderItemForm orderItemForm) throws ApiException {
+<b class="fc">&nbsp;        if(StringUtil.isValidInteger(orderItemForm.getQuantity()) == false || Integer.valueOf(orderItemForm.getQuantity()) &lt; 1)</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Invalid Quantity&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isValidDouble(orderItemForm.getSellingPrice()) == false)</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid Selling Price&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isValidInteger(orderItemForm.getOrderId()) == false)</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid OrderId&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(orderItemForm.getBarcode()))</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid character in barcode, Special characters allowed are &#39;_$&amp;*#@!.&amp;%-&#39;&quot;);</b>
+<b class="fc">&nbsp;        if(orderItemForm.getBarcode().length() &gt; 30)</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Barcode length can&#39;t more than 30&quot;);</b>
+&nbsp;
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -158,7 +237,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-17 13:04</div>
+    <div style="float:right;">generated on 2023-07-26 21:27</div>
 </div>
 </body>
 </html>

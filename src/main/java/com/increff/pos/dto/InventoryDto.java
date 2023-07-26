@@ -29,8 +29,11 @@ public class InventoryDto {
     @Autowired
     private InventoryFlowService inventoryFlowService;
 
-    @Value("${app.errorFilePath}")
+    @Value("${error.errorFilePath}")
     private String outputErrorFilePath;
+
+    @Value("${error.errorFileDirectory}")
+    private String outputErrorFileDirectory;
 
     @Autowired
     private ErrorData errorData;
@@ -72,8 +75,10 @@ public class InventoryDto {
     public void upload( MultipartFile file) throws ApiException{
         List<InventoryForm> inventoryFormList = convertTsvToInventoryFormList(file);
 
-        if(inventoryFormList.isEmpty())
+        if(inventoryFormList.isEmpty()) {
+            addErrorMessageToFile("Cannot upload no inventory data in the table.");
             throw new ApiException("Cannot upload, no inventory data in the table.");
+        }
         normalizeInventoryFormList(inventoryFormList);
         processInventoryFormList(inventoryFormList);
     }
@@ -150,44 +155,34 @@ public class InventoryDto {
             throw  new ApiException("Empty data entered");
         if(inventoryForm.getBarcode().length() > 30 )
             throw new ApiException("Length of barcode can't be more than 30");
-        if(StringUtil.isValidInteger(inventoryForm.getQuantity()) == false)
+        if(StringUtil.isValidInteger(inventoryForm.getQuantity()) == false )
             throw new ApiException("Invalid Quantity");
 
-        if(hasSpecialCharacter(inventoryForm.getBarcode()))
-            throw  new ApiException("Invalid character in barcode");
+        if(StringUtil.hasSpecialCharacter(inventoryForm.getBarcode()))
+            throw  new ApiException("Invalid character in barcode, Special characters allowed are '_$&*#@!.&%-'");
     }
 
-    public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-
-        return pattern.matcher(input).matches();
-    }
 
     // FILE UPLOAD METHODS
 
     private void validate(InventoryForm inventoryForm, int rowCount){
 
         if(StringUtil.isEmpty(inventoryForm.getBarcode())) {
-            errorData.addErrorMessage(rowCount,"invalid or empty barcode" );
-            errorData.setHasErrorOnUpload(true);
+            errorData.addErrorMessage(rowCount,"Invalid or empty barcode" );
         }
-        if(StringUtil.isEmpty(inventoryForm.getQuantity()) || StringUtil.isValidInteger(inventoryForm.getQuantity()) == false){
-            errorData.addErrorMessage(rowCount,"invalid or empty quantity" );
-            errorData.setHasErrorOnUpload(true);
+        if(StringUtil.isEmpty(inventoryForm.getQuantity()) || StringUtil.isValidInteger(inventoryForm.getQuantity()) == false || Integer.valueOf(inventoryForm.getQuantity()) < 1){
+            errorData.addErrorMessage(rowCount,"Invalid or empty quantity" );
         }
 
         try{
             inventoryFlowService.getProductByBarcode(inventoryForm.getBarcode());
         }catch (ApiException exception){
             errorData.addErrorMessage(rowCount, exception.getMessage());
-            errorData.setHasErrorOnUpload(true);
 
         }
     }
 
-    private static List<InventoryForm> convertTsvToInventoryFormList(MultipartFile file) throws ApiException{
+    private List<InventoryForm> convertTsvToInventoryFormList(MultipartFile file) throws ApiException{
         try {
             List<InventoryForm> inventoryFormList = new ArrayList<>();
             InputStream inputStream = file.getInputStream();
@@ -215,7 +210,7 @@ public class InventoryDto {
         }
     }
 
-    private static void checkValidTsv(String[] columns) throws ApiException{
+    private void checkValidTsv(String[] columns) throws ApiException{
 
         for(int i=0;i<columns.length;i++){
             String columnName = columns[i].toLowerCase().trim();
@@ -223,16 +218,27 @@ public class InventoryDto {
             if(columnName.equals("barcode") || columnName.equals("quantity")){
                 mapColumn.put(i,columnName);
             }else if (columns[i] != ""){
+                addErrorMessageToFile("Invalid tsv format for upload check the sample file once.");
                 throw new ApiException("Invalid tsv format for upload, check the sample file once.");
             }
         }
-        if(mapColumn.size() != 2)
+        if(mapColumn.size() != 2) {
+            addErrorMessageToFile("Invalid tsv format for upload check the sample file once.");
             throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+        }
+    }
+
+    private void addErrorMessageToFile(String errorMessage) throws ApiException{
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+"/inventory-upload-error.tsv",false))) {
+            writer.write("Error:\t"+errorMessage+"\n");
+        } catch (IOException e) {
+            throw new ApiException("Error writing TSV file: " + e.getMessage());
+        }
     }
 
     private void convertFormToErrorFileTsv(List<InventoryForm> inventoryFormList){
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFilePath,false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+"/inventory-upload-error.tsv",false))) {
             // Write the header row
             writer.write("Barcode\tQuantity\tError\n");
             for(int i=0;i<inventoryFormList.size();i++){
@@ -260,6 +266,11 @@ public class InventoryDto {
     }
 
     private void processInventoryFormList(List<InventoryForm> inventoryFormList) throws ApiException{
+
+        if(inventoryFormList.size() > 5000){
+            addErrorMessageToFile("Maximum Number of rows allowed is 5000");
+            throw new ApiException("Maximum Number of rows allowed is 5000");
+        }
         getErrorList(inventoryFormList);
 
         if(errorData.isHasErrorOnUpload()){

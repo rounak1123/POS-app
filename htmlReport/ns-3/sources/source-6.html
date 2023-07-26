@@ -225,8 +225,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private void validCharacterCheck(ProductForm productForm) throws ApiException {
 <b class="fc">&nbsp;        if(productForm.getBarcode().length() &gt; 30 || productForm.getName().length() &gt;30)</b>
 <b class="fc">&nbsp;            throw new ApiException(&quot;Length of barcode or product name exceeds 30.&quot;);</b>
-<b class="fc">&nbsp;        if(hasSpecialCharacter(productForm.getName())</b>
-<b class="fc">&nbsp;                || hasSpecialCharacter(productForm.getBrand()) || hasSpecialCharacter(productForm.getCategory()))</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(productForm.getName())</b>
+<b class="fc">&nbsp;                || StringUtil.hasSpecialCharacter(productForm.getBrand()) || StringUtil.hasSpecialCharacter(productForm.getCategory()))</b>
 <b class="nc">&nbsp;            throw new ApiException(&quot;form contains invalid character.&quot;);</b>
 &nbsp;    }
 &nbsp;
@@ -236,7 +236,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;            throw new ApiException(&quot;Invalid or missing fields&quot;);</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    private static boolean hasSpecialCharacter(String input) {
+&nbsp;    private static boolean StringUtil.hasSpecialCharacter(String input) {
 <b class="fc">&nbsp;        String allowedCharacters = &quot;-a-zA-Z0-9_$&amp;*#@!.&amp;%\\s&quot;;</b>
 <b class="fc">&nbsp;        String patternString = &quot;[^&quot; + allowedCharacters + &quot;]&quot;;</b>
 <b class="fc">&nbsp;        Pattern pattern = Pattern.compile(patternString);</b>
@@ -253,8 +253,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;            errorData.setHasErrorOnUpload(true);</b>
 &nbsp;        }
 &nbsp;
-<b class="fc">&nbsp;        if(hasSpecialCharacter(f.getName())</b>
-<b class="fc">&nbsp;                || hasSpecialCharacter(f.getBrand()) || hasSpecialCharacter(f.getCategory())) {</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(f.getName())</b>
+<b class="fc">&nbsp;                || StringUtil.hasSpecialCharacter(f.getBrand()) || StringUtil.hasSpecialCharacter(f.getCategory())) {</b>
 <b class="nc">&nbsp;            errorData.addErrorMessage(rowCount,&quot;Invalid characters in the row&quot;);</b>
 <b class="nc">&nbsp;            errorData.setHasErrorOnUpload(true);</b>
 &nbsp;        }

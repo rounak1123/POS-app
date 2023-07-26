@@ -1,13 +1,13 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.model.InvoiceData;
-import com.increff.pos.model.InvoiceItem;
-import com.increff.pos.model.OrderData;
-import com.increff.pos.model.OrderForm;
+import com.increff.pos.model.*;
+import com.increff.pos.pojo.OrderItemPojo;
 import com.increff.pos.pojo.OrderPojo;
+import com.increff.pos.pojo.OrderTempTableItemPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.flow.OrderFlowService;
+import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +28,12 @@ public class OrderDto {
     @Autowired
     private OrderFlowService orderFlowService;
 
-    public OrderPojo add() throws ApiException {
+    public void add(List<OrderTempTableItemForm> orderTempTableItemFormList) throws ApiException {
         OrderPojo orderPojo = new OrderPojo();
         orderPojo.setTime(LocalDateTime.now());
-        return orderService.add(orderPojo);
+        normalizeOrderTempTableItemFormList(orderTempTableItemFormList);
+        List<OrderTempTableItemPojo> orderTempTableItemPojoList = convertFormListToPojoList(orderTempTableItemFormList);
+         orderFlowService.add(orderTempTableItemPojoList,orderPojo);
     }
     public void delete(int id) throws ApiException {
         orderService.delete(id);
@@ -57,7 +59,7 @@ public class OrderDto {
         OrderPojo orderPojo = new OrderPojo();
         orderPojo.setTime(LocalDateTime.now());
         orderPojo.setStatus("invoiced");
-        orderService.update(id, orderPojo);
+        orderFlowService.placeOrder(id, orderPojo);
     }
 
     public ResponseEntity<Resource> downloadInvoice(int id) throws ApiException, IOException {
@@ -100,6 +102,34 @@ public class OrderDto {
             orderDataList.add(convertOrderPojoToOrderData(orderPojo));
         }
         return orderDataList;
+    }
+    public static void normalizeOrderTempTableItemForm(OrderTempTableItemForm orderTempTableItemForm){
+        orderTempTableItemForm.setBarcode(StringUtil.toLowerCase(orderTempTableItemForm.getBarcode()));
+        orderTempTableItemForm.setQuantity(StringUtil.trimZeros(StringUtil.toLowerCase(orderTempTableItemForm.getQuantity())));
+        orderTempTableItemForm.setSellingPrice(StringUtil.trimZeros(StringUtil.toLowerCase(orderTempTableItemForm.getSellingPrice())));
+    }
+
+    public static void normalizeOrderTempTableItemFormList(List<OrderTempTableItemForm> orderTempTableItemFormList){
+        for(OrderTempTableItemForm orderTempTableItemForm: orderTempTableItemFormList)
+            normalizeOrderTempTableItemForm(orderTempTableItemForm);
+    }
+
+    private OrderTempTableItemPojo convertFormToPojo(OrderTempTableItemForm orderTempTableItemForm) throws ApiException{
+        OrderTempTableItemPojo orderTempTableItemPojo = new OrderTempTableItemPojo();
+        int productId = orderFlowService.getProductByBarcode(orderTempTableItemForm.getBarcode()).getId();
+        orderTempTableItemPojo.setProduct_id(productId);
+        orderTempTableItemPojo.setQuantity(Integer.parseInt(orderTempTableItemForm.getQuantity()));
+        orderTempTableItemPojo.setSelling_price(Double.parseDouble(orderTempTableItemForm.getSellingPrice()));
+        orderTempTableItemPojo.setUser_id(Integer.parseInt(orderTempTableItemForm.getUserId()));
+
+        return orderTempTableItemPojo;
+    }
+    private List<OrderTempTableItemPojo> convertFormListToPojoList(List<OrderTempTableItemForm> orderTempTableItemFormList) throws ApiException {
+        List<OrderTempTableItemPojo> orderTempTableItemPojoList = new ArrayList<>();
+        for(OrderTempTableItemForm orderTempTableItemForm: orderTempTableItemFormList){
+            orderTempTableItemPojoList.add(convertFormToPojo(orderTempTableItemForm));
+        }
+        return orderTempTableItemPojoList;
     }
 
 }

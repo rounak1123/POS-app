@@ -23,15 +23,12 @@ import java.util.List;
 @RestController
 @RequestMapping(path= "/api/user")
 public class UserApiController {
-
-    private static Logger logger = Logger.getLogger(SecurityConfig.class);
-
     @Autowired
     private UserDto dto;
 
     @ApiOperation(value = "Adds an user")
     @PostMapping
-    public void add(@RequestBody UserForm form) throws ApiException {
-        dto.add(form);
+    public void add(@RequestBody UserForm userForm) throws ApiException {
+        dto.add(userForm);
     }
 }

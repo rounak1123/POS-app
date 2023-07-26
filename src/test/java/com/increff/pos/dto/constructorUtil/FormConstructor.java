@@ -54,4 +54,13 @@ public class FormConstructor {
         return userForm;
     }
 
+    public static SalesReportForm constructSalesReportForm(String startDate, String endDate, String brand, String category){
+        SalesReportForm salesReportForm = new SalesReportForm();
+        salesReportForm.setStartDate(startDate);
+        salesReportForm.setEndDate(endDate);
+        salesReportForm.setBrand(brand);
+        salesReportForm.setCategory(category);
+        return salesReportForm;
+    }
+
 }

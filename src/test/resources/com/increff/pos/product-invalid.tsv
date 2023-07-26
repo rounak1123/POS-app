@@ -1,0 +1,6 @@
+barcode	brand	category	name	mrp
+Barcode 1	Brand 1	shoes	Nike-jordan	2000
+Barcode 1	puma	tshirt	Round-Neck 	1200
+		shoes	Nike-jordan	2000
+Barcode 3	Puma	shoes	Nike-jordan	2000
+Barcode 5	Brand	shoes	Nike-j~~!@#$%^ordan	2000~—

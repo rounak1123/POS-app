@@ -12,19 +12,14 @@ function getBrandUrl(){
 
 function getBrandList(){
 	var url = getBrandUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('brand list', data);
+	callAjaxApi(url, 'GET', null, null, getBrandListSuccess,getBrandListSuccess);
+}
+
+function getBrandListSuccess(data){
 	        brandReportData = data;
 	   		displayBrandList(data);
 	   		updateBrandCategoryList(data);
-	   },
-	   error: handleAjaxError
-	});
 }
-
 
 function downloadReport(){
 console.log(brandReportData);
@@ -42,7 +37,7 @@ rowData.category = brandReportData[i].category;
 reportArrayData.push(rowData);
 }
 
-writeFileData(reportArrayData);
+writeFileData(reportArrayData, 'brand-report.tsv');
 }
 
 //UI DISPLAY METHODS
@@ -51,16 +46,18 @@ function displayBrandList(data){
 	var $tbody = $('#brand-table').find('tbody');
 //	 var table = $('#brand-table').DataTable({searching: false});
 	table.clear().draw();
-
+    var rowsArray = [];
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
+//		var row = [serialNo, e.brand, e.category];
           table.row.add([
             serialNo,
             e.brand,
             e.category
-          ]).draw();
+          ]);
 	}
+	table.draw();
 
 }
 
@@ -115,24 +112,17 @@ function searchBrandCategoryDropdown() {
 
     var url = getBrandUrl();
     url+='/search';
-
-  	$.ajax({
-  	   url: url,
-  	   type: 'POST',
-  	   data: JSON.stringify(obj),
-  	   headers: {
-         	'Content-Type': 'application/json'
-         },
-  	   success: function(response) {
-  	        brandReportData = response;
-  	   		displayBrandList(response);
-	   		$.notify("Filtered data", "success");
-  	   },
-  	   error: handleAjaxError
-  	});
+    callAjaxApi(url, 'POST', JSON.stringify(obj), "Filtered data", function(data){
+    brandReportData = data;
+    displayBrandList(data);
+    });
 }
 
+function resetFilters(){
+$("#inputBrandSearch").val('').trigger('change');
+$("#inputCategorySearch").val('').trigger('change');
 
+}
 //INITIALIZATION CODE
 var table;
 
@@ -152,6 +142,7 @@ function init(){
     initDatatable();
     $('#search-brand-category').click(searchBrandCategoryDropdown);
 	$('#download-report').click(downloadReport);
+    $('#reset-filters').click(resetFilters);
 
 }
 

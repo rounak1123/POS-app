@@ -19,7 +19,6 @@ public abstract class AbstractUiController {
 	private String baseUrl;
 
 	protected ModelAndView mav(String page) {
-		// Get current user
 		UserPrincipal principal = SecurityUtil.getPrincipal();
 
 		info.setRole(principal == null ? "" : principal.getRole());

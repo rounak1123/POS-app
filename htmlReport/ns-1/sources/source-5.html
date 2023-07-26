@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ErrorDownloadController</title>
+  <title>Coverage Report > OrderTempTableItemDto</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.controller</a>
+    <a href="../index.html">com.increff.pos.dto</a>
 </div>
 
-<h1>Coverage Summary for Class: ErrorDownloadController (com.increff.pos.controller)</h1>
+<h1>Coverage Summary for Class: OrderTempTableItemDto (com.increff.pos.dto)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ErrorDownloadController</td>
+  <td class="name">OrderTempTableItemDto</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    83.3%
   </span>
   <span class="absValue">
-    (1/2)
+    (10/12)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    9.1%
+    81.5%
   </span>
   <span class="absValue">
-    (1/11)
+    (44/54)
   </span>
 </td>
 </tr>
@@ -74,39 +74,122 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
 &nbsp;
-&nbsp;import com.increff.pos.util.IOUtil;
-&nbsp;import org.apache.commons.io.IOUtils;
-&nbsp;import org.springframework.stereotype.Controller;
-&nbsp;import org.springframework.web.bind.annotation.PathVariable;
-&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
-&nbsp;import org.springframework.web.bind.annotation.RequestMethod;
+&nbsp;import com.increff.pos.model.OrderTempTableItemData;
+&nbsp;import com.increff.pos.model.OrderTempTableItemForm;
+&nbsp;import com.increff.pos.pojo.OrderTempTableItemPojo;
+&nbsp;import com.increff.pos.pojo.ProductPojo;
+&nbsp;import com.increff.pos.service.ApiException;
+&nbsp;import com.increff.pos.service.OrderTempTableItemService;
+&nbsp;import com.increff.pos.service.flow.OrderTempTableItemFlowService;
+&nbsp;import com.increff.pos.util.StringUtil;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Component;
 &nbsp;
-&nbsp;import javax.servlet.http.HttpServletResponse;
-&nbsp;import java.io.File;
-&nbsp;import java.io.FileInputStream;
-&nbsp;import java.io.IOException;
-&nbsp;import java.io.InputStream;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
 &nbsp;
-&nbsp;@Controller
-<b class="fc">&nbsp;public class ErrorDownloadController {</b>
-&nbsp;    @RequestMapping(value = &quot;/error/{fileName:.+}&quot;, method = RequestMethod.GET)
-&nbsp;    public void getFile(@PathVariable(&quot;fileName&quot;) String fileName, HttpServletResponse response) throws IOException {
-&nbsp;        // get your file as InputStream
-<b class="nc">&nbsp;        response.setContentType(&quot;text/csv&quot;);</b>
-<b class="nc">&nbsp;        response.addHeader(&quot;Content-disposition:&quot;, &quot;attachment; filename=&quot; + fileName);</b>
-<b class="nc">&nbsp;        File f = new File(&quot;/Users/rounakagrawal/Desktop/POS/POS_Application/src/main/resources/com/increff/pos/errorFile.tsv&quot;);</b>
-<b class="nc">&nbsp;        InputStream is = new FileInputStream(f);</b>
-&nbsp;        try {
-<b class="nc">&nbsp;            IOUtils.copy(is, response.getOutputStream());</b>
-<b class="nc">&nbsp;            response.flushBuffer();</b>
-<b class="nc">&nbsp;        } catch (IOException e) {</b>
-<b class="nc">&nbsp;            throw e;</b>
-&nbsp;        } finally {
-<b class="nc">&nbsp;            IOUtil.closeQuietly(is);</b>
-<b class="nc">&nbsp;        }</b>
+&nbsp;@Component
+<b class="fc">&nbsp;public class OrderTempTableItemDto {</b>
 &nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrderTempTableItemService orderTempTableItemService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrderTempTableItemFlowService orderTempTableItemFlowService;
+&nbsp;
+&nbsp;
+&nbsp;    public void add(OrderTempTableItemForm orderTempTableItemForm) throws ApiException {
+<b class="fc">&nbsp;        normalize(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        emptyCheck(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        invalidCharacterAndLengthCheck(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        OrderTempTableItemPojo orderTempTableItemPojo = convertFormToPojo(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        orderTempTableItemFlowService.add(orderTempTableItemPojo);</b>
+&nbsp;    }
+&nbsp;    public void delete(int id) throws ApiException {
+<b class="fc">&nbsp;        orderTempTableItemService.delete(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void deleteAll(int id) throws ApiException {
+<b class="nc">&nbsp;        orderTempTableItemService.deleteAll(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderTempTableItemData get(int id) throws ApiException {
+<b class="nc">&nbsp;        OrderTempTableItemPojo orderTempTableItemPojo = orderTempTableItemService.get(id);</b>
+<b class="nc">&nbsp;        return convertPojoToData(orderTempTableItemPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;OrderTempTableItemData&gt; getAll(int id) throws ApiException {
+<b class="fc">&nbsp;        List&lt;OrderTempTableItemPojo&gt; orderTempTableItemPojoList = orderTempTableItemService.getAll(id);</b>
+<b class="fc">&nbsp;        List&lt;OrderTempTableItemData&gt; orderTempTableItemDataList = new ArrayList&lt;OrderTempTableItemData&gt;();</b>
+<b class="fc">&nbsp;        for (OrderTempTableItemPojo orderTempTableItemPojo : orderTempTableItemPojoList) {</b>
+<b class="fc">&nbsp;            orderTempTableItemDataList.add(convertPojoToData(orderTempTableItemPojo));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return orderTempTableItemDataList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update(int id, OrderTempTableItemForm orderTempTableItemForm) throws ApiException {
+<b class="fc">&nbsp;        normalize(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        emptyCheck(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        invalidCharacterAndLengthCheck(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        OrderTempTableItemPojo orderTempTableItemPojo = convertFormToPojo(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        orderTempTableItemFlowService.update(id,orderTempTableItemPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // CONVERSION METHODS
+&nbsp;
+&nbsp;    private OrderTempTableItemData convertPojoToData(OrderTempTableItemPojo orderTempTableItemPojo) throws ApiException {
+<b class="fc">&nbsp;        OrderTempTableItemData orderTempTableItemData = new OrderTempTableItemData();</b>
+<b class="fc">&nbsp;        ProductPojo productPojo = orderTempTableItemFlowService.getProductByProductId(orderTempTableItemPojo.getProduct_id());</b>
+<b class="fc">&nbsp;        orderTempTableItemData.setQuantity(String.valueOf(orderTempTableItemPojo.getQuantity()));</b>
+<b class="fc">&nbsp;        orderTempTableItemData.setSellingPrice(String.valueOf(orderTempTableItemPojo.getSelling_price()));</b>
+<b class="fc">&nbsp;        orderTempTableItemData.setId(orderTempTableItemPojo.getId());</b>
+<b class="fc">&nbsp;        orderTempTableItemData.setBarcode(productPojo.getBarcode());</b>
+<b class="fc">&nbsp;        orderTempTableItemData.setName(productPojo.getName());</b>
+&nbsp;
+<b class="fc">&nbsp;        return orderTempTableItemData;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private  OrderTempTableItemPojo convertFormToPojo(OrderTempTableItemForm orderTempTableItemForm) throws ApiException{
+<b class="fc">&nbsp;        normalize(orderTempTableItemForm);</b>
+<b class="fc">&nbsp;        OrderTempTableItemPojo orderTempTableItemPojo = new OrderTempTableItemPojo();</b>
+<b class="fc">&nbsp;        int productId = orderTempTableItemFlowService.getProductByBarcode(orderTempTableItemForm.getBarcode()).getId();</b>
+<b class="fc">&nbsp;        orderTempTableItemPojo.setProduct_id(productId);</b>
+<b class="fc">&nbsp;        orderTempTableItemPojo.setQuantity(Integer.parseInt(orderTempTableItemForm.getQuantity()));</b>
+<b class="fc">&nbsp;        orderTempTableItemPojo.setSelling_price(Double.parseDouble(orderTempTableItemForm.getSellingPrice()));</b>
+<b class="fc">&nbsp;        orderTempTableItemPojo.setUser_id(Integer.parseInt(orderTempTableItemForm.getUserId()));</b>
+&nbsp;
+<b class="fc">&nbsp;        return orderTempTableItemPojo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // NORMALIZATION AND CHECKS
+&nbsp;
+&nbsp;    public static void normalize(OrderTempTableItemForm orderTempTableItemForm){
+<b class="fc">&nbsp;        orderTempTableItemForm.setBarcode(StringUtil.toLowerCase(orderTempTableItemForm.getBarcode()));</b>
+<b class="fc">&nbsp;        orderTempTableItemForm.setQuantity(StringUtil.trimZeros(StringUtil.toLowerCase(orderTempTableItemForm.getQuantity())));</b>
+<b class="fc">&nbsp;        orderTempTableItemForm.setSellingPrice(StringUtil.trimZeros(StringUtil.toLowerCase(orderTempTableItemForm.getSellingPrice())));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void emptyCheck(OrderTempTableItemForm orderTempTableItemForm) throws ApiException{
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderTempTableItemForm.getBarcode()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Barcode cannot be empty.&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderTempTableItemForm.getQuantity()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Quantity cannot be empty.&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(orderTempTableItemForm.getSellingPrice()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Selling Price cannot be empty.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void invalidCharacterAndLengthCheck(OrderTempTableItemForm orderTempTableItemForm) throws ApiException {
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(orderTempTableItemForm.getBarcode()))</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid character in barcode, Special characters allowed are &#39;_$&amp;*#@!.&amp;%-&#39;&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isValidInteger(orderTempTableItemForm.getQuantity()) == false  || Integer.valueOf(orderTempTableItemForm.getQuantity()) &lt; 1)</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Invalid Quantity&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isValidDouble(orderTempTableItemForm.getQuantity()) == false)</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid Selling Price&quot;);</b>
+<b class="fc">&nbsp;        if(orderTempTableItemForm.getBarcode().length() &gt; 30)</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Barcode length cannot be more than 30&quot;);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;}
@@ -133,7 +216,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-17 13:04</div>
+    <div style="float:right;">generated on 2023-07-26 21:27</div>
 </div>
 </body>
 </html>

@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Inconsolata&family=Roboto+Slab&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
 <link rel="stylesheet" th:href="@{/static/app.css}">
   <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -75,6 +76,7 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
+
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link" th:href="@{/site/features}">Features</a>
@@ -191,6 +193,58 @@
   </nav>
 </header>
 
+
+
+<header th:fragment="final_nav_bar">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/ui/brand}">Brand</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/ui/product}">Product</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/ui/inventory}">Inventory</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOrders" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Orders
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownOrders">
+            <a class="dropdown-item" th:href="@{/ui/order/new}">Unsaved Order/New Order</a>
+            <a class="dropdown-item" th:href="@{/ui/order/view}">Orders List</a>
+          </ul></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownReports" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Reports
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownReports">
+            <a class="dropdown-item" th:href="@{/ui/report/sales}">Sales Report</a>
+            <a class="dropdown-item" th:href="@{/ui/report/day-sales}">Daily Sales Report</a>
+            <a class="dropdown-item" th:href="@{/ui/report/brand}">Brand Report</a>
+            <a class="dropdown-item" th:href="@{/ui/report/inventory}">Inventory Report</a>
+          </ul></li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/session/logout}">Log Out</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+
+
+
 <div id="modal-confirm-sure" class="modal fade" th:fragment="modal-confirm">
   <div class="modal-dialog modal-confirm">
     <div class="modal-content">
@@ -220,6 +274,7 @@
     <script src="https://kit.fontawesome.com/7b294536da.js" crossorigin="anonymous"></script>
     <script th:src="@{/static/notify.min.js}"></script>
 	<script th:src="@{/static/app.js}"/></script>
+    <script th:src="@{/static/ajax-call.js}"/></script>
 	<script th:src="@{/static/papaparse.min.js}"/></script>
     <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

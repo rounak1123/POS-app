@@ -3,6 +3,7 @@ package com.increff.pos.dto;
 import com.increff.pos.model.OrderTempTableItemData;
 import com.increff.pos.model.OrderTempTableItemForm;
 import com.increff.pos.pojo.OrderTempTableItemPojo;
+import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderTempTableItemService;
 import com.increff.pos.service.flow.OrderTempTableItemFlowService;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Component
 public class OrderTempTableItemDto {
@@ -65,13 +65,15 @@ public class OrderTempTableItemDto {
     // CONVERSION METHODS
 
     private OrderTempTableItemData convertPojoToData(OrderTempTableItemPojo orderTempTableItemPojo) throws ApiException {
-        OrderTempTableItemData d = new OrderTempTableItemData();
-        String barcode = orderTempTableItemFlowService.getProductByProductId(orderTempTableItemPojo.getProduct_id()).getBarcode();
-        d.setQuantity(String.valueOf(orderTempTableItemPojo.getQuantity()));
-        d.setSellingPrice(String.valueOf(orderTempTableItemPojo.getSelling_price()));
-        d.setId(orderTempTableItemPojo.getId());
-        d.setBarcode(barcode);
-        return d;
+        OrderTempTableItemData orderTempTableItemData = new OrderTempTableItemData();
+        ProductPojo productPojo = orderTempTableItemFlowService.getProductByProductId(orderTempTableItemPojo.getProduct_id());
+        orderTempTableItemData.setQuantity(String.valueOf(orderTempTableItemPojo.getQuantity()));
+        orderTempTableItemData.setSellingPrice(String.valueOf(orderTempTableItemPojo.getSelling_price()));
+        orderTempTableItemData.setId(orderTempTableItemPojo.getId());
+        orderTempTableItemData.setBarcode(productPojo.getBarcode());
+        orderTempTableItemData.setName(productPojo.getName());
+
+        return orderTempTableItemData;
     }
 
     private  OrderTempTableItemPojo convertFormToPojo(OrderTempTableItemForm orderTempTableItemForm) throws ApiException{
@@ -104,20 +106,14 @@ public class OrderTempTableItemDto {
     }
 
     public static void invalidCharacterAndLengthCheck(OrderTempTableItemForm orderTempTableItemForm) throws ApiException {
-        if(hasSpecialCharacter(orderTempTableItemForm.getBarcode()))
-            throw new ApiException("Invalid character in barcode.");
-        if(StringUtil.isValidInteger(orderTempTableItemForm.getQuantity()) == false)
+        if(StringUtil.hasSpecialCharacter(orderTempTableItemForm.getBarcode()))
+            throw new ApiException("Invalid character in barcode, Special characters allowed are '_$&*#@!.&%-'");
+        if(StringUtil.isValidInteger(orderTempTableItemForm.getQuantity()) == false  || Integer.valueOf(orderTempTableItemForm.getQuantity()) < 1)
             throw  new ApiException("Invalid Quantity");
         if(StringUtil.isValidDouble(orderTempTableItemForm.getQuantity()) == false)
             throw new ApiException("Invalid Selling Price");
         if(orderTempTableItemForm.getBarcode().length() > 30)
-            throw new ApiException("barcode length can more than 30");
+            throw new ApiException("Barcode length cannot be more than 30");
     }
-    public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
 
-        return pattern.matcher(input).matches();
-    }
 }

@@ -24,37 +24,19 @@ function updateInventory(event){
 	var $form = $("#inventory-edit-form");
 	var json = toJson($form);
 
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	   		$.notify("Inventory updated", "success");
-	$('#edit-inventory-modal').modal('toggle');
-
-	   		getInventoryList();
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
+    callAjaxApi(url, 'PUT', json, "Inventory updated", function(data){
+    	$('#edit-inventory-modal').modal('toggle');
+    	   		getInventoryList();
+    } )
 }
+
 
 function getInventoryList(){
 	var url = getInventoryUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('inventory list', data);
-	   		displayInventoryList(data);
-	   		updateSearchList(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, function(data){
+		   		displayInventoryList(data);
+    	   		updateSearchList(data);
+	})
 }
 
 function updateSearchList(data){
@@ -77,14 +59,22 @@ function updateSearchList(data){
 	productNameData = [...new Set(productNameData)]
 
 		$("#inputBrandSearch").select2({
-    	data: brandData})
+    	data: brandData,
+    	width: '160px',
+    	})
         $("#inputCategorySearch").select2({
-        data: categoryData})
+        data: categoryData,
+        width: '160px',
+        })
 
         $("#inputProductNameSearch").select2({
-        data: productNameData})
+        data: productNameData,
+        width: '160px',
+        })
         $("#inputBarcodeSearch").select2({
-        data: barcodeData})
+        data: barcodeData,
+        width: '160px',
+        })
 
 //	  var brandDropdown = $('#inputBrandSearch');
 //      brandDropdown.empty();
@@ -125,21 +115,16 @@ function searchInventory() {
 
     var url = getInventoryUrl();
     url+='/search';
+    callAjaxApi(url, 'POST', JSON.stringify(obj), "Filtered Inventory data", displayInventoryList);
 
-  	$.ajax({
-  	   url: url,
-  	   type: 'POST',
-  	   data: JSON.stringify(obj),
-  	   headers: {
-         	'Content-Type': 'application/json'
-         },
-  	   success: function(response) {
-                    $.notify("Filtered Inventory data","success");
+}
 
-  	   		displayInventoryList(response);
-  	   },
-  	   error: handleAjaxError
-  	});
+function resetFilters(){
+$("#inputBarcodeSearch").val('').trigger('change');
+$("#inputProductNameSearch").val('').trigger('change');
+$("#inputBrandSearch").val('').trigger('change');
+$("#inputCategorySearch").val('').trigger('change');
+
 }
 
 // FILE UPLOAD METHODS
@@ -173,6 +158,8 @@ function processData(){
                     console.log(data);
                     $.notify("Uploaded the file successfully","success");
                    getInventoryList();
+    	          $('#upload-inventory-modal').modal('toggle');
+
 
                 },
                 error: function(response){
@@ -201,7 +188,7 @@ function displayInventoryList(data){
 
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditInventory(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
+		var buttonHtml = '<button class="btn btn-warning mr-2" onclick="displayEditInventory(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
 
           table.row.add([
             e.barcode,
@@ -210,20 +197,15 @@ function displayInventoryList(data){
             e.name,
             e.quantity,
             buttonHtml
-          ]).draw();
+          ]);
 	}
+	table.draw();
+
 }
 
 function displayEditInventory(id){
   	var url = getInventoryUrl() + "/" + id;
-  	$.ajax({
-  	   url: url,
-  	   type: 'GET',
-  	   success: function(data) {
-  	   		displayInventoryEditModal(data);
-  	   },
-  	   error: handleAjaxError
-  	});
+  	callAjaxApi(url, 'GET', null, null, displayInventoryEditModal);
 }
 
 function resetUploadDialog(){
@@ -256,6 +238,9 @@ var fileName = $file.val().split('\\').pop();
 
 function displayUploadData(){
  	resetUploadDialog();
+ 	callAjaxApi("/error/exists/inventory-upload-error.tsv", "GET", null, null, function(data){
+    errorOnUpload();
+     })
 	$('#upload-inventory-modal').modal('toggle');
 }
 
@@ -285,7 +270,7 @@ function displayInventoryEditModal(data){
                    });
 
    if(user_role == 'standard'){
-     table.column(3).visible(false);
+     table.column(5).visible(false);
     }
 } ;
 
@@ -299,6 +284,8 @@ function init(){
 	$('#process-data').click(processData);
 //	$('#download-errors').click(downloadErrors);
     $('#inventoryFile').on('change', updateFileName)
+    $('#reset-filters').click(resetFilters);
+
 }
 
 $(document).ready(init);

@@ -232,13 +232,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;            throw  new ApiException(&quot;Invalid Quantity be empty&quot;);</b>
 <b class="fc">&nbsp;        if(orderItemForm.getSellingPrice() &lt;= 0)</b>
 <b class="nc">&nbsp;            throw new ApiException(&quot;Invalid Selling Price&quot;);</b>
-<b class="fc">&nbsp;        if(hasSpecialCharacter(orderItemForm.getBarcode()))</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(orderItemForm.getBarcode()))</b>
 <b class="nc">&nbsp;            throw new ApiException(&quot;Invalid character in barcode.&quot;);</b>
 <b class="fc">&nbsp;        if(orderItemForm.getBarcode().length() &gt; 30)</b>
 <b class="nc">&nbsp;            throw new ApiException(&quot;barcode length can more than 30&quot;);</b>
 &nbsp;
 &nbsp;    }
-&nbsp;    public static boolean hasSpecialCharacter(String input) {
+&nbsp;    public static boolean StringUtil.hasSpecialCharacter(String input) {
 <b class="fc">&nbsp;        String allowedCharacters = &quot;-a-zA-Z0-9_$&amp;*#@!.&amp;%\\s&quot;;</b>
 <b class="fc">&nbsp;        String patternString = &quot;[^&quot; + allowedCharacters + &quot;]&quot;;</b>
 <b class="fc">&nbsp;        Pattern pattern = Pattern.compile(patternString);</b>

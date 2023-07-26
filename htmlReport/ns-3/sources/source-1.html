@@ -201,12 +201,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public static void invalidCharacterAndLengthCheck(BrandForm brandForm) throws ApiException {
-<b class="fc">&nbsp;        if(hasSpecialCharacter(brandForm.getBrand()) || hasSpecialCharacter(brandForm.getCategory()))</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(brandForm.getBrand()) || StringUtil.hasSpecialCharacter(brandForm.getCategory()))</b>
 <b class="nc">&nbsp;            throw new ApiException(&quot;invalid character in brand or category.&quot;);</b>
 <b class="fc">&nbsp;        if(brandForm.getBrand().length() &gt; 30 || brandForm.getCategory().length() &gt; 30)</b>
 <b class="fc">&nbsp;            throw new ApiException(&quot;brand or category length is more than 30&quot;);</b>
 &nbsp;    }
-&nbsp;    public static boolean hasSpecialCharacter(String input) {
+&nbsp;    public static boolean StringUtil.hasSpecialCharacter(String input) {
 <b class="fc">&nbsp;        String allowedCharacters = &quot;-a-zA-Z0-9_$&amp;*#@!.&amp;%\\s&quot;;</b>
 <b class="fc">&nbsp;        String patternString = &quot;[^&quot; + allowedCharacters + &quot;]&quot;;</b>
 <b class="fc">&nbsp;        Pattern pattern = Pattern.compile(patternString);</b>
@@ -221,7 +221,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;            errorData.addErrorMessage(rowCount, &quot;Brand or Category Empty&quot;);</b>
 <b class="nc">&nbsp;            errorData.setHasErrorOnUpload(true);</b>
 &nbsp;        }
-<b class="fc">&nbsp;        if(hasSpecialCharacter(brandForm.getBrand()) || hasSpecialCharacter(brandForm.getCategory())) {</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(brandForm.getBrand()) || StringUtil.hasSpecialCharacter(brandForm.getCategory())) {</b>
 <b class="nc">&nbsp;            errorData.addErrorMessage(rowCount, &quot;Invalid character in brand or category&quot;);</b>
 <b class="nc">&nbsp;            errorData.setHasErrorOnUpload(true);</b>
 &nbsp;        }

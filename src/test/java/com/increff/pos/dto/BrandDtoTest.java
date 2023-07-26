@@ -106,8 +106,19 @@ public class BrandDtoTest extends AbstractUnitTest {
 
 
     @Test
-    public void testUploadBrandCategory() throws ApiException, IOException {
+    public void testValidUploadBrandCategory() throws ApiException, IOException {
         FileInputStream file = new FileInputStream(new File("src/test/resources/com/increff/pos/brandUploadTest.tsv"));
+        String name = "brandUploadTest.tsv";
+
+        MultipartFile result = new MockMultipartFile(name, file);
+        dto.upload(result);
+        assertEquals(dto.getAll().size(), 8);
+
+    }
+
+    @Test(expected = ApiException.class)
+    public void testInvalidUploadBrandCategory() throws ApiException, IOException {
+        FileInputStream file = new FileInputStream(new File("src/test/resources/com/increff/pos/brand-invalid.tsv"));
         String name = "brandUploadTest.tsv";
 
         MultipartFile result = new MockMultipartFile(name, file);

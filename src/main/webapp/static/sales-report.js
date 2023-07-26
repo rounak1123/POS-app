@@ -5,6 +5,47 @@ function getSalesReportUrl(){
 	return baseUrl + "/api/admin/reports/sales";
 }
 
+
+function updateSearchList(data){
+    brandData = [];
+    categoryData = [];
+
+	for(var i in data){
+		var e = data[i];
+		brandData.push(e.brand);
+		categoryData.push(e.category);
+	}
+	brandData = [...new Set(brandData)];
+	categoryData = [...new Set(categoryData)];
+
+	$("#inputBrand").select2({
+	data: brandData})
+    $("#inputCategory").select2({
+    data: categoryData})
+}
+
+function onInputStartDateChange() {
+ var startDateInput = $("#inputStartDate").val();
+ var endDateInput= $("#inputEndDate").val();
+  var startDate = new Date(startDateInput);
+  var endDate = endDateInput == '' ? Date.now() : new Date(endDateInput);
+
+ if(startDateInput != ''){
+ $('#inputEndDate').prop("disabled", false);
+
+ if(endDate < startDate)
+ $('#inputEndDate').val('');
+
+ $('#inputEndDate').prop('min', startDateInput);
+
+ }else {
+ $("#inputEndDate").val('');
+ $('#inputEndDate').prop("disabled", true);
+
+ }
+
+}
+
 function getSalesReport(form){
 
 	var $form = $("#sales-filter-form");
@@ -12,21 +53,13 @@ function getSalesReport(form){
 	var url = getSalesReportUrl();
 
     console.log(json);
+    callAjaxApi(url, 'POST', json, null, getSalesReportSuccess);
+}
 
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-	   console.log(response);
-	     salesReportData=response;
-          displaySalesReports(response);
-	   },
-	   error: handleAjaxError
-	});
+function getSalesReportSuccess(data){
+	     salesReportData=data;
+	        updateSearchList(data);
+          displaySalesReports(data);
 }
 
 //Display Report
@@ -41,12 +74,22 @@ function displaySalesReports(data){
             e.category,
             e.quantity,
             e.revenue.toFixed(2)
-          ]).draw();
+          ]);
 	}
+	table.draw();
+
 }
 
 function filterSales(){
 getSalesReport();
+}
+
+function resetFilters(){
+$("#inputStartDate").val('');
+$("#inputEndDate").val('');
+$("#inputBrand").val('').trigger('change');
+$("#inputCategory").val('').trigger('change');
+
 }
 
 function downloadReport(){
@@ -67,7 +110,7 @@ rowData.revenue = salesReportData[i].revenue;
 reportArrayData.push(rowData);
 }
 
-writeFileData(reportArrayData);
+writeFileData(reportArrayData, 'sales-report.tsv');
 }
 
 function init(){
@@ -80,7 +123,10 @@ function init(){
                     scrollColapse: 'true',
                     });
 	$('#filter-sales').click(filterSales);
+    $("#inputStartDate").on('change', onInputStartDateChange);
 	$('#download-report').click(downloadReport);
+    $('#reset-filters').click(resetFilters);
+
 }
 
 $(document).ready(init);

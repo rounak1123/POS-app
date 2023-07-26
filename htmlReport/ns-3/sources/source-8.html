@@ -119,7 +119,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    public static void normalize(UserForm f) throws ApiException{
 <b class="fc">&nbsp;        f.setEmail(StringUtil.toLowerCase(f.getEmail()).trim());</b>
 <b class="fc">&nbsp;        f.setPassword(StringUtil.toLowerCase(f.getPassword()).trim());</b>
-<b class="fc">&nbsp;        if(hasSpecialCharacter(f.getEmail()) || hasSpecialCharacter(f.getPassword()))</b>
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(f.getEmail()) || StringUtil.hasSpecialCharacter(f.getPassword()))</b>
 <b class="nc">&nbsp;            throw new ApiException(&quot;invalid character in brand or category.&quot;);</b>
 &nbsp;    }
 &nbsp;
@@ -130,7 +130,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;            throw  new ApiException(&quot;Password cannot be empty&quot;);</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public static boolean hasSpecialCharacter(String input) {
+&nbsp;    public static boolean StringUtil.hasSpecialCharacter(String input) {
 <b class="fc">&nbsp;        String allowedCharacters = &quot;-a-zA-Z0-9_*#@!.&amp;%\\s&quot;;</b>
 <b class="fc">&nbsp;        String patternString = &quot;[^&quot; + allowedCharacters + &quot;]&quot;;</b>
 <b class="fc">&nbsp;        Pattern pattern = Pattern.compile(patternString);</b>

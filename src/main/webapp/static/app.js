@@ -1,5 +1,4 @@
 
-//HELPER METHOD
 function toJson($form){
     var serialized = $form.serializeArray();
     console.log(serialized);
@@ -11,7 +10,6 @@ function toJson($form){
     var json = JSON.stringify(data);
     return json;
 }
-
 
 function handleAjaxError(response){
     console.log('response data', response);
@@ -32,7 +30,7 @@ function readFileData(file, callback){
 }
 
 
-function writeFileData(arr){
+function writeFileData(arr,nameFile){
 	var config = {
 		quoteChar: '',
 		escapeChar: '',
@@ -42,18 +40,23 @@ function writeFileData(arr){
 	var data = Papa.unparse(arr, config);
     var blob = new Blob([data], {type: 'text/tsv;charset=utf-8;'});
     var fileUrl =  null;
-
     if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, 'download.tsv');
+        fileUrl = navigator.msSaveBlob(blob, nameFile);
     } else {
         fileUrl = window.URL.createObjectURL(blob);
     }
     var tempLink = document.createElement('a');
     tempLink.href = fileUrl;
-    tempLink.setAttribute('download', 'download.tsv');
+    tempLink.setAttribute('download', nameFile);
     tempLink.click(); 
 }
 
+            const menuHamburger = document.querySelector(".burger")
+            const navLinks = document.querySelector(".navbar")
+
+            menuHamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('mobile-menu')
+            })
 
 function init(){
 }

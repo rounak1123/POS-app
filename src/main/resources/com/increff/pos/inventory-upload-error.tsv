@@ -1,0 +1,5 @@
+Barcode	Quantity	Error
+~123456	0	Invalid or empty quantity, Product with given barcode doesn't exists.
+2000	~abc	Invalid or empty quantity, Product with given barcode doesn't exists.
+232332	-4000	Invalid or empty quantity, Product with given barcode doesn't exists.
+200000	0	Invalid or empty quantity, Product with given barcode doesn't exists.

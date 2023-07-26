@@ -16,8 +16,9 @@ public class UserDto {
     @Autowired
     private UserService userService;
 
-    @Value(("${app.supervisorEmail}"))
-    private String supervisorEmail;
+    @Value(("${app.supervisorEmailList}"))
+    private static String supervisorEmailList;
+
 
     public void add(UserForm userForm) throws ApiException {
         emptyCheck(userForm);
@@ -31,20 +32,13 @@ public class UserDto {
         UserPojo p = new UserPojo();
         p.setEmail(f.getEmail());
         p.setPassword(f.getPassword());
-        if(f.getEmail() == supervisorEmail)
-            p.setRole("admin");
-        else
-            p.setRole("operator");
         return p;
     }
 
     // CHECKS AND NORMALIZATION FOR THE FORM.
 
     private static void normalize(UserForm f) throws ApiException{
-        f.setEmail(StringUtil.toLowerCase(f.getEmail()).trim());
-        f.setPassword(StringUtil.toLowerCase(f.getPassword()).trim());
-        if(hasSpecialCharacter(f.getEmail()) || hasSpecialCharacter(f.getPassword()))
-            throw new ApiException("invalid character in brand or category.");
+        f.setEmail(StringUtil.toLowerCase(f.getEmail()));
     }
 
     private static void emptyCheck(UserForm f) throws ApiException{
@@ -54,11 +48,4 @@ public class UserDto {
             throw  new ApiException("Password cannot be empty");
     }
 
-    private static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
-    }
 }

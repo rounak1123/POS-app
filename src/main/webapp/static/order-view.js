@@ -19,15 +19,7 @@ function getOrderItemUrl(){
 
 function getOrderList(){
 	var url = getOrderUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('order list', data);
-	   		displayOrderList(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, displayOrderList);
 }
 
 function editOrder(id){
@@ -35,7 +27,6 @@ function editOrder(id){
 }
 
 function viewOrder(id){
-// window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order-item/view?orderId='+id;
 	$('#order-item-view-modal').modal('toggle');
 	orderId=id;
 	getOrderItemList(id);
@@ -46,6 +37,7 @@ function viewOrder(id){
 function downloadGeneratedInvoice(id){
 var url = getOrderUrl();
 url+= '/download/'+ id;
+
 $.ajax({
     url: url,
     method: "GET",
@@ -71,17 +63,11 @@ $.ajax({
 function generateInvoice(id){
 	var url = getOrderUrl();
 	url+='/place/'+id;
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   success: function(data) {
-	   getOrderList();
-       $.notify("Order placed and invoice generated.","success");
-
-	   },
-	   error: handleAjaxError
+	callAjaxApi(url, 'PUT', null, "Order placed and invoice generated", function(data){
+	getOrderList();
 	});
 }
+
 
 //UI DISPLAY METHODS
 function displayOrderList(data){
@@ -95,11 +81,11 @@ function displayOrderList(data){
 
 		var buttonHtml ;
 		if(e.status == 'Active'|| e.status == 'active' || e.status == null){
-		buttonHtml = '<button class="btn btn-primary mr-2" onclick="viewOrder(' + e.id + ')"><i class="fa fa-eye fa-sm" ></i></button><button class="btn btn-primary mr-2" onclick="editOrder(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
+		buttonHtml = '<button class="btn btn-primary mr-2" onclick="viewOrder(' + e.id + ')"><i class="fa fa-eye fa-sm" ></i></button><button class="btn btn-warning mr-2" onclick="editOrder(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
 		buttonHtml+= '<button class="btn btn-success" onclick="generateInvoice(' + e.id + ')">Generate <i class="fa fa-folder-plus"></i></button>';
 		}
 		else{
-		buttonHtml = '<button class="btn btn-primary mr-2" onclick="viewOrder(' + e.id + ')"><i class="fa fa-eye fa-sm" ></i></button><button class="btn btn-primary mr-2" onclick="editOrder(' + e.id + ')" disabled><span class="material-symbols-outlined">border_color</span></button>';
+		buttonHtml = '<button class="btn btn-primary mr-2" onclick="viewOrder(' + e.id + ')"><i class="fa fa-eye fa-sm" ></i></button><button class="btn btn-warning mr-2" onclick="editOrder(' + e.id + ')" disabled><span class="material-symbols-outlined">border_color</span></button>';
 		 buttonHtml += '<button class="btn btn-success" onclick="downloadGeneratedInvoice(' + e.id + ')">Download <i class="fa fa-download fa-sm"></i></button>';
 		}
           console.log(e);
@@ -108,8 +94,9 @@ function displayOrderList(data){
             e.dateTime,
             e.status,
             buttonHtml
-          ]).draw();
+          ]);
 	}
+	table.draw();
 
 }
 
@@ -117,16 +104,7 @@ function getOrderItemList(orderId){
 	var url = getOrderItemUrl();
 
 	var url = getOrderItemUrl() + "/order/" + orderId;
-
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('order item list', data);
-	   		displayOrderItemList(data);
-	   },
-	   error: handleAjaxError
-	});
+    callAjaxApi(url, 'GET', null, null, displayOrderItemList);
 }
 
 
@@ -136,16 +114,18 @@ function displayOrderItemList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var subTotal = e.quantity * e.sellingPrice;
-		total+= subTotal;
+		var amount = e.quantity * e.sellingPrice;
+		total+= amount;
           orderItemTable.row.add([
             e.barcode,
             e.name,
             e.quantity,
             e.sellingPrice,
-            subTotal.toFixed(2),
-          ]).draw();
+            amount.toFixed(2),
+          ]);
 	}
+	orderItemTable.draw();
+
 	$("#orderId").text("#"+orderId);
 	$("#totalAmount").text(" Rs."+total.toFixed(2));
 

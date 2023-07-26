@@ -3,7 +3,9 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderForm;
+import com.increff.pos.model.OrderTempTableItemForm;
 import com.increff.pos.pojo.OrderPojo;
+import com.increff.pos.pojo.OrderTempTableItemPojo;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +29,8 @@ public class OrderApiController {
 
     @ApiOperation(value = "Adds an order")
     @PostMapping
-    public OrderPojo add() throws ApiException {
-        return orderDto.add();
+    public void add(@RequestBody List<OrderTempTableItemForm> orderTempTableItemFormList) throws ApiException {
+         orderDto.add(orderTempTableItemFormList);
     }
 
 

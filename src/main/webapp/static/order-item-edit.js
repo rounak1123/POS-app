@@ -17,31 +17,19 @@ function getProductUrl() {
 //BUTTON ACTIONS
 function deleteOrder(){
    var orderUrl = getOrderUrl()+"/"+orderId;
-
-	$.ajax({
-	   url: orderUrl,
-	   type: 'DELETE',
-	   success: function(response) {
+    callAjaxApi(orderUrl, 'DELETE', null, null, function(data){
       window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
-
-	   },
-	   error: handleAjaxError
-	});
+    });
 }
 
 function deleteOrderItems(){
 
     var deleteOrderItemsUrl = getOrderItemUrl() + "/order/" + orderId;
-	$.ajax({
-	   url: deleteOrderItemsUrl,
-	   type: 'DELETE',
-	   success: function(response) {
-	   		deleteOrder();
-	   },
-	   error: handleAjaxError
-	});
-
+    callAjaxApi(deleteOrderItemsUrl, 'DELETE', null, null, function(data){
+    deleteOrder();
+    });
 }
+
 function addOrderItem(event){
 	//Set the values to update
 	    var isValid = $("#order-item-form")[0].checkValidity();
@@ -61,25 +49,14 @@ function addOrderItem(event){
     sellingPrice,
     orderId
     }
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: JSON.stringify(obj),
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
+    callAjaxApi(url, 'POST', JSON.stringify(obj), "Added the item", addOrderItemSuccess);
+}
+
+function addOrderItemSuccess(){
 	   		getOrderItemList();
-            $.notify("Added the item","success");
-
-	   	    $("select[name='barcode']").val('');
-            $("input[name='quantity']").val('');
-            $("input[name='sellingPrice']").val('');
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
+	   		 $("#inputBarcode").val('').trigger('change');
+             $("input[name='quantity']").val('');
+             $("input[name='sellingPrice']").val('');
 }
 
 function updateOrderItem(event){
@@ -91,68 +68,34 @@ function updateOrderItem(event){
                 }
 	var id = $("#order-item-edit-form input[name=id]").val();
 	var url = getOrderItemUrl() + "/" + id;
-	//Set the values to update
-	var $form = $("#order-item-edit-form");
-	var json = toJson($form);
-
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-            $.notify("Updated the item","success");
-	$('#order-item-edit-modal').modal('toggle');
-
-	   		getOrderItemList();
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
+	    var barcode = $("#order-item-edit-form input[name=barcode]").val();
+        var quantity = $("#order-item-edit-form input[name=quantity]").val();
+        var sellingPrice = $("#order-item-edit-form input[name=sellingPrice]").val();
+        var obj = {barcode, quantity, sellingPrice, orderId};
+    callAjaxApi(url, 'PUT', JSON.stringify(obj), "Updated the item",function(data){
+    	$('#order-item-edit-modal').modal('toggle');
+    	   		getOrderItemList();
+    } )
 }
+
 
 
 function getOrderItemList(){
 	var url = getOrderItemUrl();
-	const currentUrl = window.location.href;
-
-    // Create a URLSearchParams object with the query parameters
-    const urlParams = new URLSearchParams(window.location.search);
-
-    // Get a specific query parameter by name
-     orderId = urlParams.get('orderId');
-
     // Use the retrieved query parameters
 
 	var url = getOrderItemUrl() + "/order/" + orderId;
-
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('order item list', data);
+	callAjaxApi(url, 'GET', null, null, function(data){
 	   		displayOrderItemList(data);
-	   },
-	   error: handleAjaxError
-	});
+	})
+
 }
 
 function setStatusInvoiced(id){
 var url = getOrderUrl() + '/place/'+id;
- $.ajax({
-     url: url,
-     type: 'PUT',
-     success: function(response) {
-       $.notify("Order Placed","success");
-
+  callAjaxApi(url, 'PUT', null, "Order Placed", function(data){
       window.location.href= $("meta[name=baseUrl]").attr("content")+'/ui/order/view';
-     },
-     error: handleAjaxError
- });
-
+  })
 }
 
 function placeOrder(){
@@ -174,20 +117,21 @@ function displayOrderItemList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')" class="btn btn-primary"><span class="material-symbols-outlined">border_color</span></button>'
+		var buttonHtml = ' <button onclick="displayEditOrderItem(' + e.id + ')" class="btn btn-warning"><span class="material-symbols-outlined">border_color</span></button>'
             buttonHtml += ' <button onclick="deleteOrderItem(' + e.id + ')" class="btn btn-danger ml-2"><i class="fas fa-trash fa-sm"></i></button>';
-        var subTotal = e.quantity * e.sellingPrice;
+        var amount = e.quantity * e.sellingPrice;
 
-            totalAmount += subTotal;
+            totalAmount += amount;
           table.row.add([
             e.barcode,
             e.name,
             e.quantity,
             e.sellingPrice,
-            subTotal.toFixed(2),
+            amount.toFixed(2),
             buttonHtml
-          ]).draw();
+          ]);
 	}
+	table.draw();
 
 		$("#orderId").text("#"+orderId);
     	$("#totalAmount").text(" Rs."+totalAmount.toFixed(2));
@@ -198,31 +142,16 @@ function deleteOrderItem(id){
 
     var url = getOrderItemUrl();
     url+= '/' + id;
-	$.ajax({
-	   url: url,
-	   type: 'DELETE',
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(response) {
-           $.notify("Order item deleted","success");
-	   		getOrderItemList();
-	   },
-	   error: handleAjaxError
-	});
-
+    callAjaxApi(url, 'DELETE', null, 'Order item deleted', function(data){
+    getOrderItemList();
+    })
 }
 
 function displayEditOrderItem(id){
 	var url = getOrderItemUrl() + "/" + id;
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		displayOrderItem(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, function(data){
+	displayOrderItem(data);
+	})
 }
 
 
@@ -237,20 +166,16 @@ function displayOrderItem(data){
 function setBarcodeDropdown(){
    var url = getProductUrl();
    var barcodeDropdown = $('#inputBarcode');
-   barcodeDropdown.empty();
- $.ajax({
-   url: url,
-   type: 'GET',
-   success: function(data){
-   barcodeDropdown.append($('<option></option>').val('').html('Select an option'));
-   $.each(data, function (i, product){
-       console.log(product);
-       barcodeDropdown.append($('<option></option>').val(product.barcode).html(product.barcode));
+   callAjaxApi(url, 'GET', null, null, function(data){
+      var array = [];
+      for(var i in data){
+        array.push(data[i].barcode);
+      }
+      barcodeDropdown.select2({
+      data: array,
+      width: "160px",
+      })
    })
-
-   },
-   error: handleAjaxError
- })
 }
 //INITIALIZATION CODE
 var table;
@@ -270,6 +195,10 @@ function initDatatable(){
 function init(){
     initDatatable();
     setBarcodeDropdown();
+    var urlParams = new URLSearchParams(window.location.search);
+    orderId = urlParams.get('orderId');
+//    const cleanUrl = '/ui/orders'; // Replace with your clean URL
+//    history.pushState({}, document.title, cleanUrl);
 	$('#add-order-item').click(addOrderItem);
 	$('#update-order-item').click(updateOrderItem);
 	$('#place-order').click(placeOrder);

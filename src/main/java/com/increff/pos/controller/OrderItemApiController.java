@@ -58,10 +58,5 @@ public class OrderItemApiController {
         orderItemDto.update(id,orderItemForm);
     }
 
-    @ApiOperation(value = "Adds all order-items")
-    @PostMapping("/all")
-    public void addAll(@RequestBody List<OrderItemForm> orderItemFormList) throws ApiException {
-        orderItemDto.addAll(orderItemFormList);
-    }
 }
 

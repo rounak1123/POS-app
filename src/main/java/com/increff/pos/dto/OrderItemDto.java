@@ -67,12 +67,6 @@ public class OrderItemDto {
         orderItemFlowService.update(id, newOrderItemPojo);
     }
 
-    public void addAll(List<OrderItemForm> orderItemFormList) throws ApiException {
-        for(OrderItemForm orderItemForm: orderItemFormList){
-            add(orderItemForm);
-        }
-    }
-
     // CONVERSION
 
     private  OrderItemData convertOrderItemPojoToOrderItemData(OrderItemPojo orderItemPojo) throws ApiException {
@@ -125,23 +119,16 @@ public class OrderItemDto {
 
 
     public static void invalidCharacterAndLengthCheck(OrderItemForm orderItemForm) throws ApiException {
-        if(StringUtil.isValidInteger(orderItemForm.getQuantity()) == false)
+        if(StringUtil.isValidInteger(orderItemForm.getQuantity()) == false || Integer.valueOf(orderItemForm.getQuantity()) < 1)
             throw  new ApiException("Invalid Quantity");
         if(StringUtil.isValidDouble(orderItemForm.getSellingPrice()) == false)
             throw new ApiException("Invalid Selling Price");
         if(StringUtil.isValidInteger(orderItemForm.getOrderId()) == false)
             throw new ApiException("Invalid OrderId");
-        if(hasSpecialCharacter(orderItemForm.getBarcode()))
-            throw new ApiException("Invalid character in barcode.");
+        if(StringUtil.hasSpecialCharacter(orderItemForm.getBarcode()))
+            throw new ApiException("Invalid character in barcode, Special characters allowed are '_$&*#@!.&%-'");
         if(orderItemForm.getBarcode().length() > 30)
             throw new ApiException("Barcode length can't more than 30");
 
-    }
-    public static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-
-        return pattern.matcher(input).matches();
     }
 }

@@ -28,6 +28,7 @@ public class ErrorData implements Serializable {
     public void addErrorMessage(int rowNumber, String Error) {
 
         String prevError = errorList.get(rowNumber);
+        hasErrorOnUpload = true;
         if(prevError == null){
             errorList.put(rowNumber, Error);
         }else {

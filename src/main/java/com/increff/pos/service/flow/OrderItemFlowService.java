@@ -5,10 +5,12 @@ import com.increff.pos.dao.ProductDao;
 import com.increff.pos.model.OrderItemForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.OrderItemPojo;
+import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemService;
+import com.increff.pos.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,8 @@ public class OrderItemFlowService {
     InventoryService inventoryService;
     @Autowired
     OrderItemService orderItemService;
+    @Autowired
+    OrderService orderService;
 
     public ProductPojo getProductByBarcode(String barcode) throws ApiException{
         ProductPojo productPojo =  productDao.getProductByBarcode(barcode);
@@ -62,10 +66,10 @@ public class OrderItemFlowService {
         int quantity = getInventoryByProductId(orderItemPojo.getProduct_id());
 
         if(quantity < orderItemPojo.getQuantity())
-            throw new ApiException("Ordered quantity is more than existing inventory");
+            throw new ApiException("Ordered quantity is more than available inventory for barcode "+productPojo.getBarcode());
         double sellingPrice = orderItemPojo.getSelling_price();
         if(productPojo.getMrp() < sellingPrice)
-            throw new ApiException("Selling Price is more than MRP of Product.");
+            throw new ApiException("Selling Price is more than MRP of for barcode "+productPojo.getBarcode());
     }
 
     public void reduceInventory (int productId, int quantity) throws ApiException{
@@ -79,6 +83,10 @@ public class OrderItemFlowService {
     }
 
     public void add(OrderItemPojo orderItemPojo) throws ApiException {
+        OrderPojo orderPojo = orderService.get(orderItemPojo.getOrder_id());
+        if(!orderPojo.getStatus().equals("active")){
+            throw new ApiException("Cannot Add Item, Order already placed");
+        }
         validateAddOrderItem(orderItemPojo);
         orderItemService.checkOrderItemAlreadyExists(orderItemPojo.getProduct_id(),orderItemPojo.getOrder_id());
         orderItemService.add(orderItemPojo);
@@ -86,12 +94,21 @@ public class OrderItemFlowService {
     }
 
     public void delete(int id) throws ApiException {
+
         OrderItemPojo orderItemPojo = orderItemService.get(id);
+        OrderPojo orderPojo = orderService.get(orderItemPojo.getOrder_id());
+        if(!orderPojo.getStatus().equals("active")){
+            throw new ApiException("Cannot Add Item, Order already placed");
+        }
         reduceInventory(orderItemPojo.getProduct_id(),-orderItemPojo.getQuantity());
         orderItemService.delete(id);
     }
 
     public void update(int id, OrderItemPojo orderItemPojo) throws ApiException {
+        OrderPojo orderPojo = orderService.get(orderItemPojo.getOrder_id());
+        if(!orderPojo.getStatus().equals("active")){
+            throw new ApiException("Cannot Add Item, Order already placed");
+        }
         OrderItemPojo oldOrderItemPojo = orderItemService.get(id);
         validateUpdate(orderItemPojo, orderItemPojo);
         int netQuantity = orderItemPojo.getQuantity() - oldOrderItemPojo.getQuantity() ;

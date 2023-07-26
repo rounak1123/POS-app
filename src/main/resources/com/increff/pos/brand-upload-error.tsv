@@ -1,0 +1,6 @@
+Brand	Category	Error
+nike~~!	shoes	Invalid character in brand or category, Special characters allowed are '_$&*#@!.&%-'
+	casual shoes	Brand or Category Empty
+puma		Brand or Category Empty
+nike	shoes1	
+nike	tshirt 1	

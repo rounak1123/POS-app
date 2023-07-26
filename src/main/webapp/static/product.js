@@ -44,30 +44,25 @@ brandDropdown.select2({data: brandList});
                   categoryDropdown.select2({
                   data: categoryArray})
 
-//      console.log(categoryList);
-//      categoryDropdown.empty();
-//      categoryDropdown.append($('<option></option>').val('').html('Select an option'));
-//
-//      $.each(categoryList, function(key,value){
-//      categoryDropdown.append($('<option></option>').val(value.category).html(value.category));
-//      })
      categoryDropdown.val(data.category).trigger('change');
 
 }
 
 function addProductHeaderClick(){
-console.log("in add product header click");
+
 var brandDropdown = $('#inputBrand');
 brandDropdown.select2({data: brandList});
 $("#inputCategory").select2({data:[]});
 }
+
 
 $(document).ready(function() {
   // When the first dropdown changes
   $('#inputBrand').change(function() {
     var selectedValue = $(this).val();
     var categoryDropdown = $('#inputCategory');
-console.log(selectedValue);
+
+
     if (selectedValue != '' && selectedValue != null) {
       // Enable the second dropdown and make an AJAX call to fetch data
       categoryDropdown.prop('disabled', false);
@@ -80,16 +75,24 @@ console.log(selectedValue);
 		var e = categoryList[i];
 		categoryArray.push(e.category);
 	}
-      console.log(categoryList);
-//      categoryDropdown.empty();
+      categoryDropdown.empty();
       categoryDropdown.select2({
-      data: categoryArray})
+      placeholder:'Select an Option',
+      data: categoryArray});
+      categoryDropdown.val(null).trigger('change');
+
+
     } else {
       categoryDropdown.val('').trigger('change');
       categoryDropdown.prop('disabled', true);
     }
   });
 });
+
+
+
+
+
 
 $(document).ready(function() {
   // When the first dropdown changes
@@ -110,10 +113,13 @@ $(document).ready(function() {
       		var e = categoryList[i];
       		categoryArray.push(e.category);
       	}
-            console.log(categoryList);
-      //      categoryDropdown.empty();
-            categoryDropdown.select2({
-            data: categoryArray})
+      categoryDropdown.empty();
+
+      categoryDropdown.select2({
+      placeholder:'Select an Option',
+      data: categoryArray});
+
+      categoryDropdown.val('').trigger('change');
 
     } else {
             categoryDropdown.val('').trigger('change');
@@ -134,26 +140,15 @@ function addProduct(event){
 	var $form = $("#product-form");
 	var json = toJson($form);
 	var url = getProductAdminUrl();
+	callAjaxApi(url, 'POST', json, "Product added", addProductSuccess);
 
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
+	return false;
+}
+function addProductSuccess(data){
 	   		getProductList();
 
 	   		$("#product-form")[0].reset();
 	        $('#addProduct').modal('toggle');
-
-	   		$.notify("Product added", "success");
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
 }
 
 function updateProductDetails(event){
@@ -172,39 +167,24 @@ function updateProductDetails(event){
 	var $form = $("#product-edit-form");
 	var json = toJson($form);
 console.log(json);
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
-	   $.notify("Product details updated","success");
+   callAjaxApi(url, 'PUT', json, 'Product details updated', updateProductDetailsSuccess);
+}
+
+function updateProductDetailsSuccess(data){
 	   		getProductList();
 	$('#edit-product-modal').modal('toggle');
-
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
 }
 
 
 function getProductList(){
 	var url = getProductUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('product list', data);
-	        updateSearchList(data);
-	   		displayProductList(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, getProductListSuccess );
 }
+
+function getProductListSuccess(data){
+    updateSearchList(data);
+    displayProductList(data);
+    }
 
 
 // Add to brandList array and brandCategoryList Arrray
@@ -225,14 +205,7 @@ function setBrandCategory(data) {
 
 function getBrandList(){
 	var url = getBrandUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	     setBrandCategory(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, setBrandCategory);
 }
 
 function updateSearchList(data){
@@ -255,21 +228,27 @@ function updateSearchList(data){
 	productNameData = [...new Set(productNameData)]
 
 	$("#inputBrandSearch").select2({
-	data: brandData})
+	data: brandData,
+	width: '160px',
+	})
     $("#inputCategorySearch").select2({
-    data: categoryData})
+    data: categoryData,
+    width: '160px',})
 
     $("#inputProductNameSearch").select2({
-    data: productNameData})
+    data: productNameData,
+    width: '160px',})
     $("#inputBarcodeSearch").select2({
-    data: barcodeData})
+    data: barcodeData,
+    width: '160px',})
 }
 
-function resetFilterForm() {
-    $("#inputBrandSearch").val('');
-//    var category = $("#inputCategorySearch").val();
-//    var name = $("#inputProductNameSearch").val();
-//    var barcode = $("#inputBarcodeSearch").val();
+function resetFilters(){
+$("#inputBarcodeSearch").val('').trigger('change');
+$("#inputProductNameSearch").val('').trigger('change');
+$("#inputBrandSearch").val('').trigger('change');
+$("#inputCategorySearch").val('').trigger('change');
+
 }
 
 function searchProduct() {
@@ -283,20 +262,7 @@ function searchProduct() {
 
     var url = getProductUrl();
     url+='/search';
-
-  	$.ajax({
-  	   url: url,
-  	   type: 'POST',
-  	   data: JSON.stringify(obj),
-  	   headers: {
-         	'Content-Type': 'application/json'
-         },
-  	   success: function(response) {
-  	        $.notify("Filtered Data","success");
-  	   		displayProductList(response);
-  	   },
-  	   error: handleAjaxError
-  	});
+    callAjaxApi(url, 'POST', JSON.stringify(obj), "Filtered Data", displayProductList);
 }
 // FILE UPLOAD METHOD
 
@@ -315,7 +281,7 @@ function processData(){
             $.ajax({
                 url: url,
                 data:formData,
-                type:"post",
+                type:"POST",
 
                 // Tell jQuery not to process data or not to worry about content-type
                 // You *must* include these options in order to send MultipartFile objects
@@ -323,12 +289,12 @@ function processData(){
                 contentType: false,
                 processData: false,
                 method: 'POST',
-                type: 'POST',
 
                 success:function(data){
                     console.log(data);
                     $.notify("Uploaded the file successfully","success");
                     getProductList();
+    	          $('#upload-product-modal').modal('toggle');
 
                 },
                 error: function(response){
@@ -356,7 +322,7 @@ function displayProductList(data){
 	table.clear().draw();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button class="btn btn-primary mr-2" onclick="displayEditProduct(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
+		var buttonHtml = '<button class="btn btn-warning mr-2" onclick="displayEditProduct(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
           table.row.add([
             e.barcode,
             e.brand,
@@ -364,20 +330,15 @@ function displayProductList(data){
             e.name,
             e.mrp,
             buttonHtml
-          ]).draw();
+          ]);
 	}
+	table.draw();
+
 }
 
 function displayEditProduct(id){
 	var url = getProductUrl() + "/" + id;
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		displayProduct(data);
-	   },
-	   error: handleAjaxError
-	});	
+	callAjaxApi(url, 'GET', null, null, displayProduct);
 }
 
 function resetUploadDialog(){
@@ -409,7 +370,10 @@ var fileName = $file.val().split('\\').pop();
 }
 
 function displayUploadData(){
- 	resetUploadDialog(); 	
+ 	resetUploadDialog();
+ 	 	callAjaxApi("/error/exists/product-upload-error.tsv", "GET", null, null, function(data){
+     	errorOnUpload();
+     	})
 	$('#upload-product-modal').modal('toggle');
 }
 
@@ -440,7 +404,7 @@ function displayProduct(data){
     console.log(user_role);
     if(user_role == 'standard'){
            console.log("making the first colmn hidden");
-            table.column(6).visible(false);
+            table.column(5).visible(false);
      }
 } ;
 
@@ -455,7 +419,9 @@ function init(){
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 //	$('#download-errors').click(downloadErrors);
-    $('#productFile').on('change', updateFileName)
+    $('#productFile').on('change', updateFileName);
+    $('#reset-filters').click(resetFilters);
+
 }
 
 $(document).ready(init);

@@ -30,6 +30,9 @@ public class BrandDto {
     @Value("${error.errorFilePath}")
     private String outputErrorFilePath;
 
+    @Value("${error.errorFileDirectory}")
+    private String outputErrorFileDirectory;
+
     private static HashMap<Integer,String> mapColumn=new HashMap<Integer,String>();
 
     public int add( BrandForm brandForm) throws ApiException {
@@ -62,8 +65,10 @@ public class BrandDto {
 
         List<BrandForm> brandFormList = convertTsvToBrandFormList(file);
         brandFormList = removeDuplicateEntryFromBrandFormList(brandFormList);
-        if(brandFormList.isEmpty())
-            throw new ApiException("Cannot upload, no brand-category data in the table.");
+        if(brandFormList.isEmpty()) {
+            addErrorMessageToFile("Cannot upload no brand-category data in the table");
+            throw new ApiException("Cannot upload, no brand-category data in the table");
+        }
         normalizeBrandFormList(brandFormList);
         processBrandFormList(brandFormList);
 
@@ -124,17 +129,10 @@ public class BrandDto {
     }
 
     private static void invalidCharacterAndLengthCheck(BrandForm brandForm) throws ApiException {
-        if(hasSpecialCharacter(brandForm.getBrand()) || hasSpecialCharacter(brandForm.getCategory()))
-            throw new ApiException("invalid character in brand or category.");
+        if(StringUtil.hasSpecialCharacter(brandForm.getBrand()) || StringUtil.hasSpecialCharacter(brandForm.getCategory()))
+            throw new ApiException("Invalid character in brand or category, Special characters allowed are '_$&*#@!.&%-' ");
         if(brandForm.getBrand().length() > 30 || brandForm.getCategory().length() > 30)
-            throw new ApiException("brand or category length is more than 30");
-    }
-    private static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-
-        return pattern.matcher(input).matches();
+            throw new ApiException("Brand or category length is more than 30");
     }
 
     // FILE UPLOAD METHODS
@@ -142,15 +140,12 @@ public class BrandDto {
     private void  validate(BrandForm brandForm, int rowCount)  {
         if(StringUtil.isEmpty(brandForm.getBrand()) || StringUtil.isEmpty(brandForm.getCategory())) {
             errorData.addErrorMessage(rowCount, "Brand or Category Empty");
-            errorData.setHasErrorOnUpload(true);
         }
-        if(hasSpecialCharacter(brandForm.getBrand()) || hasSpecialCharacter(brandForm.getCategory())) {
-            errorData.addErrorMessage(rowCount, "Invalid character in brand or category");
-            errorData.setHasErrorOnUpload(true);
+        if(StringUtil.hasSpecialCharacter(brandForm.getBrand()) || StringUtil.hasSpecialCharacter(brandForm.getCategory())) {
+            errorData.addErrorMessage(rowCount, "Invalid character in brand or category, Special characters allowed are '_$&*#@!.&%-'");
         }
         if(brandForm.getBrand().length() > 30 || brandForm.getCategory().length() > 30) {
             errorData.addErrorMessage(rowCount, "Brand or category length is more than 30");
-            errorData.setHasErrorOnUpload(true);
         }
         BrandPojo brandPojo = convertBrandFormToBrandPojo(brandForm);
          brandService.validate(brandPojo, rowCount);
@@ -192,11 +187,17 @@ public class BrandDto {
             throw new ApiException("Unable to convert tsvData to BrandForm List");
         }
     }
-
+    private void addErrorMessageToFile(String errorMessage) throws ApiException{
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+"/brand-upload-error.tsv",false))) {
+            writer.write("Error:\t"+errorMessage+"\n");
+        } catch (IOException e) {
+            throw new ApiException("Error writing TSV file: " + e.getMessage());
+        }
+    }
 
     private void convertFormToErrorFileTsv(List<BrandForm> brandFormList){
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFilePath,false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+"/brand-upload-error.tsv",false))) {
             writer.write("Brand\tCategory\tError\n");
 
             for(int i=0;i<brandFormList.size(); i++){
@@ -228,14 +229,21 @@ public class BrandDto {
             if(columnName.equals("brand") || columnName.equals("category")){
                 mapColumn.put(i,columnName);
             }else if (columns[i] != ""){
-                throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+                addErrorMessageToFile("Invalid tsv format for upload check the sample file once.");
+                throw new ApiException("Invalid tsv format for upload check the sample file once.");
             }
         }
-        if(mapColumn.size() != 2)
+        if(mapColumn.size() != 2) {
+            addErrorMessageToFile("Invalid tsv format for upload, check the sample file once.");
             throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+        }
     }
 
     private void processBrandFormList(List<BrandForm> brandFormList) throws ApiException{
+        if(brandFormList.size() > 5000){
+            addErrorMessageToFile("Maximum Number of rows allowed is 5000");
+            throw new ApiException("Maximum Number of rows allowed is 5000");
+        }
         getErrorList(brandFormList);
 
         if(errorData.isHasErrorOnUpload()){

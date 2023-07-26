@@ -56,7 +56,7 @@ public class OrderItemService {
     private OrderItemPojo getCheck(int id) throws ApiException {
         OrderItemPojo orderItemPojo = orderItemDao.select(id);
         if (orderItemPojo == null) {
-            throw new ApiException("OrderItem with given ID does not exit, id: " + id);
+            throw new ApiException("OrderItem with given ID does not exist, id: " + id);
         }
         return orderItemPojo;
     }

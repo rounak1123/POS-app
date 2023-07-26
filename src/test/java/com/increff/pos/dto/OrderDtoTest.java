@@ -88,6 +88,7 @@ public class OrderDtoTest extends AbstractUnitTest{
         OrderTempTableItemForm orderTempTableItemForm = FormConstructor.constructOrderTempTableItem("testBarcode1","20","200","1");
         orderTempTableItemDto.add(orderTempTableItemForm);
         OrderTempTableItemData orderTempTableItemData = getOrderTableTempItemData("testbarcode1",1);
+
         orderTempTableItemDto.delete(orderTempTableItemData.getId());
         List<OrderTempTableItemData> orderTempTableItemDataList = orderTempTableItemDto.getAll(1);
 
@@ -95,36 +96,15 @@ public class OrderDtoTest extends AbstractUnitTest{
     }
 
     @Test
-    public void addAllOrderItems() throws ApiException {
-        OrderPojo orderPojo = orderDto.add();
-
-        List<OrderItemForm> orderItemFormList = new ArrayList<>();
-
-        OrderItemForm orderItemForm = FormConstructor.constructOrderItem("testBarcode1","20","200","1");
-        orderItemFormList.add(orderItemForm);
-
-        OrderItemForm orderItemForm1 = FormConstructor.constructOrderItem("testBarcode2", "20", "200","1");
-        orderItemFormList.add(orderItemForm1);
-
-        orderItemDto.addAll(orderItemFormList);
-        List<OrderItemData> orderItemDataList = orderItemDto.getAll(1);
-
-        assertEquals(orderItemDataList.size(), 2);
-    }
-
-    @Test
     public void deleteAllOrderItems() throws ApiException {
-        OrderPojo orderPojo = orderDto.add();
+        List<OrderTempTableItemForm> orderTempTableItemFormList = new ArrayList<>();
+        OrderTempTableItemForm orderTempTableItemForm = FormConstructor.constructOrderTempTableItem("testBarcode1","20","200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm);
 
-        List<OrderItemForm> orderItemFormList = new ArrayList<>();
+        OrderTempTableItemForm orderTempTableItemForm1 = FormConstructor.constructOrderTempTableItem("testBarcode2", "20", "200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm1);
 
-        OrderItemForm orderItemForm = FormConstructor.constructOrderItem("testBarcode1","20","200","1");
-        orderItemFormList.add(orderItemForm);
-
-        OrderItemForm orderItemForm1 = FormConstructor.constructOrderItem("testBarcode2", "20", "200","1");
-        orderItemFormList.add(orderItemForm1);
-
-        orderItemDto.addAll(orderItemFormList);
+        orderDto.add(orderTempTableItemFormList);
 
         orderItemDto.deleteAll(1);
         List<OrderItemData> orderItemDataList = orderItemDto.getAll(1);
@@ -134,24 +114,22 @@ public class OrderDtoTest extends AbstractUnitTest{
 
     @Test
     public void updateOrderItem() throws ApiException {
-        int orderId = orderDto.add().getId();
+        List<OrderTempTableItemForm> orderTempTableItemFormList = new ArrayList<>();
 
-        List<OrderItemForm> orderItemFormList = new ArrayList<>();
+        OrderTempTableItemForm orderTempTableItemForm = FormConstructor.constructOrderTempTableItem("testBarcode1","20","200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm);
 
-        OrderItemForm orderItemForm = FormConstructor.constructOrderItem("testBarcode1","20","200",String.valueOf(orderId));
-        orderItemFormList.add(orderItemForm);
+        OrderTempTableItemForm orderTempTableItemForm1 = FormConstructor.constructOrderTempTableItem("testBarcode2", "20", "200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm1);
 
-        OrderItemForm orderItemForm1 = FormConstructor.constructOrderItem("testBarcode2", "20", "200",String.valueOf(orderId));
-        orderItemFormList.add(orderItemForm1);
+       orderDto.add(orderTempTableItemFormList);
 
-        orderItemDto.addAll(orderItemFormList);
+        OrderItemForm newOrderItemForm = FormConstructor.constructOrderItem("testBarcode1", "200", "2000","1");
 
-        OrderItemForm newOrderItemForm = FormConstructor.constructOrderItem("testBarcode1", "200", "2000",String.valueOf(orderId));
-
-        OrderItemData orderItemData = getOrderItemData("testbarcode1",orderId);
+        OrderItemData orderItemData = getOrderItemData("testbarcode1",1);
         orderItemDto.update(orderItemData.getId(), newOrderItemForm);
 
-        OrderItemData newOrderItemData = getOrderItemData("testbarcode1",orderId);
+        OrderItemData newOrderItemData = getOrderItemData("testbarcode1",1);
         assertEquals(newOrderItemData.getQuantity(),"200");
         assertEquals(Double.valueOf(newOrderItemData.getSellingPrice()), 2000.0);
 
@@ -159,9 +137,17 @@ public class OrderDtoTest extends AbstractUnitTest{
 
     @Test
     public void placeOrder() throws ApiException {
-        int orderId = orderDto.add().getId();
-        orderDto.placeOrder(orderId);
-        OrderData orderPojo = orderDto.get(orderId);
+        List<OrderTempTableItemForm> orderTempTableItemFormList = new ArrayList<>();
+
+        OrderTempTableItemForm orderTempTableItemForm = FormConstructor.constructOrderTempTableItem("testBarcode1","20","200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm);
+
+        OrderTempTableItemForm orderTempTableItemForm1 = FormConstructor.constructOrderTempTableItem("testBarcode2", "20", "200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm1);
+
+        orderDto.add(orderTempTableItemFormList);
+        orderDto.placeOrder(1);
+        OrderData orderPojo = orderDto.get(1);
 
         assertEquals(orderPojo.getStatus(), "invoiced");
 
@@ -169,15 +155,22 @@ public class OrderDtoTest extends AbstractUnitTest{
 
     @Test
     public void deleteOrder() throws ApiException {
-        int orderId = orderDto.add().getId();
-        orderDto.delete(orderId);
+        List<OrderTempTableItemForm> orderTempTableItemFormList = new ArrayList<>();
 
+        OrderTempTableItemForm orderTempTableItemForm = FormConstructor.constructOrderTempTableItem("testBarcode1","20","200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm);
+
+        OrderTempTableItemForm orderTempTableItemForm1 = FormConstructor.constructOrderTempTableItem("testBarcode2", "20", "200","1");
+        orderTempTableItemFormList.add(orderTempTableItemForm1);
+
+        orderDto.add(orderTempTableItemFormList);
+        orderDto.delete(1);
         assertEquals(orderDto.getAll().size(), 0);
 
     }
 
 
-    public OrderTempTableItemData getOrderTableTempItemData(String barcode, int userId) throws ApiException {
+    private OrderTempTableItemData getOrderTableTempItemData(String barcode, int userId) throws ApiException {
         List<OrderTempTableItemData> orderTempTableItemDataList = orderTempTableItemDto.getAll(userId);
         for(OrderTempTableItemData orderTempTableItemData: orderTempTableItemDataList){
             if(orderTempTableItemData.getBarcode().equals(barcode))
@@ -186,7 +179,7 @@ public class OrderDtoTest extends AbstractUnitTest{
         return null;
     }
 
-    public OrderItemData getOrderItemData(String barcode, int orderId) throws ApiException {
+    private OrderItemData getOrderItemData(String barcode, int orderId) throws ApiException {
         List<OrderItemData> orderItemDataList = orderItemDto.getAll(orderId);
         for(OrderItemData orderItemData: orderItemDataList){
             if(orderItemData.getBarcode().equals(barcode))
@@ -195,7 +188,7 @@ public class OrderDtoTest extends AbstractUnitTest{
         return null;
     }
 
-    public ProductData getProductData(String barcode) throws ApiException {
+    private ProductData getProductData(String barcode) throws ApiException {
         List<ProductData> productDataList = productDto.getAll();
         for(ProductData product: productDataList){
             if(product.getBarcode().equals(barcode)) {

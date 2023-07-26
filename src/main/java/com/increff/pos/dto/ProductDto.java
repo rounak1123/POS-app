@@ -25,6 +25,8 @@ public class ProductDto {
 
     @Value("${error.errorFilePath}")
     private String outputErrorFilePath;
+    @Value("${error.errorFileDirectory}")
+    private String outputErrorFileDirectory;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -62,8 +64,10 @@ public class ProductDto {
 
     public void upload( MultipartFile file) throws ApiException{
         List<ProductForm> productFormList = convertTsvToProductFormList(file);
-        if(productFormList.isEmpty())
+        if(productFormList.isEmpty()) {
+            addErrorMessageToFile("Cannot Upload no product data in the table");
             throw new ApiException("Cannot Upload, no product data in the table");
+        }
         normalizeProductFormList(productFormList);
         processProductFormList(productFormList);
     }
@@ -153,9 +157,9 @@ public class ProductDto {
             throw new ApiException("Length of barcode or product name exceeds 30.");
         if(StringUtil.isValidDouble(productForm.getMrp()) == false)
             throw new ApiException("Invalid MRP");
-        if(hasSpecialCharacter(productForm.getName())
-                || hasSpecialCharacter(productForm.getBrand()) || hasSpecialCharacter(productForm.getCategory()))
-            throw new ApiException("form contains invalid character.");
+        if(StringUtil.hasSpecialCharacter(productForm.getBarcode()) || StringUtil.hasSpecialCharacter(productForm.getName())
+                || StringUtil.hasSpecialCharacter(productForm.getBrand()) || StringUtil.hasSpecialCharacter(productForm.getCategory()))
+            throw new ApiException("form contains invalid character, Special characters allowed are '_$&*#@!.&%-'");
     }
 
     private void emptyCheck(ProductForm productForm) throws ApiException{
@@ -163,14 +167,7 @@ public class ProductDto {
            StringUtil.isEmpty(productForm.getBrand()) || StringUtil.isEmpty(productForm.getCategory()) || StringUtil.isEmpty(productForm.getMrp()))
             throw new ApiException("Empty fields in the form");
     }
-
-    private static boolean hasSpecialCharacter(String input) {
-        String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
-        String patternString = "[^" + allowedCharacters + "]";
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
-    }
+    
 
     // FILE UPLOAD METHODS
 
@@ -178,30 +175,26 @@ public class ProductDto {
         if(StringUtil.isEmpty(productForm.getBarcode()) || StringUtil.isEmpty(productForm.getName()) ||
                 StringUtil.isEmpty(productForm.getBrand()) || StringUtil.isEmpty(productForm.getCategory())){
             errorData.addErrorMessage(rowCount,"Missing fields in the data");
-            errorData.setHasErrorOnUpload(true);
         }
         if(StringUtil.isValidDouble(productForm.getMrp()) == false) {
             errorData.addErrorMessage(rowCount,"Invalid MRP");
-            errorData.setHasErrorOnUpload(true);
         }
-        if(hasSpecialCharacter(productForm.getName())
-                || hasSpecialCharacter(productForm.getBrand()) || hasSpecialCharacter(productForm.getCategory())) {
-            errorData.addErrorMessage(rowCount,"Invalid characters in the row");
-            errorData.setHasErrorOnUpload(true);
+        if(StringUtil.hasSpecialCharacter(productForm.getBarcode()) || StringUtil.hasSpecialCharacter(productForm.getName())
+                || StringUtil.hasSpecialCharacter(productForm.getBrand()) || StringUtil.hasSpecialCharacter(productForm.getCategory())) {
+            errorData.addErrorMessage(rowCount,"Invalid characters in the row,Special characters allowed are '_$&*#@!.&%-'");
         }
         try{
             productFlowService.getBrandCategory(productForm.getBrand(), productForm.getCategory());
         } catch (ApiException exception){
 
             errorData.addErrorMessage(rowCount, exception.getMessage());
-            errorData.setHasErrorOnUpload(true);
             return;
         }
         ProductPojo productPojo = convertProductFormToProductPojo(productForm);
         productService.validate(productPojo, rowCount);
     }
 
-    private static List<ProductForm> convertTsvToProductFormList(MultipartFile file) throws ApiException{
+    private  List<ProductForm> convertTsvToProductFormList(MultipartFile file) throws ApiException{
         try {
             InputStream inputStream = file.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -228,9 +221,15 @@ public class ProductDto {
 
 
     }
-
-    private void convertFormToErrorFileTsv(List<ProductForm> productFormList){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFilePath,false))) {
+    private void addErrorMessageToFile(String errorMessage) throws ApiException{
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+"/product-upload-error.tsv",false))) {
+            writer.write("Error:\t"+errorMessage+"\n");
+        } catch (IOException e) {
+            throw new ApiException("Error writing TSV file: " + e.getMessage());
+        }
+    }
+    private void convertFormToErrorFileTsv(List<ProductForm> productFormList) throws ApiException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+"/product-upload-error.tsv",false))) {
             writer.write("Barcode\tBrand\tCategory\tName\tMrp\tError\n");
             for(int i=0; i< productFormList.size();i++){
                 String errorMessage = errorData.getErrorList().get(i);
@@ -240,11 +239,15 @@ public class ProductDto {
                         + "\t"+ productFormList.get(i).getName()+"\t"+productFormList.get(i).getMrp()+"\t"+errorMessage+"\n");
             }
         } catch (IOException e) {
-            System.err.println("Error writing TSV file: " + e.getMessage());
+            throw new ApiException("Error writing TSV file: " + e.getMessage());
         }
     }
 
     private void processProductFormList(List<ProductForm> productFormList) throws ApiException{
+        if(productFormList.size() > 5000){
+            addErrorMessageToFile("Maximum Number of rows allowed is 5000");
+            throw new ApiException("Maximum Number of rows allowed is 5000");
+        }
         getErrorList(productFormList);
         if(errorData.isHasErrorOnUpload()){
             convertFormToErrorFileTsv(productFormList);
@@ -276,7 +279,7 @@ public class ProductDto {
             add(productForm);
     }
 
-    private static void checkValidTsv(String[] columns) throws ApiException{
+    private void checkValidTsv(String[] columns) throws ApiException{
 
         for(int i=0;i<columns.length;i++){
             String columnName = StringUtil.toLowerCase(columns[i]);
@@ -285,11 +288,14 @@ public class ProductDto {
                     columnName.equals("name") || columnName.equals("mrp") || columnName.equals("barcode")){
                 mapColumn.put(i,columnName);
             }else if (columns[i] != ""){
+                addErrorMessageToFile("Invalid tsv format for upload check the sample file once.");
                 throw new ApiException("Invalid tsv format for upload, check the sample file once.");
             }
         }
-        if(mapColumn.size() != 5)
+        if(mapColumn.size() != 5) {
+            addErrorMessageToFile("Invalid tsv format for upload check the sample file once.");
             throw new ApiException("Invalid tsv format for upload, check the sample file once.");
+        }
     }
 
     private static ProductForm createProductFormFromEachRow(String columns[]){

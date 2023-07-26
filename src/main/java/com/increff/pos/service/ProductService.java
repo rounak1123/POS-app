@@ -49,6 +49,9 @@ public class ProductService {
 
 	public void update(int id, ProductPojo productPojo) throws ApiException {
 		ProductPojo ex = getCheck(id);
+		ProductPojo existingProductPojo = productDao.getProductByBarcode(productPojo.getBarcode());
+		if(existingProductPojo != null && existingProductPojo.getId() != id )
+			throw new ApiException("Product already exists with same barcode");
 		ex.setBarcode(productPojo.getBarcode());
 		ex.setBrand_category_id(productPojo.getBrand_category_id());
 		ex.setName(productPojo.getName());

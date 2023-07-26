@@ -45,11 +45,11 @@ button {
     margin: 0;
     list-style-type: none;
     text-decoration: none;
-    font-family: "Inconsolata", copperplate;
+    font-family: "Roboto", copperplate;
     /* color: white; */
 }
 body {
-  font-family: "Inconsolata", copperplate;
+  font-family: "Roboto", copperplate;
   color: black;
 }
 a {
@@ -276,14 +276,10 @@ color: white;
 }
 
 .home-image {
-width: 50%;
-position: absolute;
-right: 5rem;
+width: 63%;
 }
 
 .home-description {
-position: relative;
-    top: 32vh;
     font-size: 35px;
     width: 35vw;}
 
@@ -341,7 +337,6 @@ vertical-align: top;
 
 tr {
 white-space: pre;
-}
 }
 
 
@@ -433,4 +428,8 @@ white-space: pre;
 
 .select2-container--default .select2-results__option {
   white-space: pre;
+}
+
+.navbar-nav li:hover>ul.dropdown-menu{
+display: block;
 }

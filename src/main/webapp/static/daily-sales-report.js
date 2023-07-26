@@ -1,4 +1,5 @@
 var daySalesData;
+var daySalesReportData;
 var table;
 function getDailySalesUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -9,18 +10,14 @@ function getDailySalesUrl(){
 
 function getDaySalesReport(){
 	var url = getDailySalesUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('day sales report', data);
-	        daySalesData = data;
-	   		displayDaySalesReport(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, getDaySalesReportSuccess);
 }
 
+function getDaySalesReportSuccess(data){
+	        daySalesData = data;
+	   		displayDaySalesReport(data);
+	   		daySalesReportData = data;
+}
 //UI DISPLAY METHODS
 
 function displayDaySalesReport(data){
@@ -35,8 +32,10 @@ function displayDaySalesReport(data){
             e.invoicedOrdersCount,
             e.invoicedItemsCount,
             e.totalRevenue.toFixed(2)
-          ]).draw();
+          ]);
 	}
+	table.draw();
+
 }
 
 function filterSalesReport() {
@@ -62,6 +61,12 @@ function filterSalesReport() {
 
 }
 
+function resetFilters(){
+$("#inputStartDate").val('');
+$("#inputEndDate").val('');
+$("#inputEndDate").prop("disabled", true);
+}
+
 function onInputStartDateChange() {
  var startDateInput = $("#inputStartDate").val();
  var endDateInput= $("#inputEndDate").val();
@@ -71,16 +76,34 @@ function onInputStartDateChange() {
  if(startDateInput != ''){
  $('#inputEndDate').prop("disabled", false);
 
- if(endDate < startDate);
+ if(endDate < startDate)
  $('#inputEndDate').val('');
  $('#inputEndDate').prop('min', startDateInput);
 
  }else {
  $("#inputEndDate").val('');
- $('#inputEndDate').prop("disabled", false);
-
  }
 
+}
+
+function downloadReport(){
+if(daySalesReportData.length == 0){
+$.notify("No sales report data, cannot download report");
+return;};
+
+
+var reportArrayData = [];
+
+for(i in daySalesReportData){
+var rowData = {};
+rowData.date = daySalesReportData[i].date;
+rowData["total orders"] = daySalesReportData[i].invoicedOrdersCount;
+rowData["total items count"] = daySalesReportData[i].invoicedItemsCount,
+
+reportArrayData.push(rowData);
+}
+
+writeFileData(reportArrayData, 'daily-sales-report.tsv');
 }
 function init(){
      table = $('#daily-sales-report-table').DataTable(
@@ -93,6 +116,8 @@ function init(){
                        });
     $("#filter-day-sales").click(filterSalesReport);
     $("#inputStartDate").on('change', onInputStartDateChange);
+	$('#download-report').click(downloadReport);
+    $('#reset-filters').click(resetFilters);
 
 }
 $(document).ready(init);

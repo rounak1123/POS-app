@@ -9,6 +9,7 @@ function getAdminBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/admin/brand";
 }
+
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
@@ -20,28 +21,16 @@ function addBrand(event){
 	var $form = $("#brand-form");
 	var json = toJson($form);
 	var url = getAdminBrandUrl();
+    callAjaxApi(url,'POST', json, "Added Brand Category combination", addBrandSuccess);
+	return false;
+}
 
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
-	   		$.notify("Added Brand Category combination", "success");
-
+function addBrandSuccess(data){
 	   		getBrandList();
 	      $('#add-brand-modal').modal('toggle');
 
 	   		$("#brand-form")[0].reset();
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
 }
-
 function updateBrand(event){
 	//Get the ID
 
@@ -56,39 +45,18 @@ function updateBrand(event){
 	//Set the values to update
 	var $form = $("#brand-edit-form");
 	var json = toJson($form);
+    callAjaxApi(url, 'PUT', json, "Updated brand category", function(data){
+    getBrandList();
+    	$('#edit-brand-modal').modal('toggle');
+});
 
-	$.ajax({
-	   url: url,
-	   type: 'PUT',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
-	   		$.notify("Updated brand category", "success");
-
-	   		getBrandList();
-	$('#edit-brand-modal').modal('toggle');
-
-	   },
-	   error: handleAjaxError
-	});
-
-	return false;
 }
-
 
 function getBrandList(){
 	var url = getBrandUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('brand list', data);
-	   		displayBrandList(data);
-	   		updateBrandCategoryList(data);
-	   },
-	   error: handleAjaxError
+	callAjaxApi(url, 'GET', null, null,function(data){
+		   		displayBrandList(data);
+    	   		updateBrandCategoryList(data);
 	});
 }
 
@@ -122,10 +90,10 @@ var url = getAdminBrandUrl()+'/upload';
                     console.log(data);
                     $.notify("Uploaded the file successfully","success");
                    getBrandList();
-
-
+	               $('#upload-brand-modal').modal('toggle');
                 },
                 error: function(response){
+
                       errorOnUpload();
                       handleAjaxError(response);
                 }
@@ -152,7 +120,7 @@ function displayBrandList(data){
 	for(var i in data){
 		var e = data[i];
 		var serialNo = parseInt(i)+1;
-		var buttonHtml = '<button class="btn btn-primary mr-2 " onclick="displayEditBrand(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
+		var buttonHtml = '<button class="btn btn-warning mr-2 " onclick="displayEditBrand(' + e.id + ')" ><span class="material-symbols-outlined">border_color</span></button>' ;
 
 
           table.row.add([
@@ -160,21 +128,15 @@ function displayBrandList(data){
             e.brand,
             e.category,
             buttonHtml
-          ]).draw();
+          ]);
 	}
+	table.draw();
 
 }
 
 function displayEditBrand(id){
 	var url = getBrandUrl() + "/" + id;
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		displayBrand(data);
-	   },
-	   error: handleAjaxError
-	});	
+	callAjaxApi(url, 'GET', null, null, displayBrand);
 }
 
 function resetUploadDialog(){
@@ -206,7 +168,10 @@ var fileName = $file.val().split('\\').pop();
 }
 
 function displayUploadData(){
- 	resetUploadDialog(); 	
+ 	resetUploadDialog();
+ 	callAjaxApi("/error/exists/brand-upload-error.tsv", "GET", null, null, function(data){
+ 	errorOnUpload();
+ 	})
 	$('#upload-brand-modal').modal('toggle');
 }
 
@@ -232,34 +197,22 @@ function updateBrandCategoryList(data) {
 	categoryData = [...new Set(categoryData)];
      $('#inputBrandSearch').select2({
      data: brandData,
+     width: '160px',
      })
       $('#inputCategorySearch').select2({
       data: categoryData,
+      width: '160px',
       })
-//	  var brandDropdown = $('#inputBrandSearch');
-//      brandDropdown.empty();
-//      brandDropdown.append($('<option></option>').val('').html('Select an option'));
-//      $.each(brandData, function (i, brand){
-//          brandDropdown.append($('<option></option>').val(brand).html(brand));
-//      })
-//        var categoryDropdown = $('#inputCategorySearch');
-//        categoryDropdown.empty();
-//        categoryDropdown.append($('<option></option>').val('').html('Select an option'));
-//        $.each(categoryData, function (i, brand){
-//            categoryDropdown.append($('<option></option>').val(brand).html(brand));
-//        })
 }
 function openFilterModal() {
 	var url = getBrandUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	        console.log('brand list', data);
-	   		updateBrandCategoryList(data);
-	   },
-	   error: handleAjaxError
-	});
+	callAjaxApi(url, 'GET', null, null, updateBrandCategoryList);
+
+}
+
+function resetFilters(){
+$("#inputBrandSearch").val('').trigger('change');
+$("#inputCategorySearch").val('').trigger('change');
 
 }
 
@@ -268,8 +221,6 @@ function openFilterModal() {
 var table;
 
 function searchBrandCategory() {
-//var brandSearch = $('#inputBrandSearch');
-//var categorySearch = $('#inputCategorySearch')
 console.log(table);
 table.draw();
         $('#searchBrand').modal('toggle');
@@ -283,20 +234,7 @@ function searchBrandCategoryDropdown() {
 
     var url = getBrandUrl();
     url+='/search';
-
-  	$.ajax({
-  	   url: url,
-  	   type: 'POST',
-  	   data: JSON.stringify(obj),
-  	   headers: {
-         	'Content-Type': 'application/json'
-         },
-  	   success: function(response) {
-  	   		displayBrandList(response);
-	   		$.notify("Filtered data", "success");
-  	   },
-  	   error: handleAjaxError
-  	});
+    callAjaxApi(url, 'POST', JSON.stringify(obj), "Filtered data", displayBrandList);
 }
 
 function initDatatable(){
@@ -311,7 +249,6 @@ function initDatatable(){
         if(user_role == 'standard'){
         table.column(3).visible(false);
         }
-
 }
 
 
@@ -326,6 +263,7 @@ function init(){
     $('#brandFile').on('change', updateFileName);
     $('#search-brand-category').click(searchBrandCategoryDropdown);
     $('#filter-data').click(openFilterModal);
+    $('#reset-filters').click(resetFilters);
 }
 
 $(document).ready(init);

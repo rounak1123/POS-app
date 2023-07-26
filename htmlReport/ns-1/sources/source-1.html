@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > AbstractUiController</title>
+  <title>Coverage Report > BrandDto</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.increff.pos.controller</a>
+    <a href="../index.html">com.increff.pos.dto</a>
 </div>
 
-<h1>Coverage Summary for Class: AbstractUiController (com.increff.pos.controller)</h1>
+<h1>Coverage Summary for Class: BrandDto (com.increff.pos.dto)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">AbstractUiController</td>
+  <td class="name">BrandDto</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    96%
   </span>
   <span class="absValue">
-    (1/2)
+    (24/25)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    11.1%
+    80.6%
   </span>
   <span class="absValue">
-    (1/9)
+    (112/139)
   </span>
 </td>
 </tr>
@@ -74,41 +74,284 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.controller;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.pos.dto;
 &nbsp;
+&nbsp;import com.increff.pos.model.BrandData;
+&nbsp;import com.increff.pos.model.BrandForm;
+&nbsp;import com.increff.pos.model.ErrorData;
+&nbsp;import com.increff.pos.model.InfoData;
+&nbsp;import com.increff.pos.pojo.BrandPojo;
+&nbsp;import com.increff.pos.service.ApiException;
+&nbsp;import com.increff.pos.service.BrandService;
+&nbsp;import com.increff.pos.util.StringUtil;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
 &nbsp;import org.springframework.beans.factory.annotation.Value;
-&nbsp;import org.springframework.stereotype.Controller;
-&nbsp;import org.springframework.web.servlet.ModelAndView;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
 &nbsp;
-&nbsp;import com.increff.pos.model.InfoData;
-&nbsp;import com.increff.pos.util.SecurityUtil;
-&nbsp;import com.increff.pos.util.UserPrincipal;
+&nbsp;import java.io.*;
+&nbsp;import java.util.*;
+&nbsp;import java.util.regex.Matcher;
+&nbsp;import java.util.regex.Pattern;
 &nbsp;
-&nbsp;@Controller
-<b class="fc">&nbsp;public abstract class AbstractUiController {</b>
+&nbsp;@Component
+<b class="fc">&nbsp;public class BrandDto {</b>
 &nbsp;
-&nbsp;	@Autowired
-&nbsp;	private InfoData info;
+&nbsp;    @Autowired
+&nbsp;    private BrandService brandService;
 &nbsp;
-&nbsp;	@Value(&quot;${app.baseUrl}&quot;)
-&nbsp;	private String baseUrl;
+&nbsp;    @Autowired
+&nbsp;    private ErrorData errorData;
 &nbsp;
-&nbsp;	protected ModelAndView mav(String page) {
-&nbsp;		// Get current user
-<b class="nc">&nbsp;		UserPrincipal principal = SecurityUtil.getPrincipal();</b>
+&nbsp;    @Value(&quot;${error.errorFilePath}&quot;)
+&nbsp;    private String outputErrorFilePath;
 &nbsp;
-<b class="nc">&nbsp;		info.setRole(principal == null ? &quot;&quot; : principal.getRole());</b>
-<b class="nc">&nbsp;		info.setEmail(principal == null ? &quot;&quot; : principal.getEmail());</b>
-<b class="nc">&nbsp;		info.setId(principal == null ? -1 : principal.getId());</b>
+&nbsp;    @Value(&quot;${error.errorFileDirectory}&quot;)
+&nbsp;    private String outputErrorFileDirectory;
+&nbsp;
+<b class="fc">&nbsp;    private static HashMap&lt;Integer,String&gt; mapColumn=new HashMap&lt;Integer,String&gt;();</b>
+&nbsp;
+&nbsp;    public int add( BrandForm brandForm) throws ApiException {
+<b class="fc">&nbsp;        normalizeBrandForm(brandForm);</b>
+<b class="fc">&nbsp;        emptyCheck(brandForm);</b>
+<b class="fc">&nbsp;        invalidCharacterAndLengthCheck(brandForm);</b>
+<b class="fc">&nbsp;        BrandPojo brandPojo = convertBrandFormToBrandPojo(brandForm);</b>
+<b class="fc">&nbsp;        return brandService.add(brandPojo);</b>
+&nbsp;    }
+&nbsp;    public BrandData get( int id) throws ApiException {
+<b class="fc">&nbsp;        BrandPojo brandPojo = brandService.get(id);</b>
+<b class="fc">&nbsp;        return convertBrandPojoToBrandData(brandPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;BrandData&gt; getAll() {
+<b class="fc">&nbsp;        List&lt;BrandPojo&gt; brandPojoList = brandService.getAll();</b>
+<b class="fc">&nbsp;        return convertBrandPojoListToBrandDataList(brandPojoList);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update(int id, BrandForm brandForm) throws ApiException {
+<b class="fc">&nbsp;        normalizeBrandForm(brandForm);</b>
+<b class="fc">&nbsp;        emptyCheck(brandForm);</b>
+<b class="fc">&nbsp;        invalidCharacterAndLengthCheck(brandForm);</b>
+<b class="fc">&nbsp;        BrandPojo p = convertBrandFormToBrandPojo(brandForm);</b>
+<b class="fc">&nbsp;        brandService.update(id, p);</b>
+&nbsp;    }
 &nbsp;
 &nbsp;
-&nbsp;		// Set info
-<b class="nc">&nbsp;		ModelAndView mav = new ModelAndView(page);</b>
-<b class="nc">&nbsp;		mav.addObject(&quot;info&quot;, info);</b>
-<b class="nc">&nbsp;		mav.addObject(&quot;baseUrl&quot;, baseUrl);</b>
-<b class="nc">&nbsp;		return mav;</b>
-&nbsp;	}
+&nbsp;    public void upload( MultipartFile file) throws ApiException{
+&nbsp;
+<b class="fc">&nbsp;        List&lt;BrandForm&gt; brandFormList = convertTsvToBrandFormList(file);</b>
+<b class="fc">&nbsp;        brandFormList = removeDuplicateEntryFromBrandFormList(brandFormList);</b>
+<b class="fc">&nbsp;        if(brandFormList.isEmpty()) {</b>
+<b class="nc">&nbsp;            addErrorMessageToFile(&quot;Cannot upload no brand-category data in the table&quot;);</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Cannot upload, no brand-category data in the table&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        normalizeBrandFormList(brandFormList);</b>
+<b class="fc">&nbsp;        processBrandFormList(brandFormList);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;BrandData&gt; filterBrandCategory(BrandForm brandForm) throws ApiException {
+<b class="fc">&nbsp;          normalizeBrandForm(brandForm);</b>
+<b class="fc">&nbsp;          List&lt;BrandPojo&gt; brandPojoList =  brandService.filterBrandCategory(brandForm.getBrand(), brandForm.getCategory());</b>
+<b class="fc">&nbsp;          return convertBrandPojoListToBrandDataList(brandPojoList);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // CONVERSION METHODS
+&nbsp;
+&nbsp;    private  static  BrandData convertBrandPojoToBrandData(BrandPojo brandPojo) {
+<b class="fc">&nbsp;        BrandData brandData = new BrandData();</b>
+<b class="fc">&nbsp;        brandData.setCategory(brandPojo.getCategory());</b>
+<b class="fc">&nbsp;        brandData.setBrand(brandPojo.getBrand());</b>
+<b class="fc">&nbsp;        brandData.setId(brandPojo.getId());</b>
+<b class="fc">&nbsp;        return brandData;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private  static  BrandPojo convertBrandFormToBrandPojo(BrandForm brandForm)  {
+<b class="fc">&nbsp;        BrandPojo p = new BrandPojo();</b>
+<b class="fc">&nbsp;        p.setBrand(brandForm.getBrand());</b>
+<b class="fc">&nbsp;        p.setCategory(brandForm.getCategory());</b>
+<b class="fc">&nbsp;        return p;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static  List&lt;BrandData&gt; convertBrandPojoListToBrandDataList(List&lt;BrandPojo&gt; brandPojoList){
+<b class="fc">&nbsp;        brandPojoList.sort((o1, o2) -&gt; o2.getId() - o1.getId());</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;BrandData&gt; brandDataList = new ArrayList&lt;BrandData&gt;();</b>
+<b class="fc">&nbsp;        for (BrandPojo p : brandPojoList) {</b>
+<b class="fc">&nbsp;            brandDataList.add(convertBrandPojoToBrandData(p));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return brandDataList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // CHECKS AND NORMALIZATION FOR THE FORM
+&nbsp;
+&nbsp;    private static void normalizeBrandForm(BrandForm brandForm){
+<b class="fc">&nbsp;        brandForm.setBrand(StringUtil.toLowerCase(brandForm.getBrand()).trim());</b>
+<b class="fc">&nbsp;        brandForm.setCategory(StringUtil.toLowerCase(brandForm.getCategory()).trim());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void normalizeBrandFormList(List&lt;BrandForm&gt; brandFormList){
+<b class="fc">&nbsp;        for(BrandForm brandForm: brandFormList){</b>
+<b class="fc">&nbsp;            normalizeBrandForm(brandForm);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void emptyCheck(BrandForm brandForm) throws ApiException{
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(brandForm.getBrand()))</b>
+<b class="fc">&nbsp;            throw  new ApiException(&quot;Brand field cannot be empty.&quot;);</b>
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(brandForm.getCategory()))</b>
+<b class="nc">&nbsp;            throw  new ApiException(&quot;Category cannot be empty&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void invalidCharacterAndLengthCheck(BrandForm brandForm) throws ApiException {
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(brandForm.getBrand()) || StringUtil.hasSpecialCharacter(brandForm.getCategory()))</b>
+<b class="fc">&nbsp;            throw new ApiException(&quot;Invalid character in brand or category, Special characters allowed are &#39;_$&amp;*#@!.&amp;%-&#39; &quot;);</b>
+<b class="fc">&nbsp;        if(brandForm.getBrand().length() &gt; 30 || brandForm.getCategory().length() &gt; 30)</b>
+<b class="fc">&nbsp;            throw new ApiException(&quot;Brand or category length is more than 30&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // FILE UPLOAD METHODS
+&nbsp;
+&nbsp;    private void  validate(BrandForm brandForm, int rowCount)  {
+<b class="fc">&nbsp;        if(StringUtil.isEmpty(brandForm.getBrand()) || StringUtil.isEmpty(brandForm.getCategory())) {</b>
+<b class="fc">&nbsp;            errorData.addErrorMessage(rowCount, &quot;Brand or Category Empty&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(StringUtil.hasSpecialCharacter(brandForm.getBrand()) || StringUtil.hasSpecialCharacter(brandForm.getCategory())) {</b>
+<b class="fc">&nbsp;            errorData.addErrorMessage(rowCount, &quot;Invalid character in brand or category, Special characters allowed are &#39;_$&amp;*#@!.&amp;%-&#39;&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(brandForm.getBrand().length() &gt; 30 || brandForm.getCategory().length() &gt; 30) {</b>
+<b class="nc">&nbsp;            errorData.addErrorMessage(rowCount, &quot;Brand or category length is more than 30&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        BrandPojo brandPojo = convertBrandFormToBrandPojo(brandForm);</b>
+<b class="fc">&nbsp;         brandService.validate(brandPojo, rowCount);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void getErrorList(List&lt;BrandForm&gt; brandFormList){
+<b class="fc">&nbsp;        int rowCount = 0;</b>
+<b class="fc">&nbsp;        for(BrandForm brandForm: brandFormList){</b>
+<b class="fc">&nbsp;            validate(brandForm, rowCount);</b>
+<b class="fc">&nbsp;            rowCount++;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private List&lt;BrandForm&gt; convertTsvToBrandFormList(MultipartFile file) throws ApiException{
+&nbsp;        try {
+<b class="fc">&nbsp;            InputStream inputStream = file.getInputStream();</b>
+<b class="fc">&nbsp;            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));</b>
+<b class="fc">&nbsp;            List&lt;BrandForm&gt; brandFormList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            boolean headerFlag = true;</b>
+&nbsp;            String line;
+<b class="fc">&nbsp;            while ((line = reader.readLine()) != null) {</b>
+<b class="fc">&nbsp;                String[] columns = line.split(&quot;\t&quot;);</b>
+<b class="fc">&nbsp;                if(headerFlag) {</b>
+<b class="fc">&nbsp;                    checkValidTsv(columns);</b>
+<b class="fc">&nbsp;                    headerFlag = false;</b>
+<b class="fc">&nbsp;                    continue;</b>
+&nbsp;                }
+&nbsp;
+<b class="fc">&nbsp;                    BrandForm brandForm = createBrandFormFromEachRow(columns);</b>
+<b class="fc">&nbsp;                    if(brandForm == null)</b>
+<b class="nc">&nbsp;                        continue;</b>
+<b class="fc">&nbsp;                    brandFormList.add(brandForm);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;
+<b class="fc">&nbsp;            reader.close();</b>
+<b class="fc">&nbsp;            return brandFormList;</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Unable to convert tsvData to BrandForm List&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    private void addErrorMessageToFile(String errorMessage) throws ApiException{
+<b class="nc">&nbsp;        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+&quot;/brand-upload-error.tsv&quot;,false))) {</b>
+<b class="nc">&nbsp;            writer.write(&quot;Error:\t&quot;+errorMessage+&quot;\n&quot;);</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Error writing TSV file: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void convertFormToErrorFileTsv(List&lt;BrandForm&gt; brandFormList){
+&nbsp;
+<b class="fc">&nbsp;        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputErrorFileDirectory+&quot;/brand-upload-error.tsv&quot;,false))) {</b>
+<b class="nc">&nbsp;            writer.write(&quot;Brand\tCategory\tError\n&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            for(int i=0;i&lt;brandFormList.size(); i++){</b>
+&nbsp;
+<b class="nc">&nbsp;                String errorMessage = errorData.getErrorList().get(i);</b>
+<b class="nc">&nbsp;                if(errorMessage == null)</b>
+<b class="nc">&nbsp;                    errorMessage = &quot;&quot;;</b>
+<b class="nc">&nbsp;                writer.write(brandFormList.get(i).getBrand() + &quot;\t&quot; + brandFormList.get(i).getCategory() + &quot;\t&quot;+ errorMessage+&quot;\n&quot;);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        } catch (IOException e) {</b>
+<b class="fc">&nbsp;            System.err.println(&quot;Error writing TSV file: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void addBrandFormList(List&lt;BrandForm&gt; brandFormList) throws ApiException{
+<b class="fc">&nbsp;        for(BrandForm brandForm: brandFormList)</b>
+<b class="fc">&nbsp;            add(brandForm);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private List&lt;BrandForm&gt; removeDuplicateEntryFromBrandFormList(List&lt;BrandForm&gt; brandFormList){
+<b class="fc">&nbsp;        return new ArrayList&lt;BrandForm&gt;(new LinkedHashSet&lt;BrandForm&gt;(brandFormList));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void checkValidTsv(String[] columns) throws ApiException{
+&nbsp;
+<b class="fc">&nbsp;        for(int i=0;i&lt;columns.length;i++){</b>
+<b class="fc">&nbsp;            String columnName = columns[i].toLowerCase().trim();</b>
+&nbsp;
+<b class="fc">&nbsp;            if(columnName.equals(&quot;brand&quot;) || columnName.equals(&quot;category&quot;)){</b>
+<b class="fc">&nbsp;                mapColumn.put(i,columnName);</b>
+<b class="nc">&nbsp;            }else if (columns[i] != &quot;&quot;){</b>
+<b class="nc">&nbsp;                addErrorMessageToFile(&quot;Invalid tsv format for upload check the sample file once.&quot;);</b>
+<b class="nc">&nbsp;                throw new ApiException(&quot;Invalid tsv format for upload check the sample file once.&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        if(mapColumn.size() != 2) {</b>
+<b class="nc">&nbsp;            addErrorMessageToFile(&quot;Invalid tsv format for upload, check the sample file once.&quot;);</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid tsv format for upload, check the sample file once.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void processBrandFormList(List&lt;BrandForm&gt; brandFormList) throws ApiException{
+<b class="fc">&nbsp;        if(brandFormList.size() &gt; 5000){</b>
+<b class="nc">&nbsp;            addErrorMessageToFile(&quot;Maximum Number of rows allowed is 5000&quot;);</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Maximum Number of rows allowed is 5000&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        getErrorList(brandFormList);</b>
+&nbsp;
+<b class="fc">&nbsp;        if(errorData.isHasErrorOnUpload()){</b>
+<b class="fc">&nbsp;            convertFormToErrorFileTsv(brandFormList);</b>
+<b class="fc">&nbsp;            errorData.setHasErrorOnUpload(false);</b>
+<b class="fc">&nbsp;            errorData.setErrorList(new HashMap&lt;&gt;());</b>
+<b class="fc">&nbsp;            mapColumn.clear();</b>
+<b class="fc">&nbsp;            throw new ApiException(&quot;Error while uploading tsv.&quot;);</b>
+&nbsp;        }else {
+<b class="fc">&nbsp;            addBrandFormList(brandFormList);</b>
+<b class="fc">&nbsp;            errorData.setErrorList(new HashMap&lt;&gt;());</b>
+<b class="fc">&nbsp;            errorData.setHasErrorOnUpload(false);</b>
+<b class="fc">&nbsp;            mapColumn.clear();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private static BrandForm createBrandFormFromEachRow(String columns[]){
+&nbsp;
+<b class="fc">&nbsp;        BrandForm brandForm = new BrandForm();</b>
+<b class="fc">&nbsp;        int nullValues = 0;</b>
+<b class="fc">&nbsp;        for(int i=0;i&lt;columns.length;i++){</b>
+<b class="fc">&nbsp;            if(columns[i] == &quot;&quot;) nullValues++;</b>
+<b class="fc">&nbsp;            if(mapColumn.get(i).equals(&quot;brand&quot;) ){</b>
+<b class="fc">&nbsp;                brandForm.setBrand(columns[i]);</b>
+<b class="fc">&nbsp;            }else if(mapColumn.get(i).equals(&quot;category&quot;))</b>
+<b class="fc">&nbsp;                brandForm.setCategory(columns[i]);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(nullValues == columns.length)</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;
+<b class="fc">&nbsp;        return brandForm;</b>
+&nbsp;    }
 &nbsp;
 &nbsp;}
 </code>
@@ -134,7 +377,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-07-17 13:04</div>
+    <div style="float:right;">generated on 2023-07-26 21:27</div>
 </div>
 </body>
 </html>

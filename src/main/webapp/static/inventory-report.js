@@ -57,7 +57,7 @@ rowData.quantity = inventoryReportData[i].quantity;
 reportArrayData.push(rowData);
 }
 
-writeFileData(reportArrayData);
+writeFileData(reportArrayData, 'inventory-report.tsv');
 }
 //BUTTON ACTIONS
 function getInventoryList(){
@@ -65,26 +65,26 @@ function getInventoryList(){
 	var json = toJson($form);
 	var url = getAdminInventoryUrl();
 	url+='/report';
-	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },
-	   success: function(data) {
-	        console.log('inventory list', data);
+	callAjaxApi(url, 'POST', json, null, getInventoryListSuccess);
+}
+
+function getInventoryListSuccess(data){
             inventoryReportData = data;
 	        updateBrandCategoryList(data);
 	   		displayInventoryList(data);
-	   },
-	   error: handleAjaxError
-	});
 }
 
 function searchBrandCategoryDropdown() {
  getInventoryList();
 $.notify("Filter Applied","success");
+}
+
+function resetFilters(){
+$("#inputBarcodeSearch").val('').trigger('change');
+$("#inputProductNameSearch").val('').trigger('change');
+$("#inputBrandSearch").val('').trigger('change');
+$("#inputCategorySearch").val('').trigger('change');
+
 }
 
 //UI DISPLAY METHODS
@@ -99,8 +99,10 @@ function displayInventoryList(data){
             e.brand,
             e.category,
             e.quantity
-          ]).draw();
+          ]);
 	}
+	table.draw();
+
 }
 
 //INITIALIZATION CODE
@@ -119,6 +121,8 @@ function init(){
      initDataTable();
     $('#filter-brand-category').click(searchBrandCategoryDropdown);
 	$('#download-report').click(downloadReport);
+    $('#reset-filters').click(resetFilters);
+
 
 
 }

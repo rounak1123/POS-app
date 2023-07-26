@@ -1,6 +1,7 @@
 package com.increff.pos.util;
 
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtil {
@@ -40,7 +41,7 @@ public class StringUtil {
 	public static boolean isValidInteger(String s) {
 		try{
 
-			if(Integer.valueOf(s) <= 0)
+			if(Integer.valueOf(s) < 0)
 				return false;
 		} catch (NumberFormatException e){
 			return false;
@@ -59,6 +60,14 @@ public class StringUtil {
 			return false;
 		}
 		return true;
+	}
+
+	public static boolean hasSpecialCharacter(String input) {
+		String allowedCharacters = "-a-zA-Z0-9_$&*#@!.&%\\s";
+		String patternString = "[^" + allowedCharacters + "]";
+		Pattern pattern = Pattern.compile(patternString);
+		Matcher matcher = pattern.matcher(input);
+		return matcher.find();
 	}
 
 }

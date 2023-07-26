@@ -94,7 +94,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         assertEquals(productData.getName(),"test23");
         assertEquals(productData.getBrand(), "testbrand1");
         assertEquals(productData.getCategory(),"testcategory1");
-        assertEquals(productData.getMrp(),200.0);
+        assertEquals(productData.getMrp(),"200.0");
     }
 
     @Test(expected = ApiException.class)
@@ -127,7 +127,7 @@ public class ProductDtoTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testUploadProduct() throws ApiException, IOException {
+    public void testValidUploadProduct() throws ApiException, IOException {
         FileInputStream fileBrand = new FileInputStream(new File("src/test/resources/com/increff/pos/brandUploadTest.tsv"));
         String nameBrand = "brandUploadTest.tsv";
 
@@ -135,6 +135,22 @@ public class ProductDtoTest extends AbstractUnitTest{
         brandDto.upload(resultBrand);
         FileInputStream file = new FileInputStream(new File("src/test/resources/com/increff/pos/productUploadTest.tsv"));
         String name = "productUploadTest.tsv";
+
+        MultipartFile result = new MockMultipartFile(name, file);
+        dto.upload(result);
+        assertEquals(dto.getAll().size(), 6);
+
+    }
+
+    @Test(expected = ApiException.class)
+    public void testInvalidUploadProduct() throws ApiException, IOException {
+        FileInputStream fileBrand = new FileInputStream(new File("src/test/resources/com/increff/pos/brandUploadTest.tsv"));
+        String nameBrand = "brandUploadTest.tsv";
+
+        MultipartFile resultBrand = new MockMultipartFile(nameBrand, fileBrand);
+        brandDto.upload(resultBrand);
+        FileInputStream file = new FileInputStream(new File("src/test/resources/com/increff/pos/product-invalid.tsv"));
+        String name = "product-invalid.tsv";
 
         MultipartFile result = new MockMultipartFile(name, file);
         dto.upload(result);

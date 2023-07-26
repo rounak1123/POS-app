@@ -5,14 +5,29 @@ const toggleForm = () => {
 
 function getNewUserUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/site/user/new";
+	return baseUrl + "/api/user";
 }
 
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function isValidPassword(password) {
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  return passwordRegex.test(password);
+}
+
+
 function handleSignUp(){
+
+    var isValid = $("#signup-form")[0].checkValidity();
+            if(!isValid){
+              $("#signup-form")[0].reportValidity();
+                 return;
+            }
+
    var url = getNewUserUrl();
-   var passw=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-   let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
-   console.log(url);
    var email = $("#signup-form input[name=email]").val();
    var password = $("#signup-form input[name=password]").val();
    var confirmPassword = $("#signup-form input[name=confirm-password]").val();
@@ -24,7 +39,7 @@ function handleSignUp(){
    }
 console.log(url, email, password);
 
-   if(!regex.test(email)){
+   if(!isValidEmail(email)){
    $.notify("Invalid Email format");
    return;
    }
@@ -34,8 +49,8 @@ console.log(url, email, password);
    return;
    }
 
-   if(!password.match(passw)){
-   $.notify("Password must be between 8 to 15 characters and should contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.");
+   if(!isValidPassword(password)){
+   $.notify("Password must be between 8 to 15 characters and should contain at least one lowercase letter, one uppercase letter, one numeric digit");
    return;
    }
 
